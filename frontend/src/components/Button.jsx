@@ -6,7 +6,11 @@ const Button = ({ onClick, children, type='button', disabled=false }) => {
             type={type}
             onClick={onClick}
             disabled={disabled}
-            style={{ padding: '10px 20px', fontSize: '16px', cursor: disabled ? 'not-allowed' : 'pointer'}}
+            style={{ 
+                padding: '10px 20px', 
+                fontSize: '16px', 
+                cursor: disabled ? 'not-allowed' : 'pointer'
+            }}
         >
             {children}
         </button>
