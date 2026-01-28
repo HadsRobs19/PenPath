@@ -13,3 +13,37 @@ html, body, #root {
 .header-text {
   font-family: 'PlayKiddo', cursive;
 }
+
+.app-bg {
+  background: linear-gradient(150deg, #B2F7FF, #98AEFD);
+  min-height: 100vh;
+  width: 100vw;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-30vh);
+}
+
+.heading {
+  font-family: 'Playkiddo';
+  color: #050505;
+  margin-bottom: 16px;
+
+  font-size: clamp(1.8rem, 6vw, 3rem);
+}
+
+.logo {
+  width: min(80vw, 360px);
+  height: auto;
+}
