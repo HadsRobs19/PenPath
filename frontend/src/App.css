@@ -63,7 +63,8 @@ html, body, #root {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transform: translateY(-30vh);
+  transform: translateY(-25vh);
+  gap: 16px;
 }
 
 .heading {
@@ -97,6 +98,13 @@ html, body, #root {
 
 .link-button-style:hover{
   color: #0056b3;
+}
+
+.welcome-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  transform: translateY(8vh);
 }
 
 .sign-up-link-style {

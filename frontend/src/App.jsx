@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Welcome from './pages/Welcome';
 import LogIn from './pages/LogIn';
+import SignUp from './pages/SignUp';
 
 const App = () => {
 
@@ -9,6 +10,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Welcome />} />
       <Route path="/login" element={<LogIn />} />
+      <Route path="/signup" element={<SignUp />} />
     </Routes>
   )
 }

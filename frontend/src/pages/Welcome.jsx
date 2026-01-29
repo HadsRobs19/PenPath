@@ -18,9 +18,16 @@ const Welcome = () => {
           alt="Pen Path logo" 
           className="logo"
         />
-        <Button onClick={() => navigate('/login')}>
-          Log in
-        </Button>
+        <div className="welcome-buttons">
+          <Button onClick={() => navigate('/login')}>
+            Log in
+          </Button>
+
+          <Button onClick={() => navigate('/signup')}>
+            Sign Up
+          </Button> 
+        </div>
+        
       </div>
     </div>
   )
