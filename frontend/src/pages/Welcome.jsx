@@ -5,6 +5,8 @@ import Button from '../components/Button'
 import { useNavigate } from 'react-router-dom';
 
 const Welcome = () => {
+
+  // set useNavigate to provide navigation logic to button onClick
   const navigate = useNavigate();
 
   return (

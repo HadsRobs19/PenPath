@@ -18,8 +18,8 @@ export default function Button({
             disabled={disabled}
             style={({ pressed }) => [
                 styles.button,
-                disabled && styles.disabled,
-                pressed && !disabled && styles.pressed,
+                disabled ? styles.disabled : null,
+                pressed && !disabled ? styles.pressed : null,
             ]}
         >
             <Text style={styles.text}>{children}</Text>
@@ -39,9 +39,7 @@ const styles = StyleSheet.create({
         opacity: 0.8,
     },
     disabled: {
-        fontSize: 16,
-        color: "FFFFFF",
-        fontWeight: '500',
+        opacity: 0.8,
     },
     text: {
         fontSize: 16,

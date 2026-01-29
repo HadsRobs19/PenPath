@@ -44,13 +44,52 @@ html, body, #root {
   height: auto;
 }
 
-.login-wrapper {
+.login-content {
   transform: translateY(15vh);
 }
 
-.login-button {
-  padding: 12px 24px;
+.link-button-style {
+  display: inline-block;
+  padding: 10px 20px;
+  color: #3B71FF;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   font-size: 16px;
-  font-family: 'Playkiddo';
-  background-color: #B2F7FF;
+  transition: background-color 0.3s ease;
+}
+
+.link-button-style:hover{
+  background-color: #0056b3;
+}
+
+.sign-up-link-style {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #3B71FF;
+  color: black;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.sign-up-link-style:hover{
+  color: #0056b3;
+}
+
+.login-logo {
+  width: min(80vw, 360px);
+  height: auto;
+}
+
+.login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-20vh);
 }
