@@ -5,6 +5,7 @@ import { useState } from 'react';
 import MyButtonLink from '../components/ButtonLink';
 import SignUpLink from '../components/SignUpLink';
 import Button from '../components/Button';
+import { FaUser, FaKey } from 'react-icons/fa';
 
 const LogIn = () => {
     const navigate = useNavigate();
@@ -57,22 +58,31 @@ const LogIn = () => {
                     className="login-logo"
                 />
                 <h1 className="login-heading">Log In</h1>
-                <form onSubmit={handleSubmit}>
-                    <input  
-                        type="email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        required
-                    />
+                <form onSubmit={handleSubmit} className="login-form">
+                    <div className="input-group">
+                        <FaUser className="input-icon" />
+                        <input  
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <FaKey className="input-icon" />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
                     <MyButtonLink />
-                
+
                     <Button disabled={loading} onClick={() => navigate('/home')}>
                         {loading ? 'Logging in...' : 'Log in'}
                     </Button>

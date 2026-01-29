@@ -9,7 +9,7 @@ html, body, #root {
   font-weight: normal;
   font-style: normal;
 }
-
+/*Gradient background for the entirety of the login/sign up screen flow*/
 .app-bg {
   background: linear-gradient(150deg, #B2F7FF, #98AEFD);
   min-height: 100vh;
@@ -23,6 +23,41 @@ html, body, #root {
   overflow: hidden;
 }
 
+/* START reusable button component for entirety of login/sign up screen flow*/
+/*button is designed bigger for PWA version to accomodate for rasp pi tablet size*/
+.primary-button {
+  background-color: #B2F7FF;
+  color: #050505;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border:#050505;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #82B0B6;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  min-height: 48px;
+  min-width: 180px;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 0 #82B0B6;
+}
+
+.primary-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #82B0B6;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: 0 4px 0 #82B0B6;
+}
+/*END of reusable button component for the entirety of the login/sign up flow*/
+
+/* START Welcome page styling */
 .content {
   display: flex;
   flex-direction: column;
@@ -61,13 +96,12 @@ html, body, #root {
 }
 
 .link-button-style:hover{
-  background-color: #0056b3;
+  color: #0056b3;
 }
 
 .sign-up-link-style {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #3B71FF;
   color: black;
   text-align: center;
   border: none;
@@ -80,7 +114,9 @@ html, body, #root {
 .sign-up-link-style:hover{
   color: #0056b3;
 }
+/*END of Welcome page styling*/
 
+/*START of LogIn page*/
 .login-logo {
   width: min(80vw, 360px);
   height: auto;
@@ -91,5 +127,65 @@ html, body, #root {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transform: translateY(-20vh);
+  transform: translateY(-10vh);
 }
+
+.login-heading {
+  font-family: 'Playkiddo';
+  color: #050505;
+  margin-bottom: 10px;
+
+  font-size: clamp(1.8rem, 6vw, 3rem);
+}
+
+/* form styling: reuse for sign up page */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 320px;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group input::placeholder {
+  color: #9CA3AF;
+}
+
+.input-group input:focus {
+  border-color: #3B71FF;
+  box-shadow: 0 0 0 2px rgba(59, 113, 255, 0.25);
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.error-text {
+  color: #DC2626;
+  font-size: 14px;
+  text-align: center;
+}
+/*END of login styling*/

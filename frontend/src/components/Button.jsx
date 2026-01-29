@@ -6,6 +6,7 @@ const Button = ({ onClick, children, type='button', disabled=false }) => {
             type={type}
             onClick={onClick}
             disabled={disabled}
+            className="primary-button"
             style={{ 
                 padding: '10px 20px', 
                 fontSize: '16px', 
