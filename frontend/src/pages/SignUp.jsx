@@ -2,6 +2,7 @@ import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { FaUser, FaKey, FaCalendarAlt } from 'react-icons/fa';
+import LogInLink from '../components/LogInLink';
 import "../App.css";
 import logo from '../assets/logo.png';
 
@@ -60,11 +61,13 @@ const SignUp = () => {
     return(
         <div className="app-bg">
             <div className="login-content">
-                <img 
-                    src={logo} 
-                    alt="Pen Path logo" 
-                    className="login-logo"
-                />
+                <div className="signup-logo">
+                    <img 
+                        src={logo} 
+                        alt="Pen Path logo" 
+                        className="logo"
+                    />
+                </div>
                 <h1 className="login-heading">Sign Up</h1>
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="input-group">
@@ -130,9 +133,11 @@ const SignUp = () => {
                         />
                     </div>
 
-                    <Button type="submit" disabled={loading} onClick={() => navigate('/home')}>
+                    <Button type="submit" disabled={loading} onClick={() => navigate('/create-account')}>
                         {loading ? 'Creating account...' : 'Create Account'}
                     </Button>
+
+                    <p className="sign-in-link">Already have an account? <LogInLink /></p>
 
                     {error && <p className="error-text">{error}</p>}
                 </form>

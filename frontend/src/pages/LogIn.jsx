@@ -52,11 +52,13 @@ const LogIn = () => {
     return (
         <div className="app-bg">
             <div className="login-content">
-                <img 
-                    src={logo} 
-                    alt="Pen Path logo" 
-                    className="login-logo"
-                />
+                <div className="login-logo">
+                    <img 
+                        src={logo} 
+                        alt="Pen Path logo" 
+                        className="logo"
+                    />
+                </div>
                 <h1 className="login-heading">Log In</h1>
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="input-group">

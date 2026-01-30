@@ -9,6 +9,18 @@ html, body, #root {
   font-weight: normal;
   font-style: normal;
 }
+
+p {
+  font-family: 'Comfortaa';
+  font-size: 16px;
+}
+
+.logo {
+  width: min(80vw, 360px);
+  height: auto;
+  transform: translateY(10px);
+}
+
 /*Gradient background for the entirety of the login/sign up screen flow*/
 .app-bg {
   background: linear-gradient(150deg, #B2F7FF, #98AEFD);
@@ -75,11 +87,6 @@ html, body, #root {
   font-size: clamp(1.8rem, 6vw, 3rem);
 }
 
-.logo {
-  width: min(80vw, 360px);
-  height: auto;
-}
-
 .login-content {
   transform: translateY(15vh);
 }
@@ -125,11 +132,6 @@ html, body, #root {
 /*END of Welcome page styling*/
 
 /*START of LogIn page*/
-.login-logo {
-  width: min(80vw, 360px);
-  height: auto;
-}
-
 .login-content {
   display: flex;
   flex-direction: column;
@@ -141,7 +143,7 @@ html, body, #root {
 .login-heading {
   font-family: 'Playkiddo';
   color: #050505;
-  margin-bottom: 10px;
+  margin-bottom: 24px;
 
   font-size: clamp(1.8rem, 6vw, 3rem);
 }
@@ -155,6 +157,11 @@ html, body, #root {
   max-width: 320px;
   align-items: center;
   justify-content: center;
+}
+
+.login-logo {
+  transform: translateY(5vh);
+  margin-bottom: 100px;
 }
 
 .input-group {
@@ -197,3 +204,52 @@ html, body, #root {
   text-align: center;
 }
 /*END of login styling*/
+
+.helper-text {
+  color: #374151;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/*START sign up page*/
+.signup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translateY(20vh);
+}
+
+.signup-logo {
+  transform: translateY(10vh);
+  margin-bottom: 100px;
+}
+/*END sign up page*/
+
+/*START create account page*/
+.create-account-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-10vh);
+}
+
+.create-acc-logo {
+  transform: translateY(-2vh);
+  margin-bottom: 100px;
+}
+
+.forgot-logo {
+  transform: translateY(-5vh);
+  margin-bottom: 100px;
+}
+
+.forgot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translateY(-10vh);
+}
