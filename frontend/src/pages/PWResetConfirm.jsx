@@ -8,7 +8,7 @@ const PWResetConfirm = () => {
 
     return (
         <div className="app-bg">
-            <div className="login-content">
+            <div className="forgot-content">
                 <div className="confirm-pw-logo">
                     <img
                         src={logo}
