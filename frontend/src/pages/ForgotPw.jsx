@@ -48,7 +48,7 @@ const ForgotPw = () => {
                         className="logo"
                     />
                 </div>
-                <p1 className="login-heading">Forgot Password</p1>
+                <h1 className="login-heading">Forgot Password</h1>
                 <p className="helper-text">
                     Enter your email and we'll send you a reset link
                 </p>

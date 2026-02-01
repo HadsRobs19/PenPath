@@ -3,25 +3,23 @@ import "../App.css";
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
-const EmailSent = () => {
+const PWResetConfirm = () => {
     const navigate = useNavigate();
 
     return (
         <div className="app-bg">
             <div className="login-content">
-                <div className="email-sent-logo">
+                <div className="confirm-pw-logo">
                     <img
                         src={logo}
                         alt="Pen Path logo"
                         className="logo"
                     />
                 </div>
-                <h1 className="login-heading">Forgot Password</h1>
+                <h1 className="login-heading">Reset Password</h1>
                 <div className="email-sent-box">
-                    <h2>Email Sent</h2>
                     <p>
-                        If an account exists for that email, a password reset link has been sent.
-                        Please check your inbox.
+                        Your password has been changed.
                     </p>
                 </div>
                 <Button onClick={() => navigate('/login')} >
@@ -32,4 +30,4 @@ const EmailSent = () => {
     )
 }
 
-export default EmailSent;
+export default PWResetConfirm;

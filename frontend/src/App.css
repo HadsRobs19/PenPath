@@ -253,3 +253,48 @@ p {
   text-align: center;
   transform: translateY(-10vh);
 }
+
+.email-sent-box {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px 20px;
+  margin: 20px 0 28px 0;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+.email-sent-box h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #1f2937;
+}
+
+.email-sent-box p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.email-sent-logo {
+  transform: translateY(5vh);
+  margin-bottom: 100px;
+}
+
+.pw-reset-logo {
+  transform: translateY(-5vh);
+  margin-bottom: 100px;
+}
+
+.confirm-pw-logo {
+  transform: translateY(5vh);
+  margin-bottom: 100px;
+}
+
+.confirm-pw-logo {
+  transform: translateY(5vh);
+  margin-bottom: 100px;
+}
