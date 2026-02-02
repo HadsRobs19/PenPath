@@ -3,9 +3,17 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import logo from "../assets/logo.png";
 import { FaHome, FaCamera, FaUser, FaBook, FaScroll } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const [lesson1Complete, setLesson1Complete] = useState(false);
+
+  useEffect(() => {
+    const completed = localStorage.getItem("lesson1Complete");
+    setLesson1Complete(completed === "true");
+  }, []);
 
   return (
     <div className="home-bg">
@@ -21,17 +29,38 @@ const Home = () => {
 
         {/* Lesson Path */}
         <div className="lesson-path">
-          {/* Lesson 1: Colors */}
-          <Button
-            className="lesson-button lesson-rainbow"
-            onClick={() => navigate("/lesson/colors")}
+          <svg
+            className="lesson-path-svg"
+            viewBox="0 0 300 900"
+            preserveAspectRatio="none"
           >
-            <div className="lesson-title">Lesson 1</div>
-            <div className="lesson-subtitle">Colors</div>
-          </Button>
+            <path
+              d="
+                M150 0
+                C 50 150, 250 300, 150 450
+                C 50 600, 250 750, 150 900
+              "
+              fill="none"
+              stroke="#6b707aff"
+              strokeWidth="6"
+              strokeDasharray="1 22"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* Lesson 1: Colors */}
+          <div className="path-step step-1">
+            <Button
+              className="lesson-button lesson-rainbow"
+              onClick={() => navigate("/lesson/colors")}
+            >
+              <div className="lesson-title">Lesson 1</div>
+              <div className="lesson-subtitle">Colors</div>
+            </Button>
+          </div>
 
           {/* Tutorial Button */}
-          <div className="tutorial-path">
+          <div className="path-step step-2">
             <Button
               className="lesson-button lesson-tan"
               onClick={() => navigate("/tutorial")}
@@ -41,39 +70,72 @@ const Home = () => {
           </div>
 
           {/* Reading & Writing Path Icons */}
-          <div className="icon-path">
+          <div className="path-step step-3 icons-step">
             <button
-                className="icon-node"
-                onClick={() => navigate("/reading")}
-                aria-label="Reading"
+              className="icon-node"
+              onClick={() => navigate("/reading")}
+              aria-label="Reading"
             >
-                <FaBook />
+              <FaBook />
             </button>
+
             <button
-                className="icon-node"
-                onClick={() => navigate("/writing")}
-                aria-label="Writing"
+              className="icon-node"
+              onClick={() => navigate("/writing")}
+              aria-label="Writing"
             >
-                <FaScroll />
+              <FaScroll />
             </button>
-            <button 
-                className="icon-node color-pen"
-                onClick={() => navigate("/checkpoint")}
+
+            <button
+              className="icon-node color-pen"
+              onClick={() => navigate("/checkpoint")}
             >
-                {/*TODO: add the rainbow pen path guy; probably not in icon-node div to make it just a clean image with no background */}
+              {/* TODO: add the rainbow pen path guy */}
             </button>
           </div>
 
           {/* Lesson 2: Animals */}
-          <Button
-            className="lesson-button lesson-brown"
-            onClick={() => navigate("/lesson/2")}
-          >
-            <div className="lesson-title">Lesson 2</div>
-            <div className="lesson-subtitle">Animals</div>
-          </Button>
+          <div className="path-step step-4">
+            <Button
+              className="lesson-button lesson-brown path-right"
+              disabled={!lesson1Complete}
+              onClick={() => navigate("/lesson/2")}
+            >
+              <div className="lesson-title">Lesson 2</div>
+              <div className="lesson-subtitle">
+                {lesson1Complete ? "Animals" : "Locked 🔒"}
+              </div>
+            </Button>
+          </div>
 
-          {/*TODO: include above icon path class under Animals and give Animals checkpoint a different path name */}
+          {/* Reading & Writing Path Icons */}
+          <div className="path-step step-5 icons-step">
+            <button
+              className="icon-node"
+              onClick={() => navigate("/reading")}
+              aria-label="Reading"
+            >
+              <FaBook />
+            </button>
+
+            <button
+              className="icon-node"
+              onClick={() => navigate("/writing")}
+              aria-label="Writing"
+            >
+              <FaScroll />
+            </button>
+
+            <button
+              className="icon-node color-pen"
+              onClick={() => navigate("/checkpoint")}
+            >
+              {/* TODO: add the rainbow pen path guy */}
+            </button>
+          </div>
+
+          {/* TODO: include above icon path class under Animals */}
         </div>
       </div>
 
@@ -83,12 +145,10 @@ const Home = () => {
           <FaHome />
         </button>
 
-        {/*TODO: work on front end camera page */}
         <button onClick={() => navigate("/camera")}>
           <FaCamera />
         </button>
 
-        {/*TODO: work on front end user account page */}
         <button onClick={() => navigate("/account")}>
           <FaUser />
         </button>

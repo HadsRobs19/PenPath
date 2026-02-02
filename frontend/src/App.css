@@ -318,7 +318,7 @@ p {
 }
 
 .home-logo {
-  transform: translateY(-10vh);
+  transform: translateY(-1vh);
   margin-bottom: 100px;
 }
 
@@ -347,23 +347,92 @@ p {
 }
 
 .lesson-path {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 48px;              
-  margin-top: -20vh;     
+  position: relative;
+  width: 300px;
 }
 
-.lesson-path::before {
-  content: "";
+.path-step {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Lesson 1 spacing on the dotted line */
+.step-1 {
+  margin-top: -80px;
+}
+
+/* Tutorial button spacing on the dotted line */
+.step-2 { 
+  margin-top: 90px; 
+}
+
+/* Reading, Writing, and Checkpoint button spacing on the dotted line (as a unit) */
+.step-3 { 
+  margin-top: 60px; 
+  margin-left: 100px;
+}
+
+/* Lesson 2 spacing on the dotted line*/
+.step-4 { 
+  margin-top: 110px; 
+}
+
+.step-5 { 
+  margin-top: 110px; 
+}
+
+/* how the icons follow the line */
+.icons-step {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transform: translateX(-100px); 
+}
+
+/*Lesson 1 individual reading icon*/
+.icons-step .icon-node:nth-child(1) {
+  transform: translateX(120px);
+}
+
+/*Lesson 1 individual writing icon*/
+.icons-step .icon-node:nth-child(2) {
+  transform: translateX(140px);
+  margin-top: 40px;
+}
+
+/* Lesson 1 individual checkpoint icon */
+.icons-step .icon-node:nth-child(3) {
+  transform: translateX(140px);
+  margin-top: 40px;
+}
+
+/*Lesson 2 individual reading icon*/
+.icons-step .icon-node:nth-child(4) {
+  transform: translateX(200px);
+}
+
+/*Lesson 2 individual writing icon*/
+.icons-step .icon-node:nth-child(5) {
+  transform: translateX(110px);
+}
+
+/* Lesson 2 individual checkpoint icon */
+.icons-step .icon-node:nth-child(6) {
+  transform: translateX(100px);
+  margin-top: 10px;
+}
+
+.lesson-path-svg {
   position: absolute;
-  top: 100px;
-  bottom: 80px;
-  width: 4px;
-  background-image: radial-gradient(#6b7280 2px, transparent 2px);
-  background-size: 4px 16px;
-  background-repeat: repeat-y;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: 300px;
   z-index: 0;
+  pointer-events: none;
 }
 
 .lesson-brown {
@@ -385,6 +454,12 @@ p {
     #54a0ff
   );
   color: #050505;
+}
+
+/*locked lesson*/
+.lesson-button:disabled {
+  opacity: 0.5;
+  filter: grayscale(0.6);
 }
 
 .lesson-button,
@@ -416,6 +491,7 @@ p {
   z-index: 100;
 }
 
+/*icon styling*/
 .icon-node {
   width: 64px;
   height: 64px;
