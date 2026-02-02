@@ -203,7 +203,6 @@ p {
   font-size: 14px;
   text-align: center;
 }
-/*END of login styling*/
 
 .helper-text {
   color: #374151;
@@ -211,6 +210,7 @@ p {
   margin-bottom: 16px;
   line-height: 1.4;
 }
+/*END of login styling*/
 
 /*START sign up page*/
 .signup-content {
@@ -240,7 +240,9 @@ p {
   transform: translateY(-2vh);
   margin-bottom: 100px;
 }
+/*START create account page*/
 
+/*START forgot password content*/
 .forgot-logo {
   transform: translateY(-5vh);
   margin-bottom: 100px;
@@ -266,7 +268,6 @@ p {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-
 .email-sent-box h2 {
   margin-bottom: 10px;
   font-size: 20px;
@@ -283,7 +284,9 @@ p {
   transform: translateY(5vh);
   margin-bottom: 100px;
 }
+/*END forgot password content*/
 
+/*START password reset content*/
 .pw-reset-logo {
   transform: translateY(-5vh);
   margin-bottom: 100px;
@@ -298,3 +301,177 @@ p {
   transform: translateY(5vh);
   margin-bottom: 100px;
 }
+/*END password reset content*/
+
+/*START home content*/
+.home-bg {
+  background: #B2F7FF;
+  min-height: 100vh;
+  width: 100vw;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.home-logo {
+  transform: translateY(-10vh);
+  margin-bottom: 100px;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.lesson-button {
+  width: 260px;
+  min-height: 72px;
+  border-radius: 18px;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15);
+  font-family: 'PlayKiddo';
+  text-align: center;
+}
+
+.lesson-title {
+  font-size: 22px;
+}
+
+.lesson-subtitle {
+  font-size: 16px;
+}
+
+.lesson-path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;              
+  margin-top: -20vh;     
+}
+
+.lesson-path::before {
+  content: "";
+  position: absolute;
+  top: 100px;
+  bottom: 80px;
+  width: 4px;
+  background-image: radial-gradient(#6b7280 2px, transparent 2px);
+  background-size: 4px 16px;
+  background-repeat: repeat-y;
+  z-index: 0;
+}
+
+.lesson-brown {
+  background: #8b5a2b;
+  color: #fff;
+}
+
+.lesson-tan{
+  background: #FFFEE7;
+  color: #0d0d0c;
+}
+
+.lesson-rainbow {
+  background: linear-gradient(
+    to right,
+    #ff6b6b,
+    #feca57,
+    #1dd1a1,
+    #54a0ff
+  );
+  color: #050505;
+}
+
+.lesson-button,
+.tutorial-path,
+.icon-path {
+  position: relative;
+  z-index: 1;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+}
+
+.bottom-nav button {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  min-width: 56px;
+  min-height: 56px;
+  z-index: 100;
+}
+
+.icon-node {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: 3px solid #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 28px; 
+  color: #374151;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* START tutorial content */
+.tutorial-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  gap: 20px;
+}
+
+.tutorial-logo {
+  transform: translateY(-5vh);
+  margin-bottom: 100px;
+}
+
+.tutorial-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.tutorial-video-player {
+  width: 100%;
+  max-width: 720px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transform: translateY(-15vh);
+}
+
+.lesson-black {
+  background-color: #000000; 
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: -90px;
+}
+/*END tutorial content*/

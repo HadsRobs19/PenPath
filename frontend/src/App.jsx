@@ -7,6 +7,8 @@ import CreateAccount from './pages/CreateAccount';
 import EmailSent from './pages/EmailSent'; 
 import PWReset from './pages/PWReset';
 import PWResetConfirm from './pages/PWResetConfirm';
+import Home from './pages/Home';
+import Tutorial from './pages/Tutorial';
 const App = () => {
 
   // after creating pages in ./pages directory, add their route path to here to create navigation flow
@@ -20,6 +22,8 @@ const App = () => {
       <Route path="/email-sent" element={<EmailSent />} />
       <Route path="/password-reset" element={<PWReset />} />
       <Route path="/password-changed" element={<PWResetConfirm />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/tutorial" element={<Tutorial />} />
     </Routes>
   )
 }
