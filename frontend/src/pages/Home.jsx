@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import logo from "../assets/logo.png";
 import rainbowPen from "../assets/rainbow-pen.png"
+import animalPen from "../assets/animal-pen.png";
 import { FaHome, FaCamera, FaUser, FaBook, FaScroll, FaMap } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
@@ -97,7 +98,7 @@ const Home = () => {
             </button>
 
             <button 
-              className="icon-node"
+              className="icon-node icon-node--pen"
               onClick={() => navigate("/lesson1/badge")}
               aria-label="Badge"
             >
@@ -142,12 +143,24 @@ const Home = () => {
             </button>
 
             <button
-              className="icon-node color-pen"
+              className="icon-node"
               onClick={() => navigate("/checkpoint")}
               aria-label="Checkpoint"
             >
               {/* TODO: add the rainbow pen path guy */}
               <FaMap />
+            </button>
+
+            <button 
+              className="icon-node icon-node--pen"
+              onClick={() => navigate("/lesson2/badge")}
+              aria-label="Badge"
+            >
+              <img
+                src={animalPen}
+                alt="Animal pen"
+                className="color-pen"
+              />
             </button>
           </div>
 

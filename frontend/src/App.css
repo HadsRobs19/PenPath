@@ -358,6 +358,40 @@ p {
   justify-content: center;
 }
 
+/*icon styling*/
+.icon-node {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: 3px solid #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 28px; 
+  color: #374151;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.icon-node--pen {
+  background: none;
+  border: none;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.icon-node--pen:hover img {
+  transform: scale(1.05);
+}
+
+.icon-node--pen:active img {
+  transform: scale(0.95);
+}
+
 /* Lesson 1 spacing on the dotted line */
 .step-1 {
   margin-top: -80px;
@@ -394,12 +428,12 @@ p {
 
 /*Lesson 1 individual reading icon*/
 .icons-step .icon-node:nth-child(1) {
-  transform: translateX(120px);
+  transform: translateX(100px);
 }
 
 /*Lesson 1 individual writing icon*/
 .icons-step .icon-node:nth-child(2) {
-  transform: translateX(140px);
+  transform: translateX(120px);
   margin-top: 40px;
 }
 
@@ -409,23 +443,41 @@ p {
   margin-top: 40px;
 }
 
+/* Lesson 1 badge icon*/
 .icons-step .icon-node:nth-child(4){
-  transform: translateX(110px);
+  transform: translateX(20px);
   margin-top: 60px;
 }
 
 .color-pen{
-  width: min(20vw, 100px);
+  width: min(20vw, 140px);
+}
+
+/* cool hover effect for desktop (mouse + trackpad) */
+.icon-node:not(.icon-node--pen):hover {
+  background-color: #e5e7eb;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Tap / press effect for pi tablet (touch + click) */
+.icon-node:not(.icon-node--pen):active {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Focus ring (keyboard + accessibility) */
+.icon-node:not(.icon-node--pen):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 113, 255, 0.4);
 }
 
 /* Lesson 2 reading icon */
 .step-5 .icon-node:nth-child(1) {
-  transform: translateX(225px);
+  transform: translateX(200px);
 }
 
 /* Lesson 2 writing icon*/
 .step-5 .icon-node:nth-child(2) {
-  transform: translateX(250px);
+  transform: translateX(220px);
   margin-top: 18px;
 }
 
@@ -433,6 +485,11 @@ p {
 .step-5 .icon-node:nth-child(3) {
   transform: translateX(240px);
   margin-top: 22px;
+}
+
+/* Lesson 2 badge icon*/
+.step-5 .icon-node:nth-child(4) {
+  transform: translateX(130px);
 }
 
 .lesson-path-svg {
@@ -481,6 +538,7 @@ p {
 
 .bottom-nav {
   position: fixed;
+  background-color: #B2F7FF;
   bottom: 0;
   left: 0;
   right: 0;
@@ -488,6 +546,7 @@ p {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding-bottom: 5px;
   
 }
 
@@ -499,22 +558,6 @@ p {
   min-width: 56px;
   min-height: 56px;
   z-index: 100;
-}
-
-/*icon styling*/
-.icon-node {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background-color: #f3f4f6;
-  border: 3px solid #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 28px; 
-  color: #374151;
-  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 /* START tutorial content */
@@ -585,5 +628,57 @@ p {
 /* END Account styles */
 
 .reading1-bg{
-  
+  background: linear-gradient(150deg, #E9CEC3, #F99EEE, #c678ed, #A4E3D0, #70D1F2, #75BFFE);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.reading1-heading {
+  font-family: 'PlayKiddo';
+  transform: translateY(-40vh);
+  font-size: 20px;
+}
+
+.tracing-box {
+  position: relative;
+  background-color: #fff3d6;
+  border-radius: 16px;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.12);
+  padding: 12px;
+  overflow: hidden;
+}
+
+/* Guide lines */
+.guide-line {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background-color: rgba(107, 114, 128, 0.35);
+}
+
+.ascender {
+  top: 25%;
+}
+
+.midline {
+  top: 45%;
+  border-top: 2px dashed rgba(107, 114, 128, 0.35);
+}
+
+.baseline {
+  top: 70%;
+}
+
+/* SVG tracing */
+.tracing-svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* tracing only for now */
 }
