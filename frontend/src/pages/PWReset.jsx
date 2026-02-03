@@ -5,6 +5,17 @@ import { FaKey } from 'react-icons/fa';
 import "../App.css";
 import logo from '../assets/logo.png';
 
+/*
+* <summary>
+* Handles front end password reset 
+*   -> setting up form data -> always create a useState const with a [current state, setter function] (new password and confirming/retyping new password)
+*   -> parses inputed data into JSON to make storing easier (using http POST response to set up and store readable data in JSON ) in try...catch for error checking
+*          * if response does not go through or throws anything other than a 200 ok response code (data was found and returned), an error will appear
+*          * successful log in; user is navigated to lessons page or home page when successful
+*   -> setting up visual form with the blocks made: set gradient bg, form for new password and confirmed new password with FaUser FaKey icon
+*   -> sends user back to login to use new password (url/login)
+*/
+
 const PWReset = () => {
     const navigate = useNavigate();
 

@@ -6,10 +6,21 @@ import LogInLink from '../components/LogInLink';
 import "../App.css";
 import logo from '../assets/logo.png';
 
+/*
+* <summary>
+* Handles front end sign up
+*   -> setting up form data -> always create a useState const with a [current state, setter function] (name, username, email, birthday, password, confirm password)
+*   -> parses inputed data into JSON to make storing easier (using http POST response to set up and store readable data in JSON ) in try...catch for error checking
+*          * if response does not go through or throws anything other than a 200 ok response code (data was found and returned), an error will appear
+*          * successful sign up; user is navigated to lessons page or home page when successful
+*   -> return: setting up visual form with the blocks made: set gradient bg, form for name, username, email, birthday, password, and confirm password with FaCalendarAlt, FaUser and FaKey icons
+*          * user is then directed to home page if account is successfully completed
+*          * if account exists, user is directed to login
+*/
+
 const SignUp = () => {
     const navigate = useNavigate();
 
-    // same process as login, define field values and set them 
     const [name, setName] = useState('');
     const[username, setUsername] = useState('');
     const [email, setEmail] = useState('');

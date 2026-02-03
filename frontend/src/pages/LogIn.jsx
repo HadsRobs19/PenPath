@@ -7,23 +7,31 @@ import SignUpLink from '../components/SignUpLink';
 import Button from '../components/Button';
 import { FaUser, FaKey } from 'react-icons/fa';
 
+/*
+* <summary>
+* Handles front end login
+*     -> setting up form data -> always create a useState const with a [current state, setter function] (email, password)
+*     -> parses inputed data into JSON to make storing easier (using http POST response to set up and store readable data in JSON ) in try...catch for error checking
+*          * if response does not go through or throws anything other than a 200 ok response code (data was found and returned), an error will appear
+*          * successful log in; user is navigated to lessons page or home page when successful
+*     -> return: setting up visual form with the blocks made: set gradient bg, form for email and password with FaUser and FaKey icons
+*          * user is then directed to sign up page if no account is found (url/signup)
+*/
+
 const LogIn = () => {
     const navigate = useNavigate();
-    
-    // setting up form data -> always create a useState const with a [current state, setter function]
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // parses inputed data into JSON to make storing easier
     async function handleSubmit(e) {
         e.preventDefault();
 
         setError(null);
         setLoading(true);
 
-        // using http POST response to set up and store readable data in JSON 
         try {
             const res = await fetch('http://localhost:8080/login', {
                 method: 'POST',
@@ -31,12 +39,10 @@ const LogIn = () => {
                 body: JSON.stringify({ email, password})
             });
 
-            // if response does not go through or throws anything other than a 200 ok response code (data was found and returned), an error will appear
             if(!res.ok){
                 throw new Error('invalid credentials');
             }
 
-            // successful log in; user is navigated to lessons page or home page when successful
             const data = await res.json();
             console.log('Logged in: ', data);
             navigate('/home');
@@ -48,7 +54,6 @@ const LogIn = () => {
         }
     }
 
-    // setting up visual form with the blocks made
     return (
         <div className="app-bg">
             <div className="login-content">

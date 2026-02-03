@@ -19,6 +19,9 @@ const Tutorial = () => {
                         className="logo"
                     />
                 </div>
+                <div className="tutorial-text">
+                    <h1>View the tutorial video below to get started</h1>
+                </div>
                 <video
                     src={demoVideo}
                     controls

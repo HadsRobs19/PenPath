@@ -379,8 +379,9 @@ p {
   margin-top: 110px; 
 }
 
-.step-5 { 
-  margin-top: 110px; 
+/* Lesson 2 reading, writing, and checkpoint spacing on line*/
+.step-5 {
+  margin-top: 70px;
 }
 
 /* how the icons follow the line */
@@ -408,20 +409,30 @@ p {
   margin-top: 40px;
 }
 
-/*Lesson 2 individual reading icon*/
-.icons-step .icon-node:nth-child(4) {
-  transform: translateX(130px);
-}
-
-/*Lesson 2 individual writing icon*/
-.icons-step .icon-node:nth-child(5) {
+.icons-step .icon-node:nth-child(4){
   transform: translateX(110px);
+  margin-top: 60px;
 }
 
-/* Lesson 2 individual checkpoint icon */
-.icons-step .icon-node:nth-child(6) {
-  transform: translateX(100px);
-  margin-top: 10px;
+.color-pen{
+  width: min(20vw, 100px);
+}
+
+/* Lesson 2 reading icon */
+.step-5 .icon-node:nth-child(1) {
+  transform: translateX(225px);
+}
+
+/* Lesson 2 writing icon*/
+.step-5 .icon-node:nth-child(2) {
+  transform: translateX(250px);
+  margin-top: 18px;
+}
+
+/* Lesson 2 checkpoint icon*/
+.step-5 .icon-node:nth-child(3) {
+  transform: translateX(240px);
+  margin-top: 22px;
 }
 
 .lesson-path-svg {
@@ -517,7 +528,7 @@ p {
 }
 
 .tutorial-logo {
-  transform: translateY(-5vh);
+  transform: translateY(-8vh);
   margin-bottom: 100px;
 }
 
@@ -534,7 +545,16 @@ p {
   border-radius: 16px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
   cursor: pointer;
-  transform: translateY(-15vh);
+  transform: translateY(-20vh);
+}
+
+.tutorial-text {
+  font-size: 12px;
+  font-family: 'Playkiddo';
+  font-weight: bold;
+  color: #191919;
+  text-align: center;
+  transform: translateY(-20vh);
 }
 
 .lesson-black {
@@ -547,7 +567,7 @@ p {
   border: none;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  margin-top: -90px;
+  margin-top: -160px;
 }
 /*END tutorial content*/
 
