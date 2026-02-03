@@ -410,7 +410,7 @@ p {
 
 /*Lesson 2 individual reading icon*/
 .icons-step .icon-node:nth-child(4) {
-  transform: translateX(200px);
+  transform: translateX(130px);
 }
 
 /*Lesson 2 individual writing icon*/
@@ -458,8 +458,7 @@ p {
 
 /*locked lesson*/
 .lesson-button:disabled {
-  opacity: 0.5;
-  filter: grayscale(0.6);
+  filter: grayscale(0.3);
 }
 
 .lesson-button,
@@ -551,3 +550,20 @@ p {
   margin-top: -90px;
 }
 /*END tutorial content*/
+
+/* START Account styles */
+.account-bg {
+  background-color: #FFFFFF;
+}
+
+.account-heading {
+  font-family: 'Playkiddo';
+  color: #050505;
+  margin-bottom: 32px;
+  align-items: center;
+}
+/* END Account styles */
+
+.reading1-bg{
+  
+}

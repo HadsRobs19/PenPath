@@ -2,7 +2,7 @@ import "../App.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import logo from "../assets/logo.png";
-import { FaHome, FaCamera, FaUser, FaBook, FaScroll } from "react-icons/fa";
+import { FaHome, FaCamera, FaUser, FaBook, FaScroll, FaMap } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -52,7 +52,7 @@ const Home = () => {
           <div className="path-step step-1">
             <Button
               className="lesson-button lesson-rainbow"
-              onClick={() => navigate("/lesson/colors")}
+              onClick={() => navigate("/lesson1/colors")}
             >
               <div className="lesson-title">Lesson 1</div>
               <div className="lesson-subtitle">Colors</div>
@@ -73,7 +73,7 @@ const Home = () => {
           <div className="path-step step-3 icons-step">
             <button
               className="icon-node"
-              onClick={() => navigate("/reading")}
+              onClick={() => navigate("/lesson1/reading")}
               aria-label="Reading"
             >
               <FaBook />
@@ -81,7 +81,7 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/writing")}
+              onClick={() => navigate("/lesson1/writing")}
               aria-label="Writing"
             >
               <FaScroll />
@@ -89,9 +89,10 @@ const Home = () => {
 
             <button
               className="icon-node color-pen"
-              onClick={() => navigate("/checkpoint")}
+              onClick={() => navigate("/lesson1/checkpoint")}
             >
               {/* TODO: add the rainbow pen path guy */}
+              <FaMap />
             </button>
           </div>
 
@@ -113,7 +114,7 @@ const Home = () => {
           <div className="path-step step-5 icons-step">
             <button
               className="icon-node"
-              onClick={() => navigate("/reading")}
+              onClick={() => navigate("/lesson2/reading")}
               aria-label="Reading"
             >
               <FaBook />
@@ -121,7 +122,7 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/writing")}
+              onClick={() => navigate("/lesson2/writing")}
               aria-label="Writing"
             >
               <FaScroll />
@@ -130,8 +131,10 @@ const Home = () => {
             <button
               className="icon-node color-pen"
               onClick={() => navigate("/checkpoint")}
+              aria-label="Checkpoint"
             >
               {/* TODO: add the rainbow pen path guy */}
+              <FaMap />
             </button>
           </div>
 
@@ -145,7 +148,7 @@ const Home = () => {
           <FaHome />
         </button>
 
-        <button onClick={() => navigate("/camera")}>
+        <button onClick={() => navigate("/scan")}>
           <FaCamera />
         </button>
 

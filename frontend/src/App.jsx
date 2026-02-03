@@ -9,6 +9,10 @@ import PWReset from './pages/PWReset';
 import PWResetConfirm from './pages/PWResetConfirm';
 import Home from './pages/Home';
 import Tutorial from './pages/Tutorial';
+import Account from './pages/Account';
+import Scan from './pages/Scan';
+import ReadingColors1 from './pages/ReadingColors1';
+
 const App = () => {
 
   // after creating pages in ./pages directory, add their route path to here to create navigation flow
@@ -24,6 +28,9 @@ const App = () => {
       <Route path="/password-changed" element={<PWResetConfirm />} />
       <Route path="/home" element={<Home />} />
       <Route path="/tutorial" element={<Tutorial />} />
+      <Route path="/account" element={<Account />} />
+      <Route path="/scan" element={<Scan />} />
+      <Route path="/lesson1/colors" element={<ReadingColors1 />} />
     </Routes>
   )
 }
