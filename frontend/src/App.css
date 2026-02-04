@@ -935,8 +935,166 @@ p {
   transform: translateY(-40vh);
 
   padding-right: 100px;
-  text-align: center; 
- 
+  text-align: center;
+
   font-size: 40px;
   margin: 0;
 }
+/* END Colors badge styling */
+
+/* START Animals (Lesson 2) Badge styling */
+.animals-badge-bg {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg,
+      rgba(255, 147, 15, 0.37) 0%,
+      rgba(255, 206, 91, 0.3) 100%),
+    repeating-linear-gradient(
+      60deg,
+      #f5e6d3 0px,
+      #f5e6d3 20px,
+      #e8d4be 20px,
+      #e8d4be 40px
+    );
+}
+
+.animals-badge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+  width: 100%;
+  max-width: 390px;
+}
+
+.animals-badge-title {
+  font-family: 'PlayKiddo';
+  font-size: 32px;
+  color: #000;
+  text-align: center;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
+}
+
+.animals-badge-subtitle {
+  font-family: 'Comfortaa';
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  text-align: center;
+  margin: 0 0 60px 0;
+}
+
+.animals-badge-card {
+  background-color: #FFCE5B;
+  border-radius: 16px;
+  width: 314px;
+  height: 218px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.animals-badge-card:hover {
+  transform: scale(1.02);
+}
+
+.animals-badge-card:active {
+  transform: scale(0.98);
+}
+
+.animals-badge-image {
+  width: 162px;
+  height: 182px;
+  object-fit: contain;
+  transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+.animals-badge-image--hidden {
+  filter: blur(7.5px);
+}
+
+.animals-badge-image--revealed {
+  filter: blur(0);
+  filter: drop-shadow(6px 1px 20px rgba(0, 0, 0, 0.25));
+}
+
+.animals-badge-buttons {
+  display: flex;
+  gap: 60px;
+  margin-top: 120px;
+}
+
+.animals-badge-btn {
+  background-color: #1C1B1F;
+  color: #fff;
+  font-family: 'Comfortaa';
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  min-width: 109px;
+  min-height: 44px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.animals-badge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+}
+
+.animals-badge-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+}
+
+.animals-badge-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 5px;
+}
+
+.animals-badge-nav button {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  min-width: 56px;
+  min-height: 56px;
+  color: #1C1B1F;
+}
+
+.animals-badge-nav button:hover {
+  opacity: 0.7;
+}
+
+.animals-badge-home-indicator {
+  position: fixed;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 139px;
+  height: 5px;
+  background-color: #1C1B1F;
+  border-radius: 100px;
+}
+/* END Animals (Lesson 2) Badge styling */

@@ -17,6 +17,7 @@ import ColorsCheckpoint from './pages/ColorsCheckpoint';
 import ScanCamera from './pages/ScanCamera';
 import ScanResult from './pages/ScanResults';
 import ColorsBadge from './pages/ColorsBadge';
+import AnimalsBadge from './pages/AnimalsBadge';
 
 const App = () => {
 
@@ -41,6 +42,7 @@ const App = () => {
       <Route path="/colors/writing" element={<WritingColors />} />
       <Route path="/colors/checkpoint" element={<ColorsCheckpoint />} />
       <Route path="/colors/badge" element={<ColorsBadge />} />
+      <Route path="/animals/badge" element={<AnimalsBadge />} />
     </Routes>
   )
 }
