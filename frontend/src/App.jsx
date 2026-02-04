@@ -11,7 +11,8 @@ import Home from './pages/Home';
 import Tutorial from './pages/Tutorial';
 import Account from './pages/Account';
 import ScanUpload from './pages/ScanUpload';
-import ReadingColors1 from './pages/ReadingColors1';
+import ReadingColors from './pages/ReadingColors1';
+import WritingColors from './pages/WritingColors';
 import ScanCamera from './pages/ScanCamera';
 import ScanResult from './pages/ScanResults';
 
@@ -34,7 +35,8 @@ const App = () => {
       <Route path="/scan" element={<ScanUpload />} />
       <Route path="/scan/camera" element={<ScanCamera />} />
       <Route path="/scan/results" element={<ScanResult />} />
-      <Route path="/lesson1/reading" element={<ReadingColors1 />} />
+      <Route path="/colors/reading" element={<ReadingColors />} />
+      <Route path="/colors/writing" element={<WritingColors />} />
     </Routes>
   )
 }

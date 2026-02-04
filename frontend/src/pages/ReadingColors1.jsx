@@ -13,15 +13,22 @@ import Button from '../components/Button';
 *   -> overall layout uses gradient background and centered content consistent with app design
 */
 
-const ReadingColors1 = () => {
+const ReadingColors = () => {
     const navigate = useNavigate();
   return (
     <div className="reading1-bg">
         <div className="reading1-content">
             <h1 className="reading1-heading">Follow the Flow!</h1>
-            {letterPaths.Cc.map((path, i) => (
-            <TracingBox key={i} svgPath={path} />
-            ))}
+            <div className="Cc-row">
+                {letterPaths.Cc.map((path, i) => (
+                    <TracingBox key={i} svgPath={path} />
+                ))}
+            </div>
+            <div className="Dd-row">
+                {letterPaths.Dd.map((path, i) => (
+                    <TracingBox key={i} svgPath={path} />
+                ))}
+            </div>
 
             <div className="button-row">
                 <div className="exit">
@@ -31,14 +38,14 @@ const ReadingColors1 = () => {
                 </div>
 
                 <div className="next">
-                    <Button className="exit-button" onClick={() => navigate('/lesson1/writing')} >
+                    <Button className="exit-button" onClick={() => navigate('/colors/writing')} >
                         Next
                     </Button>
                 </div>
+            </div>
         </div>
       </div>
-    </div>
   );
 };
 
-export default ReadingColors1;
+export default ReadingColors;

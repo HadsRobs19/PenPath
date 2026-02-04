@@ -64,7 +64,7 @@ const Home = () => {
           <div className="path-step step-1">
             <Button
               className="lesson-button lesson-rainbow"
-              onClick={() => navigate("/lesson1/colors")}
+              onClick={() => navigate("/colors/reading")}
             >
               <div className="lesson-title">Lesson 1</div>
               <div className="lesson-subtitle">Colors</div>
@@ -85,7 +85,7 @@ const Home = () => {
           <div className="path-step step-3 icons-step">
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson1/reading")}
+              onClick={() => navigate("/colors/reading")}
               aria-label="Reading"
             >
               <FaBook />
@@ -93,7 +93,7 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson1/writing")}
+              onClick={() => navigate("/colors/writing")}
               aria-label="Writing"
             >
               <FaScroll />

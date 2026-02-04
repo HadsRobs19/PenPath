@@ -627,6 +627,7 @@ p {
 }
 /* END Account styles */
 
+/* START Reading Lesson styles */
 .reading1-bg{
   background: linear-gradient(150deg, #E9CEC3, #F99EEE, #c678ed, #A4E3D0, #70D1F2, #75BFFE);
   min-height: 100vh;
@@ -641,7 +642,8 @@ p {
 
 .reading1-heading {
   font-family: 'PlayKiddo';
-  transform: translateY(-8vh);
+  transform: translateY(-5vh);
+  padding-left: 140px;
   align-items: center;
   justify-content: center;
   font-size: 40px;
@@ -650,7 +652,7 @@ p {
 .reading1-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
   width: min(100%, 600px); 
   margin: 0 auto; 
 }
@@ -700,13 +702,22 @@ p {
   filter: drop-shadow(0 1px 0 rgba(0,0,0,0.08));
 }
 
+.Cc-row,
+.Dd-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 24px; 
+}
+
 .button-row {
   width: 100%;
   display: flex;
-  justify-content: space-between; 
+  justify-content: center;   
   align-items: center;
-  padding: 0 100px; 
-  margin-left: 50px;
+  gap: 120px;                
+  margin-top: 16px;
 }
 
 .exit-button, .next-button {
@@ -714,4 +725,94 @@ p {
   color: white;
   width: 100px;
   min-height: 48px;
+}
+/* END Reading lesson styles */
+
+.writing1-bg{
+  background: linear-gradient(150deg, #B2C4F6, #DFA1D1, #FD9B97, #FFD6B0, #FFEBBC);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.writing1-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: min(100%, 600px); 
+  margin: 0 auto;
+}
+
+.writing1-heading {
+  font-family: 'PlayKiddo';
+  transform: translateY(-10vh);
+
+ padding-right: 100px;
+  text-align: center; 
+ 
+  font-size: 40px;
+  margin: 0; 
+}
+
+.letter-check-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.letter-row {
+  display: flex;
+  gap: 40px;
+}
+
+.letter-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 180px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.letter-card img {
+  width: 120px;
+  height: auto;
+}
+
+.letter-card input {
+  width: 60px;
+  height: 45px;
+  font-size: 24px;
+  text-align: center;
+
+  border-radius: 10px;
+  border: 2px solid #ccc;
+}
+
+.write-next-button, .back-button {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
+}
+
+.writing-button-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;   
+  align-items: center;
+  gap: 120px;                
+  margin-top: 16px;
+  padding: 0;
 }

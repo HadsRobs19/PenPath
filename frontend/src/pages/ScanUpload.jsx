@@ -2,7 +2,7 @@ import "../App.css";
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
-const Scan = () => {
+const ScanUpload = () => {
     const navigate = useNavigate();
 
     return(
@@ -13,4 +13,4 @@ const Scan = () => {
         </div>
     );
 }
-export default Scan;
+export default ScanUpload;
