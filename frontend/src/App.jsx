@@ -13,8 +13,10 @@ import Account from './pages/Account';
 import ScanUpload from './pages/ScanUpload';
 import ReadingColors from './pages/ReadingColors1';
 import WritingColors from './pages/WritingColors';
+import ColorsCheckpoint from './pages/ColorsCheckpoint';
 import ScanCamera from './pages/ScanCamera';
 import ScanResult from './pages/ScanResults';
+import ColorsBadge from './pages/ColorsBadge';
 
 const App = () => {
 
@@ -37,6 +39,8 @@ const App = () => {
       <Route path="/scan/results" element={<ScanResult />} />
       <Route path="/colors/reading" element={<ReadingColors />} />
       <Route path="/colors/writing" element={<WritingColors />} />
+      <Route path="/colors/checkpoint" element={<ColorsCheckpoint />} />
+      <Route path="/colors/badge" element={<ColorsBadge />} />
     </Routes>
   )
 }

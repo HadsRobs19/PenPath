@@ -728,6 +728,7 @@ p {
 }
 /* END Reading lesson styles */
 
+/* START Writing lesson styles*/
 .writing1-bg{
   background: linear-gradient(150deg, #B2C4F6, #DFA1D1, #FD9B97, #FFD6B0, #FFEBBC);
   min-height: 100vh;
@@ -752,7 +753,7 @@ p {
   font-family: 'PlayKiddo';
   transform: translateY(-10vh);
 
- padding-right: 100px;
+  padding-right: 100px;
   text-align: center; 
  
   font-size: 40px;
@@ -815,4 +816,127 @@ p {
   gap: 120px;                
   margin-top: 16px;
   padding: 0;
+}
+/* END Writing lessons styles*/
+
+/* START Colors checkpoint */
+.colors-checkpoint-bg {
+  background: linear-gradient(150deg, #FFECC1, #F5EFD9, #D3E1D1, #9BCDC4, #23BCB9);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.colors-checkpoint-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.colors-checkpoint-header {
+  font-family: 'PlayKiddo';
+  transform: translateY(-10vh);
+
+  padding-right: 100px;
+  text-align: center; 
+ 
+  font-size: 40px;
+  margin: 0; 
+}
+
+.b-image {
+  width: 420px;
+  height: auto;
+}
+
+.colors {
+  transform: translateY(-5vh);
+  margin-right: 70px;
+}
+
+.colors-sentence {
+  font-size: 20px;
+  transform: translateY(-40px);
+  margin-right: 90px;
+}
+
+.writing-box {
+  position: relative;
+  background-color: #fff3d6;
+  border-radius: 16px;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.12);
+  padding: 12px;
+  margin-right: 60px;
+  overflow: hidden;
+  transform: translateY(-10px);
+}
+
+.clear-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 10;
+
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 12px;
+
+  font-size: 14px;
+  padding: 6px 12px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+}
+
+.clear-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+.colors-button-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;   
+  align-items: center;
+  gap: 120px;                
+  margin-top: 16px;
+  padding: 0;
+}
+
+.check-back-button, .check-claim-button {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
+}
+/* END Colors checkpoint styling*/
+
+/* START Colors badge styling */
+.colors-badge-bg {
+  background: linear-gradient(150deg, #FEA6A5, #FEC49E, #FEEB95, #FEFF90);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.colors-badge-header {
+  font-family: 'PlayKiddo';
+  transform: translateY(-40vh);
+
+  padding-right: 100px;
+  text-align: center; 
+ 
+  font-size: 40px;
+  margin: 0;
 }

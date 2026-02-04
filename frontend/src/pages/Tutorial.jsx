@@ -45,7 +45,7 @@ const Tutorial = () => {
 
                 <Button
                     className="lesson-button lesson-black"
-                    onClick={() => navigate('/lesson/colors')}
+                    onClick={() => navigate('/colors/reading')}
                 >
                     Begin Lesson
                 </Button>

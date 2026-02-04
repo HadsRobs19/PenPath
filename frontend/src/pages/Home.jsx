@@ -101,7 +101,7 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson1/checkpoint")}
+              onClick={() => navigate("/colors/checkpoint")}
               aria-label="Checkpoint"
             >
               <FaMap />
@@ -109,7 +109,7 @@ const Home = () => {
 
             <button 
               className="icon-node icon-node--pen"
-              onClick={() => navigate("/lesson1/badge")}
+              onClick={() => navigate("/colors/badge")}
               aria-label="Badge"
             >
               <img
@@ -125,7 +125,7 @@ const Home = () => {
             <Button
               className="lesson-button lesson-brown path-right"
               disabled={!lesson1Complete}
-              onClick={() => navigate("/lesson/2")}
+              onClick={() => navigate("/animals")}
             >
               <div className="lesson-title">Lesson 2</div>
               <div className="lesson-subtitle">
@@ -138,7 +138,7 @@ const Home = () => {
           <div className="path-step step-5 icons-step">
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson2/reading")}
+              onClick={() => navigate("/animals/reading")}
               aria-label="Reading"
             >
               <FaBook />
@@ -146,7 +146,7 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson2/writing")}
+              onClick={() => navigate("/animals/writing")}
               aria-label="Writing"
             >
               <FaScroll />
@@ -154,16 +154,15 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/checkpoint")}
+              onClick={() => navigate("/animals/checkpoint")}
               aria-label="Checkpoint"
             >
-              {/* TODO: add the rainbow pen path guy */}
               <FaMap />
             </button>
 
             <button 
               className="icon-node icon-node--pen"
-              onClick={() => navigate("/lesson2/badge")}
+              onClick={() => navigate("/animals/badge")}
               aria-label="Badge"
             >
               <img
