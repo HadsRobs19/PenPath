@@ -7,6 +7,16 @@ import animalPen from "../assets/animal-pen.png";
 import { FaHome, FaCamera, FaUser, FaBook, FaScroll, FaMap } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
+/*
+* <summary>
+* Handles front end lesson map, along with footer leading to the users account page and the scanning page
+*   -> set up lesson completion check so lesson one can be accessed by user
+*   -> render new home background and create lesson map path with svg
+*     * set each each lesson type icon and button along the svg path from Lesson 1 to the Lesson 2 badge icon
+*   -> create footer structure that houses home, scan, and account icons
+*
+*/
+
 const Home = () => {
   const navigate = useNavigate();
 

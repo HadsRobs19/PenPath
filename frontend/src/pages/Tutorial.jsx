@@ -5,7 +5,18 @@ import demoVideo from '../assets/demo02.mp4';
 import logo from '../assets/logo.png';
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
-// Tutorial video page: users can choose to view the tutorial on how to work the app before beginning a lesson! PLACEHOLDER video set until we have a app flow screen recording to use
+/*
+* <summary>
+* Front-end tutorial video page for app introduction
+*   -> displays centered logo and instructional text above video player
+*   -> video element is a placeholder until a full app flow recording is available
+*       * supports controls, looping, muted autoplay, and fullscreen on click
+*   -> "Begin Lesson" button navigates user to the first lesson (Colors)
+*   -> bottom navigation footer includes buttons for Home, Camera, and Account pages
+*       * Camera and Account pages are placeholders for future development
+*   -> layout uses gradient background and centered content consistent with app design
+*/
+
 const Tutorial = () => {
     const navigate = useNavigate();
 

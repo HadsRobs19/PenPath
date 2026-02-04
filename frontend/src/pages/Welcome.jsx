@@ -4,6 +4,16 @@ import "../App.css";
 import Button from '../components/Button'
 import { useNavigate } from 'react-router-dom';
 
+/*
+* <summary>
+* Front-end welcome page for new and returning users
+*   -> displays centered greeting text and app logo
+*   -> provides two primary buttons:
+*       * "Log in" navigates to the login page
+*       * "Sign Up" navigates to the account creation page
+*   -> layout uses gradient background and vertically centered content consistent with app design
+*/
+
 const Welcome = () => {
 
   // set useNavigate to provide navigation logic to button onClick

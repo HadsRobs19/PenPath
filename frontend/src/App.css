@@ -641,8 +641,18 @@ p {
 
 .reading1-heading {
   font-family: 'PlayKiddo';
-  transform: translateY(-40vh);
-  font-size: 20px;
+  transform: translateY(-8vh);
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.reading1-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: min(100%, 600px); 
+  margin: 0 auto; 
 }
 
 .tracing-box {
@@ -680,5 +690,28 @@ p {
 .tracing-svg {
   position: absolute;
   inset: 0;
-  pointer-events: none; /* tracing only for now */
+  pointer-events: auto; 
+}
+
+.trace-path {
+  stroke-dasharray: 18 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.08));
+}
+
+.button-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 0 100px; 
+  margin-left: 50px;
+}
+
+.exit-button, .next-button {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
 }

@@ -1,27 +1,44 @@
 import "../App.css";
 import { useNavigate } from 'react-router-dom';
 import TracingBox from "../components/TracingBox";
+import { letterPaths } from "../components/letterPaths";
 import Button from '../components/Button';
+
+/*
+* <summary>
+* Front-end page for tracing the letter 'C'
+*   -> displays heading and SVG tracing boxes using letterPaths.Cc
+*   -> includes Exit button (goes to home) and Next button (proceeds to writing lesson)
+*   -> buttons are aligned to opposite ends of the content area
+*   -> overall layout uses gradient background and centered content consistent with app design
+*/
 
 const ReadingColors1 = () => {
     const navigate = useNavigate();
+  return (
+    <div className="reading1-bg">
+        <div className="reading1-content">
+            <h1 className="reading1-heading">Follow the Flow!</h1>
+            {letterPaths.Cc.map((path, i) => (
+            <TracingBox key={i} svgPath={path} />
+            ))}
 
-    return(
-        <div className="reading1-bg">
-            <div className="reading1-content">
-                <div className="reading1-heading">
-                    <h1>Follow The Flow</h1>
+            <div className="button-row">
+                <div className="exit">
+                    <Button className="exit-button" onClick={() => navigate('/home')} >
+                        Exit
+                    </Button>
                 </div>
 
-                <TracingBox
-                    svgPath="
-                    M20 70
-                    C 60 20, 120 20, 150 70
-                    S 220 120, 260 70
-                    "
-                />
-            </div>
+                <div className="next">
+                    <Button className="exit-button" onClick={() => navigate('/lesson1/writing')} >
+                        Next
+                    </Button>
+                </div>
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
+
 export default ReadingColors1;

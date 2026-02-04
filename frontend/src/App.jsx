@@ -10,8 +10,10 @@ import PWResetConfirm from './pages/PWResetConfirm';
 import Home from './pages/Home';
 import Tutorial from './pages/Tutorial';
 import Account from './pages/Account';
-import Scan from './pages/Scan';
+import ScanUpload from './pages/ScanUpload';
 import ReadingColors1 from './pages/ReadingColors1';
+import ScanCamera from './pages/ScanCamera';
+import ScanResult from './pages/ScanResults';
 
 const App = () => {
 
@@ -29,8 +31,10 @@ const App = () => {
       <Route path="/home" element={<Home />} />
       <Route path="/tutorial" element={<Tutorial />} />
       <Route path="/account" element={<Account />} />
-      <Route path="/scan" element={<Scan />} />
-      <Route path="/lesson1/colors" element={<ReadingColors1 />} />
+      <Route path="/scan" element={<ScanUpload />} />
+      <Route path="/scan/camera" element={<ScanCamera />} />
+      <Route path="/scan/results" element={<ScanResult />} />
+      <Route path="/lesson1/reading" element={<ReadingColors1 />} />
     </Routes>
   )
 }

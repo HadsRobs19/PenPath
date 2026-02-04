@@ -5,6 +5,19 @@ import { useState } from 'react';
 import Button from '../components/Button';
 import { FaUser } from 'react-icons/fa';
 
+/*
+* <summary>
+* Handles front end account creation / bio setup
+*   -> setting up form data -> always create a useState const with a [current state, setter function] (name and age)
+*   -> parses inputted data into JSON to send via HTTP POST request to backend for account creation
+*       * wrapped in try...catch to handle errors
+*       * if response is not ok (anything other than 200), an error message is shown
+*       * successful account creation navigates user to the home page
+*   -> sets loading state during fetch request to prevent multiple submissions
+*   -> sets up visual form with gradient background, input fields with FaUser icons for name and age, and a submit button
+*   -> displays error messages below form if submission fails
+*/
+
 const CreateAccount = () => {
     const navigate = useNavigate();
 
