@@ -930,17 +930,153 @@ p {
   overflow: hidden;
 }
 
+.colors-badge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+  width: 100%;
+  max-width: 390px;
+}
+
 .colors-badge-header {
   font-family: 'PlayKiddo';
-  transform: translateY(-40vh);
-
-  padding-right: 100px;
+  transform: translateY(-10vh);
+  font-size: 32px;
+  color: #000;
   text-align: center;
-
-  font-size: 40px;
-  margin: 0;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
 }
+
+.colors-badge-subtitle {
+  font-family: 'Comfortaa';
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  text-align: center;
+  margin: 0 0 60px 0;
+}
+
+/* Badge card */
+.colors-badge-card {
+  background: linear-gradient(
+    135deg,
+    #ff6f91,
+    #ffc75f,
+    #4d96ff,
+    #6bcf9d
+  );
+  border-radius: 16px;
+  width: 314px;
+  height: 218px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.colors-badge-card:hover {
+  transform: scale(1.02);
+}
+
+.colors-badge-card:active {
+  transform: scale(0.98);
+}
+
+.colors-badge-image {
+  width: 162px;
+  height: 182px;
+  object-fit: contain;
+  transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+.colors-badge-image--hidden {
+  filter: blur(7.5px);
+}
+
+.colors-badge-image--revealed {
+  filter: blur(0);
+  filter: drop-shadow(6px 1px 20px rgba(0, 0, 0, 0.25));
+}
+
+.colors-badge-buttons {
+  display: flex;
+  gap: 60px;
+  margin-top: 120px;
+}
+
+.colors-badge-btn {
+  background-color: #1C1B1F;
+  color: #fff;
+  font-family: 'Comfortaa';
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  min-width: 109px;
+  min-height: 44px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.colors-badge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+}
+
+.colors-badge-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Bottom navigation */
+.colors-badge-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 5px;
+}
+
+.colors-badge-nav button {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  min-width: 56px;
+  min-height: 56px;
+  color: #1C1B1F;
+}
+
+.colors-badge-nav button:hover {
+  opacity: 0.7;
+}
+
+/* iOS home indicator */
+.colors-badge-home-indicator {
+  position: fixed;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 139px;
+  height: 5px;
+  background-color: #1C1B1F;
+  border-radius: 100px;
+}
+
+/* END Colors Badge styling */
+
 /* END Colors badge styling */
+
 
 /* START Animals (Lesson 2) Badge styling */
 .animals-badge-bg {
@@ -1098,3 +1234,4 @@ p {
   border-radius: 100px;
 }
 /* END Animals (Lesson 2) Badge styling */
+

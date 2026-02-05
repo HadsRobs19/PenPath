@@ -1,0 +1,11 @@
+version: '3'
+services:
+  app:
+    build:
+      context: . # The build context is the current directory
+      dockerfile: Dockerfile # Specifies the Dockerfile to use
+    ports:
+      - "3000:5173" # Maps port 3000 on your host to port 5173 in the container
+    volumes:
+      - .:/PenPath # Mounts your local project directory to /app in the container for live reloading
+      - /PenPath/node_modules # An anonymous volume to avoid overwriting node_modules with the host machine's (potential) empty node_modules
