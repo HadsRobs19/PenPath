@@ -1,7 +1,6 @@
 import "../App.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import animalBadge from "../assets/animal-pen.png";
 
 /*
@@ -11,7 +10,6 @@ import animalBadge from "../assets/animal-pen.png";
  *   -> On click, reveals the badge with a drop shadow animation
  *   -> Exit button returns to home, Next Lesson navigates forward
  *   -> Includes bottom navigation bar
- * </summary>
  */
 
 const AnimalsBadge = () => {
@@ -37,7 +35,7 @@ const AnimalsBadge = () => {
     <div className="animals-badge-bg">
       <div className="animals-badge-content">
         {/* Title */}
-        <h1 className="animals-badge-title">You received a badge</h1>
+        <h1 className="animals-badge-header">You received a badge</h1>
 
         {/* Subtitle - only show when not revealed */}
         {!isRevealed && (
@@ -74,22 +72,6 @@ const AnimalsBadge = () => {
           </button>
         </div>
       </div>
-
-      {/* Bottom Navigation */}
-      <footer className="animals-badge-nav">
-        <button onClick={() => navigate("/home")} aria-label="Home">
-          <FaHome />
-        </button>
-        <button onClick={() => navigate("/scan")} aria-label="Camera">
-          <FaCamera />
-        </button>
-        <button onClick={() => navigate("/account")} aria-label="Account">
-          <FaUser />
-        </button>
-      </footer>
-
-      {/* Home Indicator */}
-      <div className="animals-badge-home-indicator" />
     </div>
   );
 };

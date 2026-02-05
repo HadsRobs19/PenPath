@@ -18,6 +18,9 @@ import ScanCamera from './pages/ScanCamera';
 import ScanResult from './pages/ScanResults';
 import ColorsBadge from './pages/ColorsBadge';
 import AnimalsBadge from './pages/AnimalsBadge';
+import AnimalsWriting from './pages/AnimalsWriting';
+import AnimalsReading from './pages/AnimalsReading';
+import AnimalsCheckpoint from './pages/AnimalsCheckpoint';
 
 const App = () => {
 
@@ -38,11 +41,14 @@ const App = () => {
       <Route path="/scan" element={<ScanUpload />} />
       <Route path="/scan/camera" element={<ScanCamera />} />
       <Route path="/scan/results" element={<ScanResult />} />
-      <Route path="/colors/reading" element={<ReadingColors />} />
-      <Route path="/colors/writing" element={<WritingColors />} />
+      <Route path="/colors/writing" element={<ReadingColors />} />
+      <Route path="/colors/reading" element={<WritingColors />} />
       <Route path="/colors/checkpoint" element={<ColorsCheckpoint />} />
       <Route path="/colors/badge" element={<ColorsBadge />} />
       <Route path="/animals/badge" element={<AnimalsBadge />} />
+      <Route path="/animals/writing" element={<AnimalsWriting />} />
+      <Route path="/animals/reading" element={<AnimalsReading />} />
+      <Route path="/animals/checkpoint" element={<AnimalsCheckpoint />} />
     </Routes>
   )
 }

@@ -21,10 +21,14 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [lesson1Complete, setLesson1Complete] = useState(false);
+  const [lesson2Complete, setLesson2Complete] = useState(false);
 
   useEffect(() => {
-    const completed = localStorage.getItem("lesson1Complete");
-    setLesson1Complete(completed === "true");
+    const completed1 = localStorage.getItem("lesson1Complete");
+    const completed2 = localStorage.getItem("lesson2Complete");
+
+    setLesson1Complete(completed1 === "true");
+    setLesson2Complete(completed2 === "true");
   }, []);
 
   return (
@@ -175,6 +179,18 @@ const Home = () => {
                 className="color-pen"
               />
             </button>
+          </div>
+
+          <div className="path-step step-4">
+            <Button
+              className="lesson-button lesson-purple path-right"
+              disabled={!lesson2Complete}
+            >
+              <div className="lesson-title">Lesson 3</div>
+              <div className="lesson-subtitle">
+                {lesson2Complete ? "Foods" : "Locked 🔒"}
+              </div>
+            </Button>
           </div>
 
           {/* TODO: include above icon path class under Animals */}

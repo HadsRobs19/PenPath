@@ -1,7 +1,6 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import rainbowPen from "../assets/rainbow-pen.png";
 
 /*
@@ -17,13 +16,20 @@ import rainbowPen from "../assets/rainbow-pen.png";
 const ColorsBadge = () => {
   const navigate = useNavigate();
   const [isRevealed, setIsRevealed] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const lessonComplete =
       localStorage.getItem("lesson1Complete") === "true";
-
+    // probably better than a quick page change for children
     if (!lessonComplete) {
-      navigate("/home");
+      setShowToast(true);
+
+      const timer = setTimeout(() => {
+        navigate("/home");
+      }, 2200);
+
+      return () => clearTimeout(timer);
     }
   }, [navigate]);
 
@@ -37,46 +43,51 @@ const ColorsBadge = () => {
 
   const handleNextLesson = () => {
     localStorage.setItem("colorsLessonComplete", "true");
-    navigate("/home");
+    navigate("/animals/reading");
   };
 
   return (
     <div className="colors-badge-bg">
-      <div className="colors-badge-content">
-     
-        <h1 className="colors-badge-header">You earned a badge!</h1>
-
-        {!isRevealed && (
-          <p className="colors-badge-subtitle">Click to reveal!</p>
+        {showToast && (
+            <div className="lesson-toast">
+                Finish the lesson first!
+            </div>
         )}
+        <div className="colors-badge-content">
+     
+            <h1 className="colors-badge-header">You earned a badge!</h1>
 
-        <div
-          className="colors-badge-card"
-          onClick={handleReveal}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && handleReveal()}
-          aria-label={isRevealed ? "Badge revealed" : "Click to reveal badge"}
-        >
-          <img
-            src={rainbowPen}
-            alt="Colors lesson rainbow pen badge"
-            className={`colors-badge-image ${
-              isRevealed
-                ? "colors-badge-image--revealed"
-                : "colors-badge-image--hidden"
-            }`}
-          />
-        </div>
+            {!isRevealed && (
+            <p className="colors-badge-subtitle">Click to reveal!</p>
+            )}
 
-        <div className="colors-badge-buttons">
-          <button className="colors-badge-btn" onClick={handleExit}>
-            Exit
-          </button>
-          <button className="colors-badge-btn" onClick={handleNextLesson}>
-            {isRevealed ? "Next Lesson" : "Next"}
-          </button>
-        </div>
+            <div
+            className="colors-badge-card"
+            onClick={handleReveal}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && handleReveal()}
+            aria-label={isRevealed ? "Badge revealed" : "Click to reveal badge"}
+            >
+                <img
+                    src={rainbowPen}
+                    alt="Colors lesson rainbow pen badge"
+                    className={`colors-badge-image ${
+                    isRevealed
+                        ? "colors-badge-image--revealed"
+                        : "colors-badge-image--hidden"
+                    }`}
+                />
+            </div>
+
+            <div className="colors-badge-buttons">
+                <button className="colors-badge-btn" onClick={handleExit}>
+                    Exit
+                </button>
+                <button className="colors-badge-btn" onClick={handleNextLesson}>
+                    {isRevealed ? "Next Lesson" : "Next"}
+                </button>
+            </div>
       </div>
     </div>
   );
