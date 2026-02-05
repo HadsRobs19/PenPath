@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
 import Button from '../components/Button';
 
+
+
 const { height, width } = Dimensions.get('window');
 
 export default function Welcome() {
@@ -73,4 +75,5 @@ const styles = StyleSheet.create({
     marginTop: -370,
     marginBottom: 50,
   },
+  
 });
