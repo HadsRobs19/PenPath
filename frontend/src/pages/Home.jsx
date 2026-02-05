@@ -125,7 +125,7 @@ const Home = () => {
             <Button
               className="lesson-button lesson-brown path-right"
               disabled={!lesson1Complete}
-              onClick={() => navigate("/animals")}
+              onClick={() => navigate("/animals/reading")}
             >
               <div className="lesson-title">Lesson 2</div>
               <div className="lesson-subtitle">
@@ -139,6 +139,7 @@ const Home = () => {
             <button
               className="icon-node"
               onClick={() => navigate("/animals/reading")}
+              disabled={!lesson1Complete}
               aria-label="Reading"
             >
               <FaBook />
@@ -147,6 +148,7 @@ const Home = () => {
             <button
               className="icon-node"
               onClick={() => navigate("/animals/writing")}
+              disabled={!lesson1Complete}
               aria-label="Writing"
             >
               <FaScroll />
@@ -155,6 +157,7 @@ const Home = () => {
             <button
               className="icon-node"
               onClick={() => navigate("/animals/checkpoint")}
+              disabled={!lesson1Complete}
               aria-label="Checkpoint"
             >
               <FaMap />
@@ -163,6 +166,7 @@ const Home = () => {
             <button 
               className="icon-node icon-node--pen"
               onClick={() => navigate("/animals/badge")}
+              disabled={!lesson1Complete}
               aria-label="Badge"
             >
               <img

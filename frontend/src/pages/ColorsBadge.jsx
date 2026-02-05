@@ -1,5 +1,5 @@
 import "../App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import rainbowPen from "../assets/rainbow-pen.png";
@@ -17,6 +17,15 @@ import rainbowPen from "../assets/rainbow-pen.png";
 const ColorsBadge = () => {
   const navigate = useNavigate();
   const [isRevealed, setIsRevealed] = useState(false);
+
+  useEffect(() => {
+    const lessonComplete =
+      localStorage.getItem("lesson1Complete") === "true";
+
+    if (!lessonComplete) {
+      navigate("/home");
+    }
+  }, [navigate]);
 
   const handleReveal = () => {
     setIsRevealed(true);
@@ -69,20 +78,6 @@ const ColorsBadge = () => {
           </button>
         </div>
       </div>
-
-      <footer className="colors-badge-nav">
-        <button onClick={() => navigate("/home")} aria-label="Home">
-          <FaHome />
-        </button>
-        <button onClick={() => navigate("/scan")} aria-label="Camera">
-          <FaCamera />
-        </button>
-        <button onClick={() => navigate("/account")} aria-label="Account">
-          <FaUser />
-        </button>
-      </footer>
-
-      <div className="colors-badge-home-indicator" />
     </div>
   );
 };

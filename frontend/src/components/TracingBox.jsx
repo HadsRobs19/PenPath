@@ -18,7 +18,7 @@ const ACCURACY_RADIUS = 18;
 */
 
 
-const TracingBox = ({ svgPath, width = 360, height = 180 }) => {
+const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
   const svgRef = useRef(null);
   const guidePathRef = useRef(null);
 
@@ -79,6 +79,11 @@ const TracingBox = ({ svgPath, width = 360, height = 180 }) => {
 
   const handlePointerUp = () => {
     setIsTracing(false);
+
+    if (accuracy === "good") {
+        onComplete?.();
+    }
+    
     setAccuracy('idle');
   };
 

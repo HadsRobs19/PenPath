@@ -17,6 +17,12 @@ import Button from '../components/Button';
 
 const ColorsCheckpoint = () => {
     const navigate = useNavigate();
+
+    const readingDone = localStorage.getItem("colors_readingComplete") === "true";
+    const writingDone = localStorage.getItem("colors_writingComplete") === "true";
+
+    const canFinish = readingDone && writingDone;
+
     return (
         <div className="colors-checkpoint-bg">
             <div className="colors-checkpoint-content">
@@ -40,7 +46,14 @@ const ColorsCheckpoint = () => {
                         </Button>
                     </div>
                     <div className="check-claim">
-                        <Button className="check-claim-button" onClick={() => navigate('/colors/badge')}>
+                        <Button 
+                            className="check-claim-button" 
+                            disabled={!canFinish}
+                            onClick={() => {
+                                localStorage.setItem("lesson1Complete", "true");
+                                navigate("/colors/badge");
+                            }}
+                        >
                             Claim Badge
                         </Button>
                     </div>
