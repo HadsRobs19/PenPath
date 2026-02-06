@@ -144,7 +144,7 @@ const SignUp = () => {
                         />
                     </div>
 
-                    <Button type="submit" disabled={loading} onClick={() => navigate('/create-account')}>
+                    <Button type="submit" disabled={loading} onClick={() => navigate('/home')}>
                         {loading ? 'Creating account...' : 'Create Account'}
                     </Button>
 

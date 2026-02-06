@@ -3,7 +3,6 @@ import Welcome from './pages/Welcome';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import ForgotPw from './pages/ForgotPw';
-import CreateAccount from './pages/CreateAccount';
 import EmailSent from './pages/EmailSent'; 
 import PWReset from './pages/PWReset';
 import PWResetConfirm from './pages/PWResetConfirm';
@@ -31,7 +30,6 @@ const App = () => {
       <Route path="/login" element={<LogIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPw />} />
-      <Route path="/create-account" element={<CreateAccount />} />
       <Route path="/email-sent" element={<EmailSent />} />
       <Route path="/password-reset" element={<PWReset />} />
       <Route path="/password-changed" element={<PWResetConfirm />} />
