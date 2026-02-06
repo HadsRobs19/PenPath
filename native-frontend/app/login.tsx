@@ -17,7 +17,6 @@ import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '@/components/Button';
 import { colors, gradients } from '@/constants/colors';
-import { API_URL } from '@/constants/config';
 
 const { width } = Dimensions.get('window');
 
@@ -41,30 +40,18 @@ export default function Login() {
     setError(null);
     setLoading(true);
 
-    // TODO: Uncomment when backend is ready
-    // try {
-    //   const res = await fetch(`${API_URL}/login`, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ email, password }),
-    //   });
-    //
-    //   if (!res.ok) {
-    //     throw new Error('Invalid credentials');
-    //   }
-    //
-    //   const data = await res.json();
-    //   console.log('Logged in:', data);
-    // } catch (err: any) {
-    //   setError(err.message);
-    //   setLoading(false);
-    //   return;
-    // }
+    try {
+    // simulate a short delay for loading effect
+    await new Promise(resolve => setTimeout(resolve, 300));
 
-    // For now, just navigate to home
+    // navigate straight to home
+    router.replace('/home');
+  } catch (err: any) {
+    setError('Something went wrong!');
+  } finally {
     setLoading(false);
-    router.replace('/home' as Href);
   }
+}
 
   return (
     <View style={styles.container}>

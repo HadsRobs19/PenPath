@@ -34,10 +34,10 @@ export default function Welcome() {
             resizeMode="contain"
           />
 
-          <Button onPress={() => router.push('/')}>
+          <Button onPress={() => router.push('/login')}>
             Log in
           </Button>
-          <Button onPress={() => router.push('/')}>
+          <Button onPress={() => router.push('/signup')}>
             Sign Up
           </Button>
         </View>
