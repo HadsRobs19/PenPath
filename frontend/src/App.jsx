@@ -15,6 +15,13 @@ import ReadingColors from './pages/ReadingColors1';
 import WritingColors from './pages/WritingColors';
 import ScanCamera from './pages/ScanCamera';
 import ScanResult from './pages/ScanResults';
+import Scan from './pages/scan';
+import ScanUpload from './pages/scan/upload';
+import ScanCamera from './pages/scan/camera';
+import ScanResult from './pages/scan/result';
+import Account from './pages/account';
+import Settings from './pages/settings';
+
 
 const App = () => {
 
