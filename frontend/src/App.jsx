@@ -1,31 +1,24 @@
-import { Routes, Route } from 'react-router-dom'
-import Welcome from './pages/Welcome';
-import LogIn from './pages/LogIn';
-import SignUp from './pages/SignUp';
-import ForgotPw from './pages/ForgotPw';
-import CreateAccount from './pages/CreateAccount';
-import EmailSent from './pages/EmailSent'; 
-import PWReset from './pages/PWReset';
-import PWResetConfirm from './pages/PWResetConfirm';
-import Home from './pages/Home';
-import Tutorial from './pages/Tutorial';
-import Account from './pages/Account';
-import ScanUpload from './pages/ScanUpload';
-import ReadingColors from './pages/ReadingColors1';
-import WritingColors from './pages/WritingColors';
-import ScanCamera from './pages/ScanCamera';
-import ScanResult from './pages/ScanResults';
-import Scan from './pages/scan';
-import ScanUpload from './pages/scan/upload';
-import ScanCamera from './pages/scan/camera';
-import ScanResult from './pages/scan/result';
-import Account from './pages/account';
-import Settings from './pages/settings';
+import { Routes, Route } from "react-router-dom";
 
+import Welcome from "./pages/Welcome";
+import LogIn from "./pages/LogIn";
+import SignUp from "./pages/SignUp";
+import ForgotPw from "./pages/ForgotPw";
+import CreateAccount from "./pages/CreateAccount";
+import EmailSent from "./pages/EmailSent";
+import PWReset from "./pages/PWReset";
+import PWResetConfirm from "./pages/PWResetConfirm";
+import Home from "./pages/Home";
+import Tutorial from "./pages/Tutorial";
+
+import Account from "./pages/Account";
+import ScanUpload from "./pages/ScanUpload";
+import ScanCamera from "./pages/ScanCamera";
+import ScanResult from "./pages/ScanResults";
+import ReadingColors from "./pages/ReadingColors1";
+import WritingColors from "./pages/WritingColors";
 
 const App = () => {
-
-  // after creating pages in ./pages directory, add their route path to here to create navigation flow
   return (
     <Routes>
       <Route path="/" element={<Welcome />} />
@@ -38,14 +31,17 @@ const App = () => {
       <Route path="/password-changed" element={<PWResetConfirm />} />
       <Route path="/home" element={<Home />} />
       <Route path="/tutorial" element={<Tutorial />} />
-      <Route path="/account" element={<Account />} />
+
+      {/* YOUR SCAN FLOW */}
       <Route path="/scan" element={<ScanUpload />} />
       <Route path="/scan/camera" element={<ScanCamera />} />
       <Route path="/scan/results" element={<ScanResult />} />
+
+      <Route path="/account" element={<Account />} />
       <Route path="/colors/reading" element={<ReadingColors />} />
       <Route path="/colors/writing" element={<WritingColors />} />
     </Routes>
-  )
-}
+  );
+};
 
 export default App;
