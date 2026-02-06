@@ -5,13 +5,11 @@ import {
   TextInput,
   Image,
   StyleSheet,
-  Pressable,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
 } from 'react-native';
-import { useRouter, Link, Href } from 'expo-router';
+import { useRouter, Href } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,7 +19,7 @@ import { API_URL } from '@/constants/config';
 
 const { width } = Dimensions.get('window');
 
-export default function Login() {
+export default function ForgotPassword() {
   const router = useRouter();
 
   const [fontsLoaded] = useFonts({
@@ -29,7 +27,6 @@ export default function Login() {
   });
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,27 +40,24 @@ export default function Login() {
 
     // TODO: Uncomment when backend is ready
     // try {
-    //   const res = await fetch(`${API_URL}/login`, {
+    //   const res = await fetch(`${API_URL}/forgot-password`, {
     //     method: 'POST',
     //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ email, password }),
+    //     body: JSON.stringify({ email }),
     //   });
     //
     //   if (!res.ok) {
-    //     throw new Error('Invalid credentials');
+    //     throw new Error('Failed to send reset email');
     //   }
-    //
-    //   const data = await res.json();
-    //   console.log('Logged in:', data);
     // } catch (err: any) {
     //   setError(err.message);
     //   setLoading(false);
     //   return;
     // }
 
-    // For now, just navigate to home
+    // For now, just navigate to email-sent
     setLoading(false);
-    router.replace('/home' as Href);
+    router.push('/email-sent' as Href);
   }
 
   return (
@@ -78,21 +72,21 @@ export default function Login() {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardView}
         >
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-          >
+          <View style={styles.content}>
             <Image
               source={require('../assets/logo.png')}
               style={styles.logo}
               resizeMode="contain"
             />
 
-            <Text style={styles.heading}>Log In</Text>
+            <Text style={styles.heading}>Forgot Password</Text>
+            <Text style={styles.subtitle}>
+              Enter your email and we'll send you a reset link
+            </Text>
 
             <View style={styles.form}>
               <View style={styles.inputGroup}>
-                <Ionicons name="person" size={20} color={colors.gray} style={styles.icon} />
+                <Ionicons name="mail" size={20} color={colors.gray} style={styles.icon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Email"
@@ -104,40 +98,17 @@ export default function Login() {
                 />
               </View>
 
-              <View style={styles.inputGroup}>
-                <Ionicons name="key" size={20} color={colors.gray} style={styles.icon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  placeholderTextColor={colors.gray}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                />
-              </View>
-
-              <Link href="/forgot-password" asChild>
-                <Pressable>
-                  <Text style={styles.forgotLink}>Forgot password?</Text>
-                </Pressable>
-              </Link>
-
               <Button onPress={handleSubmit} disabled={loading}>
-                {loading ? 'Logging in...' : 'Log in'}
+                {loading ? 'Sending...' : 'Send Reset Link'}
               </Button>
 
               {error && <Text style={styles.errorText}>{error}</Text>}
-            </View>
 
-            <View style={styles.signupRow}>
-              <Text style={styles.signupText}>Don't have an account? </Text>
-              <Link href="/signup" asChild>
-                <Pressable>
-                  <Text style={styles.signupLink}>Sign Up</Text>
-                </Pressable>
-              </Link>
+              <Button onPress={() => router.back()}>
+                Back to Login
+              </Button>
             </View>
-          </ScrollView>
+          </View>
         </KeyboardAvoidingView>
       </LinearGradient>
     </View>
@@ -154,26 +125,33 @@ const styles = StyleSheet.create({
   keyboardView: {
     flex: 1,
   },
-  scrollContent: {
-    flexGrow: 1,
+  content: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   logo: {
-    width: Math.min(width * 0.4, 180),
-    height: Math.min(width * 0.4, 180),
-    marginBottom: 20,
+    width: Math.min(width * 0.4, 160),
+    height: Math.min(width * 0.4, 160),
+    marginBottom: 24,
   },
   heading: {
     fontFamily: 'PlayKiddo',
-    fontSize: Math.min(width * 0.08, 36),
+    fontSize: Math.min(width * 0.07, 32),
     color: colors.black,
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.grayDark,
+    textAlign: 'center',
     marginBottom: 24,
   },
   form: {
     width: '100%',
     maxWidth: 340,
+    gap: 16,
   },
   inputGroup: {
     flexDirection: 'row',
@@ -181,7 +159,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     paddingHorizontal: 16,
-    marginBottom: 16,
     borderWidth: 1,
     borderColor: colors.grayLight,
   },
@@ -194,26 +171,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.black,
   },
-  forgotLink: {
-    color: colors.primary,
-    textAlign: 'right',
-    marginBottom: 20,
-    fontWeight: '500',
-  },
   errorText: {
     color: colors.error,
-    marginTop: 12,
     textAlign: 'center',
-  },
-  signupRow: {
-    flexDirection: 'row',
-    marginTop: 24,
-  },
-  signupText: {
-    color: colors.grayDark,
-  },
-  signupLink: {
-    color: colors.primary,
-    fontWeight: '600',
   },
 });

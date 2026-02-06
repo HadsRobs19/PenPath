@@ -21,15 +21,19 @@ import { API_URL } from '@/constants/config';
 
 const { width } = Dimensions.get('window');
 
-export default function Login() {
+export default function SignUp() {
   const router = useRouter();
 
   const [fontsLoaded] = useFonts({
     PlayKiddo: require('../assets/fonts/Playkiddo.ttf'),
   });
 
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [birthday, setBirthday] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,23 +42,34 @@ export default function Login() {
   }
 
   async function handleSubmit() {
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+
     setError(null);
     setLoading(true);
 
     // TODO: Uncomment when backend is ready
     // try {
-    //   const res = await fetch(`${API_URL}/login`, {
+    //   const res = await fetch(`${API_URL}/signup`, {
     //     method: 'POST',
     //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ email, password }),
+    //     body: JSON.stringify({
+    //       name,
+    //       username,
+    //       email,
+    //       birthday,
+    //       password,
+    //     }),
     //   });
     //
     //   if (!res.ok) {
-    //     throw new Error('Invalid credentials');
+    //     throw new Error('Failed to create account');
     //   }
     //
     //   const data = await res.json();
-    //   console.log('Logged in:', data);
+    //   console.log('Account created:', data);
     // } catch (err: any) {
     //   setError(err.message);
     //   setLoading(false);
@@ -88,11 +103,34 @@ export default function Login() {
               resizeMode="contain"
             />
 
-            <Text style={styles.heading}>Log In</Text>
+            <Text style={styles.heading}>Sign Up</Text>
 
             <View style={styles.form}>
               <View style={styles.inputGroup}>
                 <Ionicons name="person" size={20} color={colors.gray} style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Name"
+                  placeholderTextColor={colors.gray}
+                  value={name}
+                  onChangeText={setName}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Ionicons name="person-circle" size={20} color={colors.gray} style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Username"
+                  placeholderTextColor={colors.gray}
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Ionicons name="mail" size={20} color={colors.gray} style={styles.icon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Email"
@@ -101,6 +139,17 @@ export default function Login() {
                   onChangeText={setEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Ionicons name="calendar" size={20} color={colors.gray} style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Birthday (YYYY-MM-DD)"
+                  placeholderTextColor={colors.gray}
+                  value={birthday}
+                  onChangeText={setBirthday}
                 />
               </View>
 
@@ -116,24 +165,30 @@ export default function Login() {
                 />
               </View>
 
-              <Link href="/forgot-password" asChild>
-                <Pressable>
-                  <Text style={styles.forgotLink}>Forgot password?</Text>
-                </Pressable>
-              </Link>
+              <View style={styles.inputGroup}>
+                <Ionicons name="key" size={20} color={colors.gray} style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm Password"
+                  placeholderTextColor={colors.gray}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry
+                />
+              </View>
 
               <Button onPress={handleSubmit} disabled={loading}>
-                {loading ? 'Logging in...' : 'Log in'}
+                {loading ? 'Creating account...' : 'Create Account'}
               </Button>
 
               {error && <Text style={styles.errorText}>{error}</Text>}
             </View>
 
-            <View style={styles.signupRow}>
-              <Text style={styles.signupText}>Don't have an account? </Text>
-              <Link href="/signup" asChild>
+            <View style={styles.loginRow}>
+              <Text style={styles.loginText}>Already have an account? </Text>
+              <Link href="/login" asChild>
                 <Pressable>
-                  <Text style={styles.signupLink}>Sign Up</Text>
+                  <Text style={styles.loginLink}>Log In</Text>
                 </Pressable>
               </Link>
             </View>
@@ -157,19 +212,19 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
+    paddingVertical: 40,
+    paddingHorizontal: 24,
   },
   logo: {
-    width: Math.min(width * 0.4, 180),
-    height: Math.min(width * 0.4, 180),
-    marginBottom: 20,
+    width: Math.min(width * 0.3, 120),
+    height: Math.min(width * 0.3, 120),
+    marginBottom: 16,
   },
   heading: {
     fontFamily: 'PlayKiddo',
     fontSize: Math.min(width * 0.08, 36),
     color: colors.black,
-    marginBottom: 24,
+    marginBottom: 20,
   },
   form: {
     width: '100%',
@@ -181,7 +236,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     paddingHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: 14,
     borderWidth: 1,
     borderColor: colors.grayLight,
   },
@@ -190,29 +245,23 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    paddingVertical: 14,
+    paddingVertical: 12,
     fontSize: 16,
     color: colors.black,
-  },
-  forgotLink: {
-    color: colors.primary,
-    textAlign: 'right',
-    marginBottom: 20,
-    fontWeight: '500',
   },
   errorText: {
     color: colors.error,
     marginTop: 12,
     textAlign: 'center',
   },
-  signupRow: {
+  loginRow: {
     flexDirection: 'row',
-    marginTop: 24,
+    marginTop: 20,
   },
-  signupText: {
+  loginText: {
     color: colors.grayDark,
   },
-  signupLink: {
+  loginLink: {
     color: colors.primary,
     fontWeight: '600',
   },

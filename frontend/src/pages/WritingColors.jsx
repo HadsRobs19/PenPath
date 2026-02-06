@@ -60,7 +60,7 @@ const WritingColors = () => {
                             disabled={!isCorrect}
                             onClick={() => {
                                 localStorage.setItem("colors_writingComplete", "true");
-                                navigate("/colors/checkpoint");
+                                navigate("/colors/writing");
                             }}
                         >
                             Next
