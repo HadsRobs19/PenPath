@@ -42,8 +42,8 @@ const ReadingColors = () => {
 
             <div className="button-row">
                 <div className="exit">
-                    <Button className="exit-button" onClick={() => navigate('/home')} >
-                        Exit
+                    <Button className="exit-button" onClick={() => navigate('/colors/reading')} >
+                        Back
                     </Button>
                 </div>
 
