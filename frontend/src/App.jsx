@@ -10,13 +10,15 @@ import PWReset from "./pages/PWReset";
 import PWResetConfirm from "./pages/PWResetConfirm";
 import Home from "./pages/Home";
 import Tutorial from "./pages/Tutorial";
-
+import AccountProgress from "./pages/AccountProgress";
 import Account from "./pages/Account";
 import ScanUpload from "./pages/ScanUpload";
 import ScanCamera from "./pages/ScanCamera";
 import ScanResult from "./pages/ScanResults";
 import ReadingColors from "./pages/ReadingColors1";
 import WritingColors from "./pages/WritingColors";
+import Settings from "./pages/Settings";
+
 
 const App = () => {
   return (
@@ -31,13 +33,15 @@ const App = () => {
       <Route path="/password-changed" element={<PWResetConfirm />} />
       <Route path="/home" element={<Home />} />
       <Route path="/tutorial" element={<Tutorial />} />
+      
 
-      {/* YOUR SCAN FLOW */}
+      {/* AALIYAH SCAN FLOW */}
       <Route path="/scan" element={<ScanUpload />} />
       <Route path="/scan/camera" element={<ScanCamera />} />
       <Route path="/scan/results" element={<ScanResult />} />
-
+      <Route path="/settings" element={<Settings />} />
       <Route path="/account" element={<Account />} />
+      <Route path="/account/progress" element={<AccountProgress />} />
       <Route path="/colors/reading" element={<ReadingColors />} />
       <Route path="/colors/writing" element={<WritingColors />} />
     </Routes>
