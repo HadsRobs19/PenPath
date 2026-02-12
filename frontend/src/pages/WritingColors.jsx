@@ -49,13 +49,20 @@ const WritingColors = () => {
 
                 <div className="writing-button-row">
                     <div className="back">
-                        <Button className="back-button" onClick={() => navigate('/colors/reading')}>
-                            Back
+                        <Button className="back-button" onClick={() => navigate('/home')}>
+                            Exit
                         </Button>
                     </div>
 
                     <div className="writing-next">
-                        <Button className="write-next-button" onClick={() => navigate('/colors/checkpoint')}>
+                        <Button 
+                            className="write-next-button"  
+                            disabled={!isCorrect}
+                            onClick={() => {
+                                localStorage.setItem("colors_writingComplete", "true");
+                                navigate("/colors/writing");
+                            }}
+                        >
                             Next
                         </Button>
                     </div>

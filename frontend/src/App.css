@@ -506,11 +506,13 @@ p {
 .lesson-brown {
   background: #8b5a2b;
   color: #fff;
+  font-family: 'Comfortaa';
 }
 
 .lesson-tan{
   background: #FFFEE7;
   color: #0d0d0c;
+  font-family: 'Comfortaa';
 }
 
 .lesson-rainbow {
@@ -522,6 +524,13 @@ p {
     #54a0ff
   );
   color: #050505;
+  font-family: 'Comfortaa';
+}
+
+.lesson-purple {
+  background: #B6C6FF;
+  color: #050505;
+  font-family: 'Comfortaa';
 }
 
 /*locked lesson*/
@@ -538,7 +547,7 @@ p {
 
 .bottom-nav {
   position: fixed;
-  background-color: #B2F7FF;
+  background: #B2F7FF;
   bottom: 0;
   left: 0;
   right: 0;
@@ -728,6 +737,7 @@ p {
 }
 /* END Reading lesson styles */
 
+/* START Writing lesson styles*/
 .writing1-bg{
   background: linear-gradient(150deg, #B2C4F6, #DFA1D1, #FD9B97, #FFD6B0, #FFEBBC);
   min-height: 100vh;
@@ -752,7 +762,7 @@ p {
   font-family: 'PlayKiddo';
   transform: translateY(-10vh);
 
- padding-right: 100px;
+  padding-right: 100px;
   text-align: center; 
  
   font-size: 40px;

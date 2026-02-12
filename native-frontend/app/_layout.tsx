@@ -22,7 +22,7 @@ export default function RootLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons
               name={focused ? 'home' : 'home-outline'}
               size={26}
@@ -31,10 +31,11 @@ export default function RootLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="scan"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons
               name={focused ? 'camera' : 'camera-outline'}
               size={28}
@@ -43,10 +44,11 @@ export default function RootLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
         name="account"
         options={{
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused, color }) => (
             <Ionicons
               name={focused ? 'person' : 'person-outline'}
               size={26}
@@ -55,19 +57,10 @@ export default function RootLayout() {
           ),
         }}
       />
+
       {/* Hide these routes from the tab bar */}
-      <Tabs.Screen
-        name="login"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          href: null,
-        }}
-      />
+      <Tabs.Screen name="login" options={{ href: null }} />
+      <Tabs.Screen name="settings" options={{ href: null }} />
     </Tabs>
   );
 }

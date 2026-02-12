@@ -1,7 +1,7 @@
 import "../App.css";
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import demoVideo from '../assets/demo02.mp4';
+import demoVideo from '../assets/videos/demo02.mov';
 import logo from '../assets/logo.png';
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
@@ -45,7 +45,7 @@ const Tutorial = () => {
 
                 <Button
                     className="lesson-button lesson-black"
-                    onClick={() => navigate('/lesson/colors')}
+                    onClick={() => navigate('/colors/reading')}
                 >
                     Begin Lesson
                 </Button>

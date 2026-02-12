@@ -21,10 +21,14 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [lesson1Complete, setLesson1Complete] = useState(false);
+  const [lesson2Complete, setLesson2Complete] = useState(false);
 
   useEffect(() => {
-    const completed = localStorage.getItem("lesson1Complete");
-    setLesson1Complete(completed === "true");
+    const completed1 = localStorage.getItem("lesson1Complete");
+    const completed2 = localStorage.getItem("lesson2Complete");
+
+    setLesson1Complete(completed1 === "true");
+    setLesson2Complete(completed2 === "true");
   }, []);
 
   return (
@@ -101,7 +105,7 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson1/checkpoint")}
+              onClick={() => navigate("/colors/checkpoint")}
               aria-label="Checkpoint"
             >
               <FaMap />
@@ -109,7 +113,7 @@ const Home = () => {
 
             <button 
               className="icon-node icon-node--pen"
-              onClick={() => navigate("/lesson1/badge")}
+              onClick={() => navigate("/colors/badge")}
               aria-label="Badge"
             >
               <img
@@ -125,7 +129,7 @@ const Home = () => {
             <Button
               className="lesson-button lesson-brown path-right"
               disabled={!lesson1Complete}
-              onClick={() => navigate("/lesson/2")}
+              onClick={() => navigate("/animals/reading")}
             >
               <div className="lesson-title">Lesson 2</div>
               <div className="lesson-subtitle">
@@ -138,7 +142,8 @@ const Home = () => {
           <div className="path-step step-5 icons-step">
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson2/reading")}
+              onClick={() => navigate("/animals/reading")}
+              disabled={!lesson1Complete}
               aria-label="Reading"
             >
               <FaBook />
@@ -146,7 +151,8 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/lesson2/writing")}
+              onClick={() => navigate("/animals/writing")}
+              disabled={!lesson1Complete}
               aria-label="Writing"
             >
               <FaScroll />
@@ -154,16 +160,17 @@ const Home = () => {
 
             <button
               className="icon-node"
-              onClick={() => navigate("/checkpoint")}
+              onClick={() => navigate("/animals/checkpoint")}
+              disabled={!lesson1Complete}
               aria-label="Checkpoint"
             >
-              {/* TODO: add the rainbow pen path guy */}
               <FaMap />
             </button>
 
             <button 
               className="icon-node icon-node--pen"
-              onClick={() => navigate("/lesson2/badge")}
+              onClick={() => navigate("/animals/badge")}
+              disabled={!lesson1Complete}
               aria-label="Badge"
             >
               <img
@@ -172,6 +179,18 @@ const Home = () => {
                 className="color-pen"
               />
             </button>
+          </div>
+
+          <div className="path-step step-4">
+            <Button
+              className="lesson-button lesson-purple path-right"
+              disabled={!lesson2Complete}
+            >
+              <div className="lesson-title">Lesson 3</div>
+              <div className="lesson-subtitle">
+                {lesson2Complete ? "Foods" : "Locked 🔒"}
+              </div>
+            </Button>
           </div>
 
           {/* TODO: include above icon path class under Animals */}
