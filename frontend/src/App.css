@@ -826,6 +826,642 @@ p {
   margin-top: 16px;
   padding: 0;
 }
+/* END Writing lessons styles*/
+
+/* START Colors checkpoint */
+.colors-checkpoint-bg {
+  background: linear-gradient(150deg, #FFECC1, #F5EFD9, #D3E1D1, #9BCDC4, #23BCB9);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.colors-checkpoint-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.colors-checkpoint-header {
+  font-family: 'PlayKiddo';
+  transform: translateY(-10vh);
+
+  padding-right: 100px;
+  text-align: center; 
+ 
+  font-size: 40px;
+  margin: 0; 
+}
+
+.b-image {
+  width: 420px;
+  height: auto;
+}
+
+.colors {
+  transform: translateY(-5vh);
+  margin-right: 70px;
+}
+
+.colors-sentence {
+  font-size: 20px;
+  transform: translateY(-40px);
+  margin-right: 90px;
+}
+
+.writing-box {
+  position: relative;
+  background-color: #fff3d6;
+  border-radius: 16px;
+  box-shadow: 0 8px 0 rgba(0,0,0,0.12);
+  padding: 12px;
+  margin-right: 60px;
+  overflow: hidden;
+  transform: translateY(-10px);
+}
+
+.clear-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 10;
+
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 12px;
+
+  font-size: 14px;
+  padding: 6px 12px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+}
+
+.clear-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.25);
+}
+
+.colors-button-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;   
+  align-items: center;
+  gap: 120px;                
+  margin-top: 16px;
+  padding: 0;
+}
+
+.check-back-button, .check-claim-button {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
+}
+/* END Colors checkpoint styling*/
+
+/* START Colors badge styling */
+.colors-badge-bg {
+  background: linear-gradient(150deg, #FEA6A5, #FEC49E, #FEEB95, #FEFF90);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.lesson-toast {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-family: 'Comfortaa';
+  font-size: 16px;
+  font-weight: 600;
+  color: #1C1B1F;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  z-index: 999;
+  animation: toastFade 2.2s ease forwards;
+}
+
+@keyframes toastFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+}
+
+.colors-badge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+  width: 100%;
+  max-width: 390px;
+}
+
+.colors-badge-header {
+  font-family: 'PlayKiddo';
+  transform: translateY(-10vh);
+  font-size: 32px;
+  color: #000;
+  text-align: center;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
+}
+
+.colors-badge-subtitle {
+  font-family: 'Comfortaa';
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  text-align: center;
+  margin: 0 0 60px 0;
+}
+
+/* Badge card */
+.colors-badge-card {
+  background: linear-gradient(
+    135deg,
+    #ff6f91,
+    #ffc75f,
+    #4d96ff,
+    #6bcf9d
+  );
+  border-radius: 16px;
+  width: 314px;
+  height: 218px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.colors-badge-card:hover {
+  transform: scale(1.02);
+}
+
+.colors-badge-card:active {
+  transform: scale(0.98);
+}
+
+.colors-badge-image {
+  width: 162px;
+  height: 182px;
+  object-fit: contain;
+  transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+.colors-badge-image--hidden {
+  filter: blur(7.5px);
+}
+
+.colors-badge-image--revealed {
+  filter: blur(0);
+  filter: drop-shadow(6px 1px 20px rgba(0, 0, 0, 0.25));
+}
+
+.colors-badge-buttons {
+  display: flex;
+  gap: 60px;
+  margin-top: 120px;
+}
+
+.colors-badge-btn {
+  background-color: #1C1B1F;
+  color: #fff;
+  font-family: 'Comfortaa';
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  min-width: 109px;
+  min-height: 44px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.colors-badge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+}
+
+.colors-badge-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+}
+/* END Colors Badge styling */
+
+/* END Colors badge styling */
+
+
+/* START Animals (Lesson 2) Badge styling */
+.animals-badge-bg {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg,
+      rgba(255, 147, 15, 0.37) 0%,
+      rgba(255, 206, 91, 0.3) 100%),
+    repeating-linear-gradient(
+      60deg,
+      #f5e6d3 0px,
+      #f5e6d3 20px,
+      #e8d4be 20px,
+      #e8d4be 40px
+    );
+}
+
+.animals-badge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+  width: 100%;
+  max-width: 390px;
+}
+
+.animals-badge-header{
+  font-family: 'PlayKiddo';
+  font-size: 32px;
+  color: #000;
+  text-align: center;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
+}
+
+.animals-badge-subtitle {
+  font-family: 'Comfortaa';
+  font-size: 28px;
+  font-weight: 600;
+  color: #000;
+  text-align: center;
+  margin: 0 0 60px 0;
+}
+
+.animals-badge-card {
+  background-color: #FFCE5B;
+  border-radius: 16px;
+  width: 314px;
+  height: 218px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.animals-badge-card:hover {
+  transform: scale(1.02);
+}
+
+.animals-badge-card:active {
+  transform: scale(0.98);
+}
+
+.animals-badge-image {
+  width: 162px;
+  height: 182px;
+  object-fit: contain;
+  transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+.animals-badge-image--hidden {
+  filter: blur(7.5px);
+}
+
+.animals-badge-image--revealed {
+  filter: blur(0);
+  filter: drop-shadow(6px 1px 20px rgba(0, 0, 0, 0.25));
+}
+
+.animals-badge-buttons {
+  display: flex;
+  gap: 60px;
+  margin-top: 120px;
+}
+
+.animals-badge-btn {
+  background-color: #1C1B1F;
+  color: #fff;
+  font-family: 'Comfortaa';
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  min-width: 109px;
+  min-height: 44px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.animals-badge-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);
+}
+
+.animals-badge-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+}
+
+.animals-badge-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 5px;
+}
+
+.animals-badge-nav button {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  min-width: 56px;
+  min-height: 56px;
+  color: #1C1B1F;
+}
+
+.animals-badge-nav button:hover {
+  opacity: 0.7;
+}
+
+.animals-badge-home-indicator {
+  position: fixed;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 139px;
+  height: 5px;
+  background-color: #1C1B1F;
+  border-radius: 100px;
+}
+/* END Animals (Lesson 2) Badge styling */
+
+/* START Animals writing lesson styling*/
+.animals-writing-bg {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+
+  background-color: #C49068;
+
+  /* Cheetah print layers */
+  background-image:
+    radial-gradient(circle at 20px 30px, rgba(0,0,0,0.9) 20px, transparent 9px),
+    radial-gradient(circle at 60px 70px, rgba(0,0,0,0.9) 10px, transparent 11px),
+    radial-gradient(circle at 120px 40px, rgba(0,0,0,0.9) 15px, transparent 8px),
+    radial-gradient(circle at 90px 110px, rgba(0,0,0,0.9) 9px, transparent 10px),
+    radial-gradient(circle at 160px 80px, rgba(0,0,0,0.9) 6px, transparent 7px);
+
+  background-size: 200px 200px;
+  background-repeat: repeat;
+}
+
+.animals-writing-content {
+  margin-top: 80px;
+  background: #fffaf2;
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transform: translateY(100px);
+}
+
+.animals-writing-header {
+  font-family: 'PlayKiddo';
+  transform: translateY(-10vh);
+
+  padding-right: 100px;
+  text-align: center; 
+ 
+  font-size: 40px;
+  margin: 0; 
+}
+
+.animals-audio-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0;
+}
+
+.animals-audio-card {
+  background: #fff4e6;
+  border-radius: 16px;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.animals-number {
+  font-family: 'Comfortaa';
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.animals-audio-btn {
+  background: black;
+  color: white;
+  border-radius: 50%;
+  border: none;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.animals-writing-boxes {
+  display: flex;
+  flex-direction: row;
+  margin-left: 50px;
+  align-items: center;
+  gap: 30px;
+}
+
+.animals-button-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+
+.animals-writing-exit, .animals-writing-next {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
+}
+/* END Animlas writing lesson */
+
+/* START Animals reading lesson */
+.animals-reading-bg {
+  min-height: 100vh;
+  background-color: #b7e3ff;
+  background-image:
+    radial-gradient(#88bfe0 20%, transparent 21%);
+  background-size: 120px 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.animals-reading-content {
+  margin-top: 70px;
+  background: #fffaf2;
+  border-radius: 20px;
+  padding: 24px;
+  width: 900px;
+  height: 550px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  transform: translateY(20px);
+}
+
+.animals-reading-header {
+  font-family: 'PlayKiddo';
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.animals-reading-card {
+  background: #fff3dc;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.animals-reading-instruction {
+  font-family: 'Comfortaa';
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.animals-cursive-sample {
+  font-family: "Brush Script MT", "Brush Script Std", "Lucida Handwriting", "Apple Chancery", cursive;
+  font-size: 30px;
+  text-align: center;
+}
+
+.animals-reading-input {
+  width: 100%;
+  min-height: 100px;
+  border-radius: 16px;
+  border: none;
+  padding: 10px;
+  font-family: 'Comfortaa';
+  font-size: 16px;
+  margin-bottom: 20px;
+  margin-right: 60px;
+}
+
+.animals-reading-back, .animals-reading-next {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
+}
+/* END Animals reading lesson */
+
+/* START Animals checkpoint */
+.animals-checkpoint-bg {
+  min-height: 100vh;
+  background-color: #2f9b83;
+  background-image: radial-gradient(#4ab99e 25%, transparent 26%);
+  background-size: 140px 140px;
+  display: flex;
+  justify-content: center;
+}
+
+.animals-checkpoint-content {
+  margin-top: 80px;
+  background: #fffaf2;
+  border-radius: 20px;
+  padding: 24px;
+  width: 900px;
+  height: 600px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.animals-checkpoint-header {
+  font-family: 'PlayKiddo';
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.animals-checkpoint-card {
+  background: #fff3dc;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.animals-audio-btn.large {
+  width: 64px;
+  height: 64px;
+  font-size: 26px;
+  margin-top: 12px;
+}
+
+.animals-checkpoint-write {
+  padding-left: 250px;
+}
+
+.animals-checkpoint-back, .animals-checkpoint-claim {
+  background: black;
+  color: white;
+  width: 100px;
+  min-height: 48px;
+}
+/* END Animals Checkpoint*/
 /* =========================
    ScanUpload (web version)
    ========================= */
@@ -1442,4 +2078,28 @@ p {
 .prog-cameraButton:active,
 .prog-backButton:active {
   opacity: 0.7;
+}
+
+.colors-checkpoint-bg {
+  background: linear-gradient(150deg, #FFECC1, #F5EFD9, #D3E1D1, #9BCDC4, #23BCB9);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: -10px;
+  overflow: hidden;
+}
+
+.colors-checkpoint-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.colors-checkpoint-header {
+  font-family: 'PlayKiddo';
+  transform: translateY(-10vh);
 }

@@ -17,6 +17,12 @@ import ScanResult from "./pages/ScanResults";
 import ReadingColors from "./pages/ReadingColors1";
 import WritingColors from "./pages/WritingColors";
 import Settings from "./pages/Settings";
+import ColorsCheckpoint from "./pages/ColorsCheckpoint";
+import ColorsBadge from './pages/ColorsBadge';
+import AnimalsBadge from './pages/AnimalsBadge';
+import AnimalsWriting from './pages/AnimalsWriting';
+import AnimalsReading from './pages/AnimalsReading';
+import AnimalsCheckpoint from './pages/AnimalsCheckpoint';
 
 
 const App = () => {
@@ -31,6 +37,13 @@ const App = () => {
       <Route path="/password-changed" element={<PWResetConfirm />} />
       <Route path="/home" element={<Home />} />
       <Route path="/tutorial" element={<Tutorial />} />
+      <Route path="/colors/checkpoint" element={<ColorsCheckpoint />} />
+      <Route path="/colors/badge" element={<ColorsBadge />} />
+      <Route path="/animals/badge" element={<AnimalsBadge />} />
+      <Route path="/animals/writing" element={<AnimalsWriting />} />
+      <Route path="/animals/reading" element={<AnimalsReading />} />
+      <Route path="/animals/checkpoint" element={<AnimalsCheckpoint />} />
+      
       
 
       {/* AALIYAH SCAN FLOW */}

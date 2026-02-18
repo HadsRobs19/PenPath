@@ -53,7 +53,7 @@ const ReadingColors = () => {
                         disabled={!isComplete}
                         onClick={() => {
                             localStorage.setItem("colors_readingComplete", "true");
-                            navigate("/colors/checkpoint");
+                            navigate("/colors/writing");
                         }}
                     >
                         Next
