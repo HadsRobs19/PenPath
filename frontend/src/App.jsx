@@ -4,7 +4,6 @@ import Welcome from "./pages/Welcome";
 import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
 import ForgotPw from "./pages/ForgotPw";
-import CreateAccount from "./pages/CreateAccount";
 import EmailSent from "./pages/EmailSent";
 import PWReset from "./pages/PWReset";
 import PWResetConfirm from "./pages/PWResetConfirm";
