@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v3"
@@ -13,6 +14,7 @@ import (
 	"PenPath/backend"
 
 	"PenPath/backend/internal/config"
+	"PenPath/backend/internal/middleware"
 	"PenPath/backend/internal/routes"
 	"PenPath/backend/internal/utils"
 )
@@ -35,7 +37,26 @@ func main() {
 		StrictRouting: true,
 		ServerHeader:  "Fiber",
 		AppName:       "PenPath",
+		BodyLimit:     10 * 1024 * 1024,
+		ErrorHandler: func(c fiber.Ctx, err error) error {
+			code := fiber.StatusInternalServerError
+
+			if e, ok := err.(*fiber.Error); ok {
+				code = e.Code
+			}
+			log.Printf("Error: %v\n", err)
+
+			return c.Status(code).JSON(fiber.Map{
+				"error":   true,
+				"message": err.Error(), // will probably change this message later to avoid showing raw errors
+				"code":    code,
+			})
+		},
 	})
+
+	middleware.RegisterRecovery(app)
+	middleware.RegisterLoggerMiddleware(app)
+	middleware.RegisterCorsMiddleware(app)
 
 	routes.RegisterHealthRoute(app)
 

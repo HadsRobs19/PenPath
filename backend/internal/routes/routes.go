@@ -12,3 +12,7 @@ func RegisterHealthRoute(app *fiber.App) {
 	app.Get("/health", controllers.HealthCheck)
 	backend.PrintInfo("Successfully Registered Healthcheck API Route!")
 }
+
+func RegisterLoggerRoute(app *fiber.App) {
+
+}
