@@ -1,0 +1,113 @@
+# =========================
+# GO
+# =========================
+
+# Build artifacts
+/bin/
+/build/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test + coverage
+*.test
+*.out
+coverage.out
+
+# Dependencies (legacy Go tooling)
+vendor/
+
+# =========================
+# NODE / FRONTEND
+# =========================
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+web-build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+npm-debug.*
+yarn-debug.log*
+yarn-debug.*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# =========================
+# EXPO / REACT NATIVE
+# =========================
+
+.expo/
+expo-env.d.ts
+.metro-health-check*
+
+# Native generated folders
+/ios
+/android
+
+# Kotlin / Android
+.kotlin/
+
+# =========================
+# ENVIRONMENT FILES
+# =========================
+
+# Local env files (never commit secrets)
+.env
+.env.*
+.env*.local
+*.local
+
+# Allow example template
+!.env.example
+
+# =========================
+# CERTIFICATES / KEYS
+# =========================
+
+*.pem
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# =========================
+# EDITORS / IDE
+# =========================
+
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.orig.*
+
+# =========================
+# OS FILES
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# MISC
+# =========================
+
+app-example
