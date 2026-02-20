@@ -1,0 +1,1 @@
+{"caddy_config":{},"db_config":{},"jwt_config":{},"StorageConfig":{},"SupabaseConfig":{},"service_config":{"ipv4_service_host":"0.0.0.0","ipv4_service_port":"3000","ipv4_enabled":true,"ipv6_service_host":"[::]","ipv6_service_port":"3000","ipv6_enabled":true}}
