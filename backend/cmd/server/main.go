@@ -60,6 +60,8 @@ func main() {
 
 	routes.RegisterHealthRoute(app)
 
+	// TODO: call InitDBPool in main.go
+
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err := app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	if err != nil {
