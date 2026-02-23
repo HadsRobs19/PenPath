@@ -80,6 +80,16 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			IPv6Port:    "3000",
 			IPv6Enabled: true,
 		},
+
+		// sample loaded database main configurations
+		DBConfig: config.DBConfig{
+			Host:         "localhost",
+			Port:         5432,
+			Username:     "user",
+			Password:     "securepw",
+			DatabaseName: "mydb",
+			SSLMode:      "disabled",
+		},
 	}
 
 	if _, unknownFolder := os.Stat("config"); os.IsNotExist(unknownFolder) {
