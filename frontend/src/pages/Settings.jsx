@@ -1,5 +1,6 @@
 ﻿import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -35,11 +36,12 @@ export default function Settings() {
   };
 
   return (
+    <div className="Settings">
     <div style={styles.container}>
       {/* Header */}
       <div style={styles.header}>
         <button onClick={() => navigate(-1)} style={styles.backButton}>
-          ←
+          ‹
         </button>
 
         <h1 style={styles.title}>Settings</h1>
@@ -132,12 +134,21 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* Bottom Camera Button */}
-      <div style={styles.bottomBar}>
-        <button onClick={handleCameraPress} style={styles.cameraButton}>
-          📷
-        </button>
-      </div>
+    {/* Footer Navigation */}
+    <footer className="bottom-nav">
+      <button onClick={() => navigate("/home")}>
+        <FaHome />
+      </button>
+
+      <button onClick={() => navigate("/scan")}>
+        <FaCamera />
+      </button>
+
+      <button onClick={() => navigate("/account")}>
+        <FaUser />
+      </button>
+    </footer>
+
 
       {/* Delete Modal */}
       {showDeleteModal && (
@@ -171,6 +182,7 @@ export default function Settings() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

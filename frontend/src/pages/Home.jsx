@@ -68,7 +68,7 @@ const Home = () => {
           <div className="path-step step-1">
             <Button
               className="lesson-button lesson-rainbow"
-              onClick={() => navigate("/colors/reading")}
+              onClick={() => navigate("/tutorial")}
             >
               <div className="lesson-title">Lesson 1</div>
               <div className="lesson-subtitle">Colors</div>

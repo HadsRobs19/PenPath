@@ -336,6 +336,7 @@ p {
   box-shadow: 0 8px 0 rgba(0, 0, 0, 0.15);
   font-family: 'PlayKiddo';
   text-align: center;
+  margin-bottom: 130px;
 }
 
 .lesson-title {
@@ -580,7 +581,7 @@ p {
 }
 
 .tutorial-logo {
-  transform: translateY(-8vh);
+  transform: translateY(-1vh);
   margin-bottom: 100px;
 }
 
@@ -1473,6 +1474,10 @@ p {
   box-sizing: border-box;
 }
 
+.scan-container .bottom-nav {
+  background: #fdf6ec;
+}
+
 .scan-title {
   font-size: 32px;
   font-weight: 700;
@@ -1688,6 +1693,10 @@ p {
   flex-direction: column;
 }
 
+.res-container .bottom-nav {
+  background: #fdf6ec;
+}
+
 .res-header {
   display: flex;
   align-items: center;
@@ -1870,6 +1879,10 @@ p {
   background: #fdf6ec;
   display: flex;
   flex-direction: column;
+}
+
+.acct-container .bottom-nav{
+  background-color: #fdf6ec;
 }
 
 .acct-title {
@@ -2102,4 +2115,8 @@ p {
 .colors-checkpoint-header {
   font-family: 'PlayKiddo';
   transform: translateY(-10vh);
+}
+
+.Settings .bottom-nav {
+  background-color: #F7EEDC;
 }

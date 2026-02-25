@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 export default function AccountProgress() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function AccountProgress() {
   ];
 
   return (
+      <div className="acct-container">
     <div style={styles.container}>
       {/* Header */}
       <div style={styles.header}>
@@ -38,17 +40,21 @@ export default function AccountProgress() {
         <div style={styles.emptySection} />
       </div>
 
-      {/* Bottom Camera Button (visual placeholder) */}
-      <div style={styles.bottomBar}>
-        <button
-          onClick={() => console.log("Camera button pressed")}
-          style={styles.cameraButton}
-          aria-label="Camera"
-          title="Camera"
-        >
-          📷
-        </button>
-      </div>
+{/* Footer Navigation */}
+<footer className="bottom-nav">
+  <button onClick={() => navigate("/home")}>
+    <FaHome />
+  </button>
+
+  <button onClick={() => navigate("/scan")}>
+    <FaCamera />
+  </button>
+
+  <button onClick={() => navigate("/account")}>
+    <FaUser />
+  </button>
+</footer>
+    </div>
     </div>
   );
 }

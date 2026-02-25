@@ -30,7 +30,7 @@ export default function ScanCamera() {
       {/* Header */}
       <div className="cam-header">
         <button className="cam-backButton" onClick={handleBack} aria-label="Back">
-          ←
+          ‹
         </button>
 
         <h1 className="cam-title">Camera</h1>

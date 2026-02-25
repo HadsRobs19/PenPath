@@ -1,6 +1,7 @@
 import "../App.css";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 export default function ScanResults() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function ScanResults() {
       {/* Header */}
       <div className="res-header">
         <button className="res-backButton" onClick={handleBack} aria-label="Back">
-          ←
+          ‹
         </button>
 
         <h1 className="res-title">Result</h1>
@@ -79,20 +80,20 @@ export default function ScanResults() {
         </div>
       </div>
 
-      {/* Bottom Navigation (visual) */}
-      <div className="res-bottomNav">
-        <button className="res-navItem" onClick={() => navigate("/home")} aria-label="Home">
-          🏠
-        </button>
+{/* Footer Navigation */}
+<footer className="bottom-nav">
+  <button onClick={() => navigate("/home")}>
+    <FaHome />
+  </button>
 
-        <button className="res-navItemCenter" aria-label="Arrows">
-          <span className="res-navCenterButton">‹ ›</span>
-        </button>
+  <button onClick={() => navigate("/scan")}>
+    <FaCamera />
+  </button>
 
-        <button className="res-navItem" onClick={() => navigate("/account")} aria-label="Account">
-          👤
-        </button>
-      </div>
+  <button onClick={() => navigate("/account")}>
+    <FaUser />
+  </button>
+</footer>
     </div>
   );
 }

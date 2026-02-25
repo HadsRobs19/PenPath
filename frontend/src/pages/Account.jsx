@@ -1,5 +1,6 @@
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 export default function Account() {
   const navigate = useNavigate();
@@ -63,12 +64,20 @@ export default function Account() {
         </div>
       </div>
 
-      {/* Bottom Camera Button */}
-      <div className="acct-bottomBar">
-        <button className="acct-cameraButton" onClick={handleCameraPress} aria-label="Camera">
-          📷
-        </button>
-      </div>
+{/* Footer Navigation */}
+<footer className="bottom-nav">
+  <button onClick={() => navigate("/home")}>
+    <FaHome />
+  </button>
+
+  <button onClick={() => navigate("/scan")}>
+    <FaCamera />
+  </button>
+
+  <button onClick={() => navigate("/account")}>
+    <FaUser />
+  </button>
+</footer>
     </div>
   );
 }
