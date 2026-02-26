@@ -90,6 +90,10 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			DBName:   "mydb",
 			SSLMode:  "disabled",
 		},
+		SupabaseConfig: config.SupabaseConfig{
+			SupabaseSecret: "secret_goes_here",
+			SupabaseID:     "id_goes_here",
+		},
 	}
 
 	dbManager, err := databases.InitDBPool(&templateMainConfig.DBConfig)
