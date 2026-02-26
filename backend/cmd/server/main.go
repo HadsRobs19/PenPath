@@ -16,6 +16,7 @@ import (
 	"PenPath/backend/internal/config"
 	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/middleware"
+	"PenPath/backend/internal/routes"
 	"PenPath/backend/internal/utils"
 )
 
@@ -58,16 +59,21 @@ func main() {
 	middleware.RegisterLoggerMiddleware(app)
 	middleware.RegisterCorsMiddleware(app)
 
-	//routes.RegisterHealthRoute()
-
-	// TODO: call InitDBPool in main.go
-
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err := app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	if err != nil {
 		backend.PrintSevereErr("Encountered an error when trying to enable the IPv4 socket. Error: " + err.Error())
 		return
 	}
+
+	dbManager, err := databases.InitDBPool(&AppConfig.DBConfig)
+	if err != nil {
+		backend.PrintSevereErr("Failed to initialize database connection pool: " + err.Error())
+		return
+	}
+	defer dbManager.Close()
+
+	routes.RegisterHealthRoute(app, dbManager)
 }
 
 func loadAppConfig(appConfig *config.AppConfig) {
@@ -80,7 +86,6 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			IPv6Port:    "3000",
 			IPv6Enabled: true,
 		},
-
 		// sample loaded database main configurations
 		DBConfig: config.DBConfig{
 			Host:     "localhost",
@@ -91,17 +96,18 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			SSLMode:  "disabled",
 		},
 		SupabaseConfig: config.SupabaseConfig{
-			SupabaseSecret: "secret_goes_here",
-			SupabaseID:     "id_goes_here",
+			ProjectURL:     "url",
+			AuthURL:        "auth-url",
+			JWTSecret:      "secret",
+			ServiceRoleKey: "key",
+		},
+		JWTConfig: config.JWTConfig{
+			Issuer:        "issuer",
+			Audience:      "audience",
+			SigningMethod: "method",
+			UseJWKS:       false,
 		},
 	}
-
-	dbManager, err := databases.InitDBPool(&templateMainConfig.DBConfig)
-	if err != nil {
-		backend.PrintSevereErr("Failed to initialize database connection pool: " + err.Error())
-		return
-	}
-	defer dbManager.Close()
 
 	if _, unknownFolder := os.Stat("config"); os.IsNotExist(unknownFolder) {
 		// if a config directory does not exist, it will be created

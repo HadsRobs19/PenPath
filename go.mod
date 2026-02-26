@@ -20,7 +20,7 @@ require (
 	github.com/gofiber/fiber/v3 v3.0.0 // indirect
 	github.com/gofiber/schema v1.6.0 // indirect
 	github.com/gofiber/utils/v2 v2.0.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -42,7 +42,12 @@ require (
 	github.com/samber/slog-multi v1.7.1 // indirect
 	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
 	github.com/savsgio/gotils v0.0.0-20230208104028-c358bd845dee // indirect
+	github.com/supabase-community/auth-go v1.5.0 // indirect
+	github.com/supabase-community/functions-go v0.1.0 // indirect
+	github.com/supabase-community/postgrest-go v0.0.12 // indirect
+	github.com/supabase-community/storage-go v0.8.1 // indirect
 	github.com/tinylib/msgp v1.6.3 // indirect
+	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.69.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
