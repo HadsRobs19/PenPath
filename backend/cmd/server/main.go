@@ -14,6 +14,7 @@ import (
 	"PenPath/backend"
 
 	"PenPath/backend/internal/config"
+	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/middleware"
 	"PenPath/backend/internal/routes"
 	"PenPath/backend/internal/utils"
@@ -91,6 +92,13 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			SSLMode:      "disabled",
 		},
 	}
+
+	dbManager, err := databases.InitDBPool(&templateMainConfig.DBConfig)
+	if err != nil {
+		backend.PrintSevereErr("Failed to initialize database connection pool: " + err.Error())
+		return
+	}
+	defer dbManager.Close()
 
 	if _, unknownFolder := os.Stat("config"); os.IsNotExist(unknownFolder) {
 		// if a config directory does not exist, it will be created
