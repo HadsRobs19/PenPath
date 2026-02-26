@@ -16,7 +16,6 @@ import (
 	"PenPath/backend/internal/config"
 	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/middleware"
-	"PenPath/backend/internal/routes"
 	"PenPath/backend/internal/utils"
 )
 
@@ -59,7 +58,7 @@ func main() {
 	middleware.RegisterLoggerMiddleware(app)
 	middleware.RegisterCorsMiddleware(app)
 
-	routes.RegisterHealthRoute(app)
+	//routes.RegisterHealthRoute()
 
 	// TODO: call InitDBPool in main.go
 
@@ -84,12 +83,12 @@ func loadAppConfig(appConfig *config.AppConfig) {
 
 		// sample loaded database main configurations
 		DBConfig: config.DBConfig{
-			Host:         "localhost",
-			Port:         5432,
-			Username:     "user",
-			Password:     "securepw",
-			DatabaseName: "mydb",
-			SSLMode:      "disabled",
+			Host:     "localhost",
+			Port:     5432,
+			User:     "user",
+			Password: "securepw",
+			DBName:   "mydb",
+			SSLMode:  "disabled",
 		},
 	}
 

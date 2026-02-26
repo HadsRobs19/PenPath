@@ -11,7 +11,7 @@ import (
 // This function checks whether the database is successfully connected to the backend by initializing a reusable connection pool, verifying connectivity at startup, and aims to fail if the postgres database can't be reached
 
 type DBManager struct {
-	DB *pgxpool.Pool
+	DB *pgxpool.Pool //TODO: make db private and create a DBManager method to call Ping() to avoid a public database field (unexported)
 }
 
 func InitDBPool(databaseConfig *config.DBConfig) (*DBManager, error) {
@@ -31,11 +31,6 @@ func InitDBPool(databaseConfig *config.DBConfig) (*DBManager, error) {
 
 	pool, err := pgxpool.NewWithConfig(ctx, dbConfig)
 	if err != nil {
-		return nil, err
-	}
-
-	// make sure the database can be reached
-	if err := pool.Ping(ctx); err != nil {
 		return nil, err
 	}
 

@@ -4,12 +4,15 @@ import (
 	"PenPath/backend"
 
 	"PenPath/backend/internal/controllers"
+	"PenPath/backend/internal/databases"
 
 	"github.com/gofiber/fiber/v3"
 )
 
-func RegisterHealthRoute(app *fiber.App) {
-	app.Get("/health", controllers.HealthCheck)
+func RegisterHealthRoute(app *fiber.App, db *databases.DBManager) {
+	healthController := controllers.NewHealthController(db)
+
+	app.Get("/health", healthController.HealthCheck)
 	backend.PrintInfo("Successfully Registered Healthcheck API Route!")
 }
 
