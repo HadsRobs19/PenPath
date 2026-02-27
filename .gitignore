@@ -1,31 +1,65 @@
-# Go build artifacts
+# ============================================
+# Environment Variables - NEVER COMMIT SECRETS!
+# ============================================
+.env
+.env.local
+.env.staging
+.env.production
+.env.*.local
+
+# Keep this one - it's safe and documents what variables are needed
+!.env.example
+
+# ============================================
+# Node.js
+# ============================================
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ============================================
+# Go (if used)
+# ============================================
 /bin/
-/build/
-/dist/
+/vendor/
+*.test
+*.out
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Go test
-*.test
-*.out
-
-# Coverage
 coverage.out
 
-# Dependency directories (if using older tooling)
-vendor/
+# ============================================
+# IDE and Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Environment files (CRITICAL)
-.env
-.env.*
-!.env.example
-
-# Logs
-*.log
-
-# OS files
-.DS_Store
+# ============================================
+# OS
+# ============================================
 Thumbs.db
+.DS_Store
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+*.log
+.cache/
+
+# ============================================
+# Build Artifacts
+# ============================================
+/dist/
+/build/
+coverage/

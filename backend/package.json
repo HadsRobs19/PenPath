@@ -1,0 +1,26 @@
+{
+  "name": "penpath-backend",
+  "version": "1.0.0",
+  "description": "Backend API for PenPath - Teaching kids cursive writing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=local node server.js",
+    "staging": "NODE_ENV=staging node server.js",
+    "prod": "NODE_ENV=production node server.js"
+  },
+  "keywords": [
+    "penpath",
+    "cursive",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "@supabase/supabase-js": "^2.38.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
