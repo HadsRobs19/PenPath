@@ -237,8 +237,8 @@ CREATE TABLE user_progress (
   -- "Struggled with letter shape", "Great improvement", etc.
 
   -- Metadata
-  device_id UUID,
-  -- Which device was used (optional, can be null)
+  device_id UUID REFERENCES devices(id),
+  -- Which device was used
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

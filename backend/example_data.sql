@@ -9,6 +9,7 @@
 -- INSERT USERS (Students)
 -- ============================================
 INSERT INTO users (
+  id,
   email,
   password_hash,
   first_name,
@@ -19,8 +20,9 @@ INSERT INTO users (
   sound_enabled,
   created_at
 ) VALUES (
+  '550e8400-e29b-41d4-a716-446655440000',
   'vintage@penpath.com',
-  '$2b$10$...',  -- hashed password
+  '$2b$10$hashed_password_here',
   'Vintage',
   'Student',
   7,
@@ -30,14 +32,11 @@ INSERT INTO users (
   '2024-01-15 08:00:00'
 );
 
--- Get Vintage's ID for use in other queries
--- We'll use a known UUID for example purposes:
--- vintage_user_id = '550e8400-e29b-41d4-a716-446655440000'
-
 -- ============================================
 -- INSERT TEACHERS_PARENTS (Supervisors)
 -- ============================================
 INSERT INTO teachers_parents (
+  id,
   email,
   password_hash,
   first_name,
@@ -46,8 +45,9 @@ INSERT INTO teachers_parents (
   school_name,
   class_name
 ) VALUES (
+  '660e8400-e29b-41d4-a716-446655440001',
   'mrs.johnson@school.edu',
-  '$2b$10$...',
+  '$2b$10$hashed_password_here',
   'Mrs.',
   'Johnson',
   'teacher',
@@ -56,14 +56,16 @@ INSERT INTO teachers_parents (
 );
 
 INSERT INTO teachers_parents (
+  id,
   email,
   password_hash,
   first_name,
   last_name,
   role
 ) VALUES (
+  '660e8400-e29b-41d4-a716-446655440002',
   'vintage.mom@email.com',
-  '$2b$10$...',
+  '$2b$10$hashed_password_here',
   'Vintage''s',
   'Mom',
   'parent'
@@ -96,11 +98,13 @@ INSERT INTO user_teacher_relations (
 -- INSERT LESSON_CATEGORIES
 -- ============================================
 INSERT INTO lesson_categories (
+  id,
   name,
   description,
   color_code,
   sequence_order
 ) VALUES (
+  '770e8400-e29b-41d4-a716-446655440002',
   'Animals',
   'Learn letters through animal characters and sounds',
   '#FF6B6B',
@@ -108,11 +112,13 @@ INSERT INTO lesson_categories (
 );
 
 INSERT INTO lesson_categories (
+  id,
   name,
   description,
   color_code,
   sequence_order
 ) VALUES (
+  '770e8400-e29b-41d4-a716-446655440003',
   'Shapes',
   'Learn letters by tracing shapes',
   '#4ECDC4',
@@ -123,6 +129,7 @@ INSERT INTO lesson_categories (
 -- INSERT LESSONS
 -- ============================================
 INSERT INTO lessons (
+  id,
   letter,
   title,
   description,
@@ -130,15 +137,17 @@ INSERT INTO lessons (
   difficulty_level,
   estimated_duration_minutes
 ) VALUES (
+  '880e8400-e29b-41d4-a716-446655440004',
   'A',
   'Learn Letter A with Apple',
   'Meet Apple the Apple! Learn to trace and write the letter A.',
-  '770e8400-e29b-41d4-a716-446655440002',  -- Animals category
+  '770e8400-e29b-41d4-a716-446655440002',
   1,
   5
 );
 
 INSERT INTO lessons (
+  id,
   letter,
   title,
   description,
@@ -146,10 +155,11 @@ INSERT INTO lessons (
   difficulty_level,
   estimated_duration_minutes
 ) VALUES (
+  '880e8400-e29b-41d4-a716-446655440005',
   'B',
   'Learn Letter B with Bear',
   'Meet Bear the Bear! Learn to trace and write the letter B.',
-  '770e8400-e29b-41d4-a716-446655440002',  -- Animals category
+  '770e8400-e29b-41d4-a716-446655440002',
   1,
   5
 );
@@ -159,6 +169,7 @@ INSERT INTO lessons (
 -- ============================================
 -- Letter A Steps
 INSERT INTO lesson_steps (
+  id,
   lesson_id,
   step_type,
   sequence_order,
@@ -167,6 +178,7 @@ INSERT INTO lesson_steps (
   expected_duration_seconds,
   target_accuracy_percent
 ) VALUES (
+  '990e8400-e29b-41d4-a716-446655440006',
   '880e8400-e29b-41d4-a716-446655440004',
   'tracing',
   1,
@@ -177,6 +189,7 @@ INSERT INTO lesson_steps (
 );
 
 INSERT INTO lesson_steps (
+  id,
   lesson_id,
   step_type,
   sequence_order,
@@ -185,6 +198,7 @@ INSERT INTO lesson_steps (
   expected_duration_seconds,
   target_accuracy_percent
 ) VALUES (
+  '990e8400-e29b-41d4-a716-446655440007',
   '880e8400-e29b-41d4-a716-446655440004',
   'reading',
   2,
@@ -195,6 +209,7 @@ INSERT INTO lesson_steps (
 );
 
 INSERT INTO lesson_steps (
+  id,
   lesson_id,
   step_type,
   sequence_order,
@@ -204,6 +219,7 @@ INSERT INTO lesson_steps (
   expected_duration_seconds,
   target_accuracy_percent
 ) VALUES (
+  '990e8400-e29b-41d4-a716-446655440008',
   '880e8400-e29b-41d4-a716-446655440004',
   'listening',
   3,
@@ -215,6 +231,7 @@ INSERT INTO lesson_steps (
 );
 
 INSERT INTO lesson_steps (
+  id,
   lesson_id,
   step_type,
   sequence_order,
@@ -223,6 +240,7 @@ INSERT INTO lesson_steps (
   expected_duration_seconds,
   target_accuracy_percent
 ) VALUES (
+  '990e8400-e29b-41d4-a716-446655440009',
   '880e8400-e29b-41d4-a716-446655440004',
   'checkpoint',
   4,
@@ -237,6 +255,7 @@ INSERT INTO lesson_steps (
 -- ============================================
 -- Vintage's Attempt 1 on Letter A Tracing (Feb 27)
 INSERT INTO user_progress (
+  id,
   student_id,
   lesson_step_id,
   attempt_number,
@@ -245,6 +264,7 @@ INSERT INTO user_progress (
   is_completed,
   completion_timestamp
 ) VALUES (
+  'aa0e8400-e29b-41d4-a716-446655440010',
   '550e8400-e29b-41d4-a716-446655440000',
   '990e8400-e29b-41d4-a716-446655440006',
   1,
@@ -256,6 +276,7 @@ INSERT INTO user_progress (
 
 -- Vintage's Attempt 2 on Letter A Tracing (Feb 28)
 INSERT INTO user_progress (
+  id,
   student_id,
   lesson_step_id,
   attempt_number,
@@ -264,6 +285,7 @@ INSERT INTO user_progress (
   is_completed,
   completion_timestamp
 ) VALUES (
+  'aa0e8400-e29b-41d4-a716-446655440011',
   '550e8400-e29b-41d4-a716-446655440000',
   '990e8400-e29b-41d4-a716-446655440006',
   2,
@@ -275,6 +297,7 @@ INSERT INTO user_progress (
 
 -- Vintage's Attempt 3 on Letter A Tracing (Mar 6) - PERFECT!
 INSERT INTO user_progress (
+  id,
   student_id,
   lesson_step_id,
   attempt_number,
@@ -283,6 +306,7 @@ INSERT INTO user_progress (
   is_completed,
   completion_timestamp
 ) VALUES (
+  'aa0e8400-e29b-41d4-a716-446655440012',
   '550e8400-e29b-41d4-a716-446655440000',
   '990e8400-e29b-41d4-a716-446655440006',
   3,
@@ -294,6 +318,7 @@ INSERT INTO user_progress (
 
 -- Vintage's Reading Step (All Perfect)
 INSERT INTO user_progress (
+  id,
   student_id,
   lesson_step_id,
   attempt_number,
@@ -302,6 +327,7 @@ INSERT INTO user_progress (
   is_completed,
   completion_timestamp
 ) VALUES (
+  'aa0e8400-e29b-41d4-a716-446655440100',
   '550e8400-e29b-41d4-a716-446655440000',
   '990e8400-e29b-41d4-a716-446655440007',
   1,
@@ -313,6 +339,7 @@ INSERT INTO user_progress (
 
 -- Vintage's Listening Step
 INSERT INTO user_progress (
+  id,
   student_id,
   lesson_step_id,
   attempt_number,
@@ -321,6 +348,7 @@ INSERT INTO user_progress (
   is_completed,
   completion_timestamp
 ) VALUES (
+  'aa0e8400-e29b-41d4-a716-446655440101',
   '550e8400-e29b-41d4-a716-446655440000',
   '990e8400-e29b-41d4-a716-446655440008',
   1,
@@ -332,6 +360,7 @@ INSERT INTO user_progress (
 
 -- Vintage's Checkpoint Step
 INSERT INTO user_progress (
+  id,
   student_id,
   lesson_step_id,
   attempt_number,
@@ -340,6 +369,7 @@ INSERT INTO user_progress (
   is_completed,
   completion_timestamp
 ) VALUES (
+  'aa0e8400-e29b-41d4-a716-446655440102',
   '550e8400-e29b-41d4-a716-446655440000',
   '990e8400-e29b-41d4-a716-446655440009',
   1,
@@ -353,6 +383,7 @@ INSERT INTO user_progress (
 -- INSERT LETTER_MASTERY
 -- ============================================
 INSERT INTO letter_mastery (
+  id,
   student_id,
   letter,
   perfect_attempts_count,
@@ -362,6 +393,7 @@ INSERT INTO letter_mastery (
   average_accuracy_percent,
   total_time_spent_seconds
 ) VALUES (
+  'bb0e8400-e29b-41d4-a716-446655440013',
   '550e8400-e29b-41d4-a716-446655440000',
   'A',
   3,
@@ -376,12 +408,14 @@ INSERT INTO letter_mastery (
 -- INSERT BADGES
 -- ============================================
 INSERT INTO badges (
+  id,
   name,
   description,
   badge_type,
   unlock_condition,
   points
 ) VALUES (
+  'cc0e8400-e29b-41d4-a716-446655440014',
   'Letter Master A',
   'You mastered the letter A!',
   'achievement',
@@ -390,12 +424,14 @@ INSERT INTO badges (
 );
 
 INSERT INTO badges (
+  id,
   name,
   description,
   badge_type,
   unlock_condition,
   points
 ) VALUES (
+  'cc0e8400-e29b-41d4-a716-446655440015',
   'Perfect Score',
   'You got 100% accuracy on a lesson!',
   'bonus',
@@ -404,12 +440,14 @@ INSERT INTO badges (
 );
 
 INSERT INTO badges (
+  id,
   name,
   description,
   badge_type,
   unlock_condition,
   points
 ) VALUES (
+  'cc0e8400-e29b-41d4-a716-446655440016',
   '7-Day Streak',
   'You practiced every day for a week!',
   'streak',
@@ -418,12 +456,14 @@ INSERT INTO badges (
 );
 
 INSERT INTO badges (
+  id,
   name,
   description,
   badge_type,
   unlock_condition,
   points
 ) VALUES (
+  'cc0e8400-e29b-41d4-a716-446655440017',
   'Speed Demon',
   'You completed a lesson in under 3 minutes!',
   'bonus',
@@ -435,11 +475,13 @@ INSERT INTO badges (
 -- INSERT USER_BADGES
 -- ============================================
 INSERT INTO user_badges (
+  id,
   student_id,
   badge_id,
   earned_at,
   progress_count
 ) VALUES (
+  'dd0e8400-e29b-41d4-a716-446655440018',
   '550e8400-e29b-41d4-a716-446655440000',
   'cc0e8400-e29b-41d4-a716-446655440014',
   '2024-03-06 15:30:00',
@@ -447,11 +489,13 @@ INSERT INTO user_badges (
 );
 
 INSERT INTO user_badges (
+  id,
   student_id,
   badge_id,
   earned_at,
   progress_count
 ) VALUES (
+  'dd0e8400-e29b-41d4-a716-446655440019',
   '550e8400-e29b-41d4-a716-446655440000',
   'cc0e8400-e29b-41d4-a716-446655440015',
   '2024-03-08 14:45:00',
@@ -459,11 +503,13 @@ INSERT INTO user_badges (
 );
 
 INSERT INTO user_badges (
+  id,
   student_id,
   badge_id,
   earned_at,
   progress_count
 ) VALUES (
+  'dd0e8400-e29b-41d4-a716-446655440020',
   '550e8400-e29b-41d4-a716-446655440000',
   'cc0e8400-e29b-41d4-a716-446655440016',
   '2024-03-14 20:00:00',
@@ -474,6 +520,7 @@ INSERT INTO user_badges (
 -- INSERT DEVICES
 -- ============================================
 INSERT INTO devices (
+  id,
   device_identifier,
   device_type,
   os_name,
@@ -488,6 +535,7 @@ INSERT INTO devices (
   supports_offline,
   last_sync_timestamp
 ) VALUES (
+  'ee0e8400-e29b-41d4-a716-446655440021',
   'RPi-PENPATH-001',
   'raspberry_pi',
   'Raspberry Pi OS (Linux)',
@@ -504,6 +552,7 @@ INSERT INTO devices (
 );
 
 INSERT INTO devices (
+  id,
   device_identifier,
   device_type,
   os_name,
@@ -518,6 +567,7 @@ INSERT INTO devices (
   supports_offline,
   last_sync_timestamp
 ) VALUES (
+  'ee0e8400-e29b-41d4-a716-446655440022',
   'iPad-7TH-GEN-001',
   'tablet',
   'iOS',
@@ -537,12 +587,14 @@ INSERT INTO devices (
 -- INSERT USER_DEVICES
 -- ============================================
 INSERT INTO user_devices (
+  id,
   student_id,
   device_id,
   device_nickname,
   is_primary_device,
   last_used
 ) VALUES (
+  'ff0e8400-e29b-41d4-a716-446655440023',
   '550e8400-e29b-41d4-a716-446655440000',
   'ee0e8400-e29b-41d4-a716-446655440021',
   'School Tablet',
@@ -551,12 +603,14 @@ INSERT INTO user_devices (
 );
 
 INSERT INTO user_devices (
+  id,
   student_id,
   device_id,
   device_nickname,
   is_primary_device,
   last_used
 ) VALUES (
+  'ff0e8400-e29b-41d4-a716-446655440024',
   '550e8400-e29b-41d4-a716-446655440000',
   'ee0e8400-e29b-41d4-a716-446655440022',
   'Vintage''s iPad',
