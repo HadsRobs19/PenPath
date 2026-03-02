@@ -7,8 +7,6 @@ import (
 	"penpath-backend/internal/models"
 	"strings"
 
-	"os"
-
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
@@ -23,7 +21,7 @@ type JWTVerifier struct {
 }
 
 // NewJWTVerifier initializes the verifier once at startup to load JWKS so middleware can varify RS256 signatures later
-func NewJWTVerifier(issuer string, audience string) {
+func NewJWTVerifier(issuer string, audience string, jwksURL string) {
 
 	// store expected issuer and audience
 	JWTVerifierInstance = JWTVerifier{
@@ -31,8 +29,7 @@ func NewJWTVerifier(issuer string, audience string) {
 		audience: audience,
 	}
 	backend.PrintInfo("Successfully initialized JWT Verifier")
-	// load JWKS once at start up from the url env variable
-	jwksURL := os.Getenv("JWKS_URL")
+
 	if jwksURL == "" {
 		_ = backend.PrintSevereErr("JWKS_URL environment variable must be populated.")
 		return

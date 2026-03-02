@@ -1,8 +1,8 @@
 package config
 
 type JWTConfig struct {
-	//Issuer        string `json:"issuer"`
-	//Audience      string `json:"audience"`
+	Issuer        string `json:"issuer"`
+	Audience      string `json:"audience"`
 	SigningMethod string `json:"signing_method"` //RS256
 	UseJWKS       bool   `json:"use_jwks"`
 	JWKSURL       string `json:"jwks_url"`

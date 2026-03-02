@@ -19,8 +19,8 @@ import (
 )
 
 var (
-	AppConfig     config.AppConfig
-	JWTMiddleware fiber.Handler
+	AppConfig config.AppConfig
+	//JWTMiddleware fiber.Handler
 )
 
 func main() {
@@ -57,13 +57,6 @@ func main() {
 	middleware.RegisterLoggerMiddleware(app)
 	middleware.RegisterCorsMiddleware(app)
 
-	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
-	err := app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
-	if err != nil {
-		backend.PrintSevereErr("Encountered an error when trying to enable the IPv4 socket. Error: " + err.Error())
-		return
-	}
-
 	dbManager, err := databases.InitDBPool(&AppConfig.DBConfig)
 	if err != nil {
 		backend.PrintSevereErr("Failed to initialize database connection pool: " + err.Error())
@@ -71,7 +64,20 @@ func main() {
 	}
 	defer dbManager.Close()
 
+	middleware.NewJWTVerifier(
+		AppConfig.JWTConfig.Issuer,
+		AppConfig.JWTConfig.Audience,
+		AppConfig.JWTConfig.JWKSURL,
+	)
+
 	routes.RegisterHealthRoute(app, dbManager)
+
+	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
+	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
+	if err != nil {
+		backend.PrintSevereErr("Encountered an error when trying to enable the IPv4 socket. Error: " + err.Error())
+		return
+	}
 }
 
 func loadAppConfig(appConfig *config.AppConfig) {
@@ -89,7 +95,7 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			Host:     "localhost",
 			Port:     5432,
 			User:     "user",
-			Password: "securepw",
+			Password: os.Getenv("DATABASE_PASSWORD"),
 			DBName:   "mydb",
 			SSLMode:  "disabled",
 		},
@@ -99,11 +105,11 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			ServiceRoleKey: "key",
 		},
 		JWTConfig: config.JWTConfig{
-			//Issuer:        "issuer",
-			//Audience:      "audience",
-			SigningMethod: "method",
+			Issuer:        "",
+			Audience:      "authenticated",
+			SigningMethod: "RS256",
 			UseJWKS:       true,
-			JWKSURL:       "url",
+			JWKSURL:       os.Getenv("JWK_URL"),
 		},
 	}
 
