@@ -6,18 +6,16 @@ import (
 	"fmt"
 	"log"
 	"os"
+	backend "penpath-backend"
+	"penpath-backend/internal/config"
+	"penpath-backend/internal/databases"
+	"penpath-backend/internal/middleware"
+	"penpath-backend/internal/routes"
+	"penpath-backend/internal/utils"
 
 	"github.com/gofiber/fiber/v3"
 
 	"github.com/charmbracelet/lipgloss"
-
-	"PenPath/backend"
-
-	"PenPath/backend/internal/config"
-	"PenPath/backend/internal/databases"
-	"PenPath/backend/internal/middleware"
-	"PenPath/backend/internal/routes"
-	"PenPath/backend/internal/utils"
 )
 
 var (
@@ -98,14 +96,14 @@ func loadAppConfig(appConfig *config.AppConfig) {
 		SupabaseConfig: config.SupabaseConfig{
 			ProjectURL:     "url",
 			AuthURL:        "auth-url",
-			JWTSecret:      "secret",
 			ServiceRoleKey: "key",
 		},
 		JWTConfig: config.JWTConfig{
-			Issuer:        "issuer",
-			Audience:      "audience",
+			//Issuer:        "issuer",
+			//Audience:      "audience",
 			SigningMethod: "method",
-			UseJWKS:       false,
+			UseJWKS:       true,
+			JWKSURL:       "url",
 		},
 	}
 
