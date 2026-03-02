@@ -1,49 +1,42 @@
-# PenPath  
-### Full-Stack Cursive Learning Platform (Web + Mobile)
+PenPath
+Full-Stack Cursive Learning Platform (Web + Mobile)
 
-PenPath is a full-stack literacy learning platform built with **React (Web)**, **React Native (Mobile)**, and a **Go (Fiber v3) backend** connected to a **Supabase-hosted PostgreSQL database**.
+PenPath is a full-stack literacy learning platform built with React (Web), React Native (Mobile), and a Go (Fiber v3) backend connected to a Supabase-hosted PostgreSQL database.
 
 The backend API is responsible for authentication validation, lesson delivery, user profile management, and student progress tracking.
 
----
-
-# Architecture Overview
-
-
+Architecture Overview
 React / React Native Frontend
 │
-│ (Supabase Auth)
-│ access_token (JWT)
+│  (Supabase Auth)
+│  access_token (JWT)
 ▼
 Go Backend (Fiber v3 API)
 │
-│ JWT Verification (JWKS / RS256)
-│ Authorization Enforcement
+│  JWT Verification (JWKS / RS256)
+│  Authorization Enforcement
 │
 ▼
 PostgreSQL (Supabase Hosted)
+Authentication Flow
 
+User authenticates via Supabase Auth on the frontend.
 
----
+Supabase returns a signed access_token (JWT).
 
-## Authentication Flow
+Frontend sends API requests with:
 
-1. User authenticates via **Supabase Auth** on the frontend.
-2. Supabase returns a signed `access_token` (JWT).
-3. Frontend sends API requests with:
-
-```http
 Authorization: Bearer <access_token>
 
-## Backend: 
+Backend:
 
-- Verifies JWT signature via JWKS (RS256)
+Verifies JWT signature via JWKS (RS256)
 
-- Validates issuer and audience
+Validates issuer and audience
 
-- Validates required time-based claims
+Validates required time-based claims
 
-- Extracts user identity (sub)
+Extracts user identity (sub)
 
 Backend attaches:
 
