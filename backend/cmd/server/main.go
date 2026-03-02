@@ -1,6 +1,12 @@
 package main
 
 import (
+	"PenPath/backend"
+	"PenPath/backend/internal/config"
+	"PenPath/backend/internal/databases"
+	"PenPath/backend/internal/middleware"
+	"PenPath/backend/internal/routes"
+	"PenPath/backend/internal/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,18 +16,11 @@ import (
 	"github.com/gofiber/fiber/v3"
 
 	"github.com/charmbracelet/lipgloss"
-
-	"PenPath/backend"
-
-	"PenPath/backend/internal/config"
-	"PenPath/backend/internal/databases"
-	"PenPath/backend/internal/middleware"
-	"PenPath/backend/internal/utils"
 )
 
 var (
-	AppConfig     config.AppConfig
-	JWTMiddleware fiber.Handler
+	AppConfig config.AppConfig
+	//JWTMiddleware fiber.Handler
 )
 
 func main() {
@@ -58,12 +57,23 @@ func main() {
 	middleware.RegisterLoggerMiddleware(app)
 	middleware.RegisterCorsMiddleware(app)
 
-	//routes.RegisterHealthRoute()
+	dbManager, err := databases.InitDBPool(&AppConfig.DBConfig)
+	if err != nil {
+		backend.PrintSevereErr("Failed to initialize database connection pool: " + err.Error())
+		return
+	}
+	defer dbManager.Close()
 
-	// TODO: call InitDBPool in main.go
+	middleware.NewJWTVerifier(
+		AppConfig.JWTConfig.Issuer,
+		AppConfig.JWTConfig.Audience,
+		AppConfig.JWTConfig.JWKSURL,
+	)
+
+	routes.RegisterHealthRoute(app, dbManager)
 
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
-	err := app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
+	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	if err != nil {
 		backend.PrintSevereErr("Encountered an error when trying to enable the IPv4 socket. Error: " + err.Error())
 		return
@@ -80,24 +90,28 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			IPv6Port:    "3000",
 			IPv6Enabled: true,
 		},
-
 		// sample loaded database main configurations
 		DBConfig: config.DBConfig{
 			Host:     "localhost",
 			Port:     5432,
 			User:     "user",
-			Password: "securepw",
+			Password: os.Getenv("DATABASE_PASSWORD"),
 			DBName:   "mydb",
 			SSLMode:  "disabled",
 		},
+		SupabaseConfig: config.SupabaseConfig{
+			ProjectURL:     "url",
+			AuthURL:        "auth-url",
+			ServiceRoleKey: "key",
+		},
+		JWTConfig: config.JWTConfig{
+			Issuer:        "",
+			Audience:      "authenticated",
+			SigningMethod: "RS256",
+			UseJWKS:       true,
+			JWKSURL:       os.Getenv("JWK_URL"),
+		},
 	}
-
-	dbManager, err := databases.InitDBPool(&templateMainConfig.DBConfig)
-	if err != nil {
-		backend.PrintSevereErr("Failed to initialize database connection pool: " + err.Error())
-		return
-	}
-	defer dbManager.Close()
 
 	if _, unknownFolder := os.Stat("config"); os.IsNotExist(unknownFolder) {
 		// if a config directory does not exist, it will be created
