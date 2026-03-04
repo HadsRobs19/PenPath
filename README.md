@@ -1,11 +1,11 @@
-## PenPath
-# Full-Stack Cursive Learning Platform (Web + Mobile)
+# PenPath
+## Full-Stack Cursive Learning Platform 
 
-PenPath is a full-stack literacy learning platform built with React (Web), React Native (Mobile), and a Go (Fiber v3) backend connected to a Supabase-hosted PostgreSQL database.
+PenPath is a full-stack literacy learning platform built with React and a Go (Fiber v3) backend connected to a Supabase-hosted PostgreSQL database.
 
 The backend API is responsible for authentication validation, lesson delivery, user profile management, and student progress tracking.
 
-## Architecture Overview
+# Architecture Overview
 React / React Native Frontend
 │
 │  (Supabase Auth)
@@ -18,7 +18,7 @@ Go Backend (Fiber v3 API)
 │
 ▼
 PostgreSQL (Supabase Hosted)
-## Authentication Flow
+# Authentication Flow
 
 1. User authenticates via Supabase Auth on the frontend.
 
@@ -29,7 +29,7 @@ PostgreSQL (Supabase Hosted)
 
 `Authorization: Bearer <access_token>`
 
-## Backend:
+<ins>Backend:</ins>
 
 - Verifies JWT signature via JWKS (RS256)
 
@@ -39,7 +39,7 @@ PostgreSQL (Supabase Hosted)
 
 - Extracts user identity (sub)
 
-# Backend attaches:
+<ins>Backend attaches:</ins>
 
 - user_id
 
@@ -49,7 +49,7 @@ PostgreSQL (Supabase Hosted)
 
 - Database queries are scoped using user_id.
 
-## Tech Stack Backend
+# Tech Stack Backend
 
 - Go
 
@@ -61,19 +61,19 @@ PostgreSQL (Supabase Hosted)
 
 - JWKS / RS256 JWT Verification
 
-## Structured middleware architecture
+# Structured middleware architecture
 
-Frontend
+- Frontend
 
-React (Web and Raspberry Pi Tablet)
+- React (Web and Raspberry Pi Tablet)
 
-Supabase JS Client
+- Supabase JS Client
 
-SVG-based interactive tracing components
+- SVG-based interactive tracing components
 
-Modular lesson architecture
+- Modular lesson architecture
 
-## Backend Structure
+*** Backend Structure ***
 cmd/
 internal/
   config/         # Config structs + loading
@@ -85,11 +85,11 @@ internal/
 
 Frontend is maintained separately and communicates with this API over HTTP.
 
-## Authentication & Security Model
+# Authentication & Security Model
 
 PenPath uses Supabase Auth for identity and JWT issuance.
 
-# The backend:
+<ins>The backend:</ins>
 
 - Verifies tokens using Supabase's JWKS endpoint
 
@@ -107,7 +107,7 @@ PenPath uses Supabase Auth for identity and JWT issuance.
 
 - Attaches user identity to request context
 
-# Context Attachment
+<ins>Context Attachment</ins>
 
 After verification:
 
@@ -117,9 +117,9 @@ After verification:
 
 Controllers use this context to scope queries and enforce authorization.
 
-## RLS & Authorization Strategy
+# RLS & Authorization Strategy
 
-* * * * Supabase Row Level Security (RLS) protects data when using user-scoped queries with anon keys.
+*** Supabase Row Level Security (RLS) protects data when using user-scoped queries with anon keys. ***
 
 *However*:
 
@@ -139,8 +139,8 @@ RLS may not apply automatically.
 
 - Preventing over-fetching at query level
 
-## Implemented Features
-# Core Infrastructure
+# Implemented Features
+## Core Infrastructure
 
 - Fiber server bootstrapped with global error handling
 
@@ -152,7 +152,7 @@ RLS may not apply automatically.
 
 - Request size limits
 
-# Database Layer
+## Database Layer
 
 - pgxpool connection manager
 
@@ -160,7 +160,7 @@ RLS may not apply automatically.
 
 - Clean separation between DB layer and controllers
 
-# JWT Middleware (RS256 + JWKS)
+## JWT Middleware (RS256 + JWKS)
 
 - JWKS loaded once at startup
 
@@ -174,7 +174,7 @@ RLS may not apply automatically.
 
 - Unauthorized requests blocked
 
-## Current Endpoints
+# Current Endpoints
 ***GET /health***
 
 <ins>Confirms:</ins>
@@ -197,7 +197,7 @@ RLS may not apply automatically.
 
 - Device registration and offline sync foundations
 
-## Environment Variables
+# Environment Variables
 
 ***Sensitive values must not be committed.***
 
@@ -207,7 +207,7 @@ RLS may not apply automatically.
 
 **Frontend VITE_* variables are for client builds only and must not be reused in backend configuration.**
 
-## Development Principles
+# Development Principles
 
 - Single source of truth for configuration
 
@@ -223,7 +223,7 @@ RLS may not apply automatically.
 
 - Explicit authorization enforcement
 
-## Upcoming Enhancements
+# Upcoming Enhancements
 
 - Harden JWT verification (algorithm enforcement)
 
@@ -237,7 +237,7 @@ RLS may not apply automatically.
 
 - Badge & mastery system logic
 
-## References
+# References
 
 [Fiber v3 Documentation](https://docs.gofiber.io/)
 
@@ -249,7 +249,7 @@ RLS may not apply automatically.
 
 [pgxpool Documentation](https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool)
 
-## About PenPath
+# About PenPath
 
 ***PenPath is designed as a scalable cursive and literacy learning system that blends:***
 
