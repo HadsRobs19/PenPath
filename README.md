@@ -1,11 +1,11 @@
-PenPath
-Full-Stack Cursive Learning Platform (Web + Mobile)
+## PenPath
+# Full-Stack Cursive Learning Platform (Web + Mobile)
 
 PenPath is a full-stack literacy learning platform built with React (Web), React Native (Mobile), and a Go (Fiber v3) backend connected to a Supabase-hosted PostgreSQL database.
 
 The backend API is responsible for authentication validation, lesson delivery, user profile management, and student progress tracking.
 
-Architecture Overview
+## Architecture Overview
 React / React Native Frontend
 │
 │  (Supabase Auth)
@@ -18,56 +18,54 @@ Go Backend (Fiber v3 API)
 │
 ▼
 PostgreSQL (Supabase Hosted)
-Authentication Flow
+## Authentication Flow
 
-User authenticates via Supabase Auth on the frontend.
+1. User authenticates via Supabase Auth on the frontend.
 
-Supabase returns a signed access_token (JWT).
+2. Supabase returns a signed access_token (JWT).
 
-Frontend sends API requests with:
+3. Frontend sends API requests with:
 
-Authorization: Bearer <access_token>
 
-Backend:
+`Authorization: Bearer <access_token>`
 
-Verifies JWT signature via JWKS (RS256)
+## Backend:
 
-Validates issuer and audience
+- Verifies JWT signature via JWKS (RS256)
 
-Validates required time-based claims
+- Validates issuer and audience
 
-Extracts user identity (sub)
+- Validates required time-based claims
 
-Backend attaches:
+- Extracts user identity (sub)
 
-user_id
+# Backend attaches:
 
-role
+- user_id
 
-Protected routes execute with verified identity.
+- role
 
-Database queries are scoped using user_id.
+- Protected routes execute with verified identity.
 
-Tech Stack
-Backend
+- Database queries are scoped using user_id.
 
-Go
+## Tech Stack Backend
 
-Fiber v3
+- Go
 
-pgx / pgxpool
+- Fiber v3
 
-Supabase (PostgreSQL + Auth)
+- pgx / pgxpool
 
-JWKS / RS256 JWT Verification
+- Supabase (PostgreSQL + Auth)
 
-Structured middleware architecture
+- JWKS / RS256 JWT Verification
+
+## Structured middleware architecture
 
 Frontend
 
-React (Web)
-
-React Native (Mobile)
+React (Web and Raspberry Pi Tablet)
 
 Supabase JS Client
 
@@ -75,7 +73,7 @@ SVG-based interactive tracing components
 
 Modular lesson architecture
 
-Backend Structure
+## Backend Structure
 cmd/
 internal/
   config/         # Config structs + loading
@@ -87,180 +85,180 @@ internal/
 
 Frontend is maintained separately and communicates with this API over HTTP.
 
-Authentication & Security Model
+## Authentication & Security Model
 
 PenPath uses Supabase Auth for identity and JWT issuance.
 
-The backend:
+# The backend:
 
-Verifies tokens using Supabase's JWKS endpoint
+- Verifies tokens using Supabase's JWKS endpoint
 
-Enforces RS256 signature validation
+- Enforces RS256 signature validation
 
-Validates:
+- Validates:
 
-iss (issuer)
+  -  iss (issuer)
 
-aud (audience)
+  - aud (audience)
 
-exp, iat, nbf
+  - exp, iat, nbf
 
-Rejects unauthorized requests
+- Rejects unauthorized requests
 
-Attaches user identity to request context
+- Attaches user identity to request context
 
-Context Attachment
+# Context Attachment
 
 After verification:
 
-user_id ← JWT sub
+- user_id ← JWT sub
 
-role ← Supabase role claim
+- role ← Supabase role claim
 
 Controllers use this context to scope queries and enforce authorization.
 
-RLS & Authorization Strategy
+## RLS & Authorization Strategy
 
-Supabase Row Level Security (RLS) protects data when using user-scoped queries with anon keys.
+* * * * Supabase Row Level Security (RLS) protects data when using user-scoped queries with anon keys.
 
-However:
+*However*:
 
-When using direct pgx connections
+- When using direct pgx connections
 
-When using privileged roles
+- When using privileged roles
 
 RLS may not apply automatically.
 
-Therefore, this backend enforces authorization explicitly by:
+<ins>Therefore, this backend enforces authorization explicitly by:</ins>
 
-Never trusting client-supplied IDs
+- Never trusting client-supplied IDs
 
-Scoping queries using verified user_id
+- Scoping queries using verified user_id
 
-Returning only non-sensitive fields
+- Returning only non-sensitive fields
 
-Preventing over-fetching at query level
+- Preventing over-fetching at query level
 
-Implemented Features
-Core Infrastructure
+## Implemented Features
+# Core Infrastructure
 
-Fiber server bootstrapped with global error handling
+- Fiber server bootstrapped with global error handling
 
-Structured logging middleware
+- Structured logging middleware
 
-Panic recovery middleware
+- Panic recovery middleware
 
-CORS configured for React dev origins
+- CORS configured for React dev origins
 
-Request size limits
+- Request size limits
 
-Database Layer
+# Database Layer
 
-pgxpool connection manager
+- pgxpool connection manager
 
-Startup DB connectivity verification
+- Startup DB connectivity verification
 
-Clean separation between DB layer and controllers
+- Clean separation between DB layer and controllers
 
-JWT Middleware (RS256 + JWKS)
+# JWT Middleware (RS256 + JWKS)
 
-JWKS loaded once at startup
+- JWKS loaded once at startup
 
-Token extracted from Authorization header
+- Token extracted from Authorization header
 
-Signature verified via public key selection (kid)
+- Signature verified via public key selection (kid)
 
-Claims validated
+- Claims validated
 
-User context attached
+- User context attached
 
-Unauthorized requests blocked
+- Unauthorized requests blocked
 
-Current Endpoints
-GET /health
+## Current Endpoints
+***GET /health***
 
-Confirms:
+<ins>Confirms:</ins>
 
-API uptime
+- API uptime
 
-Database connectivity
+- Database connectivity
 
-Planned API Endpoints
+# Planned API Endpoints
 
-GET /me – Authenticated user profile
+- GET /me – Authenticated user profile
 
-Lesson retrieval endpoints
+- Lesson retrieval endpoints
 
-Progress save/retrieve endpoints
+- Progress save/retrieve endpoints
 
-Letter mastery tracking
+- Letter mastery tracking
 
-Badge unlock logic
+- Badge unlock logic
 
-Device registration and offline sync foundations
+- Device registration and offline sync foundations
 
-Environment Variables
+## Environment Variables
 
-Sensitive values must not be committed.
+***Sensitive values must not be committed.***
 
-Required
-JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
-DATABASE_URL=postgres://...
+**Required**
+>JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
+>DATABASE_URL=postgres://...
 
-Frontend VITE_* variables are for client builds only and must not be reused in backend configuration.
+**Frontend VITE_* variables are for client builds only and must not be reused in backend configuration.**
 
-Development Principles
+## Development Principles
 
-Single source of truth for configuration
+- Single source of truth for configuration
 
-Middleware handles cross-cutting concerns
+- Middleware handles cross-cutting concerns
 
-Controllers remain thin
+- Controllers remain thin
 
-Database logic isolated in internal/databases
+- Database logic isolated in internal/databases
 
-JWT verified once per request
+- JWT verified once per request
 
-No sensitive fields exposed in responses
+- No sensitive fields exposed in responses
 
-Explicit authorization enforcement
+- Explicit authorization enforcement
 
-Upcoming Enhancements
+## Upcoming Enhancements
 
-Harden JWT verification (algorithm enforcement)
+- Harden JWT verification (algorithm enforcement)
 
-Protected route groups (/api/*)
+- Protected route groups (/api/*)
 
-User profile endpoint (age derived from birthday)
+- User profile endpoint (age derived from birthday)
 
-Lesson data persistence
+- Lesson data persistence
 
-Progress analytics
+- Progress analytics
 
-Badge & mastery system logic
+- Badge & mastery system logic
 
-References
+## References
 
-Fiber v3 Documentation
+[Fiber v3 Documentation](https://docs.gofiber.io/)
 
-golang-jwt/jwt v5
+[golang-jwt/jwt v5](https://pkg.go.dev/github.com/golang-jwt/jwt/v5#Parser.ParseWithClaims)
 
-MicahParks/keyfunc v3 (JWKS)
+[MicahParks/keyfunc v3 (JWKS)](https://github.com/MicahParks/keyfunc)
 
-Supabase Auth + JWKS docs
+[Supabase Auth](https://supabase.com/docs/guides/auth/signing-keys) + [JWKS docs](https://www.rfc-editor.org/rfc/rfc7517.html)
 
-pgxpool Documentation
+[pgxpool Documentation](https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool)
 
-About PenPath
+## About PenPath
 
-PenPath is designed as a scalable literacy learning system that blends:
+***PenPath is designed as a scalable cursive and literacy learning system that blends:***
 
-Interactive SVG tracing
+- Interactive SVG tracing
 
-Modular lesson flows
+- Modular lesson flows
 
-Gamified progress tracking
+- Gamified progress tracking
 
-Secure backend architecture
+- Secure backend architecture
 
 Built with long-term extensibility and production readiness in mind.
