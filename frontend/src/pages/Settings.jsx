@@ -23,7 +23,7 @@ export default function Settings() {
     [sliderPosition]
   );
 
-  const handleLogOut = () => {
+  const handleLogOut = () => navigate("/welcome");{
     console.log("Log Out pressed");
   };
 

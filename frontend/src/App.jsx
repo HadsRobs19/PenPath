@@ -28,7 +28,7 @@ import AnimalsCheckpoint from './pages/AnimalsCheckpoint';
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Welcome />} />
+      <Route path="/welcome" element={<Welcome />} />
       <Route path="/login" element={<LogIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPw />} />
