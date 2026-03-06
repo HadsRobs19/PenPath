@@ -72,6 +72,7 @@ func main() {
 
 	routes.RegisterHealthRoute(app, dbManager)
 	routes.RegisterUserRoute(app, dbManager)
+	routes.RegisterDeviceRoute(app, dbManager)
 
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)

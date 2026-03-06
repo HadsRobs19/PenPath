@@ -164,6 +164,16 @@ Therefore the backend enforces authorization by:
 - User context attached to request
 - Unauthorized requests blocked
 
+## Device Registration System
+
+- Secure device registration endpoint (`POST /devices/register`)
+- Device lookup using `device_identifier`
+- Automatic device creation if device does not exist
+- User-device association via `user_devices` table
+- Idempotent device linking using `ON CONFLICT` safeguards
+- Metadata captured for hardware, OS, browser, and offline capabilities
+- Designed to support **Raspberry Pi classroom devices and future offline synchronization**
+
 ---
 
 # Current Endpoints
@@ -185,6 +195,29 @@ Returns the authenticated user's profile:
 "last_name": "...",
 "age": ...
 }
+
+### `POST /devices/register`
+
+Registers a client device and associates it with the authenticated user.
+
+This endpoint is primarily designed for **Raspberry Pi classroom devices**, but also supports mobile, tablet, and desktop clients.
+
+The backend performs the following:
+
+- Validates the authenticated user via JWT middleware
+- Validates the request payload
+- Looks up the device by `device_identifier`
+- Creates the device if it does not already exist
+- Links the device to the authenticated user via `user_devices`
+
+Device registrations are **idempotent** — registering the same device again will update its usage metadata rather than creating duplicate rows.
+
+Supported device types:
+
+- `mobile`
+- `tablet`
+- `raspberry_pi`
+- `desktop`
 
 
 Sensitive fields are never returned.
@@ -267,6 +300,81 @@ console.log(data);
 
 ```
 
+## Register Device
+
+Registers a device and links it to the authenticated user account.
+
+Endpoint:
+
+### `POST /devices/register`
+
+Headers:
+
+Authorization: Bearer <access_token>
+
+Request Body:
+
+```json
+{
+  "device_identifier": "raspi-001",
+  "device_type": "raspberry_pi",
+  "device_nickname": "Vintage's Pi Tablet",
+  "os_name": "Raspberry Pi OS",
+  "os_version": "Bookworm",
+  "browser_name": "Chromium",
+  "browser_version": "119",
+  "processor_info": "Raspberry Pi 4 Model B",
+  "supports_wifi": true,
+  "supports_offline": true
+}
+```
+
+Example Request (cURL)
+
+```
+
+curl -X POST http://localhost:3000/devices/register \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "device_identifier": "raspi-001",
+    "device_type": "raspberry_pi",
+    "device_nickname": "Vintage Pi Tablet",
+    "os_name": "Raspberry Pi OS",
+    "os_version": "Bookworm",
+    "browser_name": "Chromium",
+    "browser_version": "119",
+    "processor_info": "Raspberry Pi 4 Model B",
+    "supports_wifi": true,
+    "supports_offline": true
+  }'
+
+```
+
+Example Response
+
+```json
+{
+  "status": "ok",
+  "message": "device registered successfully",
+  "data": {
+    "user_id": "uuid",
+    "device_id": "uuid",
+    "device_identifier": "raspi-001",
+    "device_type": "raspberry_pi",
+    "device_nickname": "Vintage Pi Tablet",
+    "os_name": "Raspberry Pi OS",
+    "os_version": "Bookworm",
+    "browser_name": "Chromium",
+    "browser_version": "119",
+    "processor_info": "Raspberry Pi 4 Model B",
+    "supports_wifi": true,
+    "supports_offline": true
+  }
+}
+
+```
+
 # How Authentication Works
 
 1. User logs in through Supabase Auth on the frontend.
@@ -305,9 +413,9 @@ The endpoint:
 - Progress save and retrieval
 - Letter mastery tracking
 - Badge unlock logic
-- Device registration
-- Offline sync foundations
-
+- Device heartbeat / sync endpoint
+- Offline lesson data synchronization
+- Device usage analytics
 ---
 
 # Environment Variables

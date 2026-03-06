@@ -11,7 +11,8 @@ import (
 
 func RegisterUserRoute(app *fiber.App, db *databases.DBManager) {
 	authController := controllers.NewAuthController(db)
+	api := app.Group("/api", middleware.JWTVerifierInstance.AuthMiddleware)
 
-	app.Get("/me", middleware.JWTVerifierInstance.AuthMiddleware, authController.GetProfile)
+	api.Get("/me", authController.GetProfile)
 	backend.PrintInfo("Successfully Registered /me route!")
 }
