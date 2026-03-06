@@ -1,264 +1,357 @@
 # PenPath
-## Full-Stack Cursive Learning Platform 
+## Full-Stack Cursive Learning Platform
 
-PenPath is a full-stack literacy learning platform built with React and a Go (Fiber v3) backend connected to a Supabase-hosted PostgreSQL database.
+PenPath is a full-stack literacy learning platform built with **React** and a **Go (Fiber v3) backend** connected to a **Supabase-hosted PostgreSQL database**.
 
-The backend API is responsible for authentication validation, lesson delivery, user profile management, and student progress tracking.
+The backend API is responsible for:
+
+- Authentication validation
+- Lesson delivery
+- User profile management
+- Student progress tracking
+
+---
 
 # Architecture Overview
-React / React Native Frontend
+
+
+React Frontend
 │
-│  (Supabase Auth)
-│  access_token (JWT)
+│ Supabase Auth
+│ access_token (JWT)
 ▼
 Go Backend (Fiber v3 API)
 │
-│  JWT Verification (JWKS / RS256)
-│  Authorization Enforcement
+│ JWT Verification (JWKS / RS256)
+│ Authorization Enforcement
 │
 ▼
 PostgreSQL (Supabase Hosted)
+
+
+---
+
 # Authentication Flow
 
-1. User authenticates via Supabase Auth on the frontend.
+1. User authenticates via **Supabase Auth** on the frontend.
 
-2. Supabase returns a signed access_token (JWT).
+2. Supabase returns a signed **access_token (JWT)**.
 
-3. Frontend sends API requests with:
+3. The frontend sends API requests with:
 
 
-`Authorization: Bearer <access_token>`
+Authorization: Bearer <access_token>
 
-<ins>Backend:</ins>
 
-- Verifies JWT signature via JWKS (RS256)
+## Backend Responsibilities
 
-- Validates issuer and audience
+The backend then:
 
-- Validates required time-based claims
+- Verifies the **JWT signature using JWKS (RS256)**
+- Validates:
+  - `iss` (issuer)
+  - `aud` (audience)
+  - `exp`, `iat`, `nbf`
+- Extracts the authenticated user identity (`sub`)
 
-- Extracts user identity (sub)
+### Context attached to request
 
-<ins>Backend attaches:</ins>
+- `user_id` ← JWT `sub`
+- `role` ← Supabase role claim
 
-- user_id
+Protected routes execute using this verified identity.
 
-- role
+Database queries are scoped using `user_id`.
 
-- Protected routes execute with verified identity.
+---
 
-- Database queries are scoped using user_id.
+# Tech Stack
 
-# Tech Stack Backend
+## Backend
 
-- Go
+- **Go**
+- **Fiber v3**
+- **pgx / pgxpool**
+- **Supabase (PostgreSQL + Auth)**
+- **JWKS / RS256 JWT verification**
 
-- Fiber v3
+## Frontend
 
-- pgx / pgxpool
+- **React**
+- **Supabase JS Client**
+- **SVG-based tracing components**
+- **Modular lesson architecture**
 
-- Supabase (PostgreSQL + Auth)
+---
 
-- JWKS / RS256 JWT Verification
+# Backend Structure
 
-# Structured middleware architecture
 
-- Frontend
-
-- React (Web and Raspberry Pi Tablet)
-
-- Supabase JS Client
-
-- SVG-based interactive tracing components
-
-- Modular lesson architecture
-
-*** Backend Structure ***
 cmd/
 internal/
-  config/         # Config structs + loading
-  controllers/    # HTTP handlers
-  routes/         # Route registration + grouping
-  middleware/     # Recovery, logging, CORS, JWT verification
-  databases/      # pgxpool manager + table DB access files
-  models/         # Shared models / JWT claim structs
+config/ # Configuration structs + loading
+controllers/ # HTTP handlers
+routes/ # Route registration
+middleware/ # Recovery, logging, CORS, JWT verification
+databases/ # pgxpool manager and DB access layer
+models/ # Shared models / JWT claim structs
 
-Frontend is maintained separately and communicates with this API over HTTP.
+
+The frontend communicates with this API via HTTP.
+
+---
 
 # Authentication & Security Model
 
-PenPath uses Supabase Auth for identity and JWT issuance.
+PenPath uses **Supabase Auth** for identity and JWT issuance.
 
-<ins>The backend:</ins>
+The backend:
 
-- Verifies tokens using Supabase's JWKS endpoint
-
-- Enforces RS256 signature validation
-
+- Verifies tokens using Supabase's **JWKS endpoint**
+- Enforces **RS256 signature validation**
 - Validates:
 
-  -  iss (issuer)
 
-  - aud (audience)
+iss (issuer)
+aud (audience)
+exp, iat, nbf
 
-  - exp, iat, nbf
 
 - Rejects unauthorized requests
-
 - Attaches user identity to request context
 
-<ins>Context Attachment</ins>
+Controllers use this context to scope database queries and enforce authorization.
 
-After verification:
-
-- user_id ← JWT sub
-
-- role ← Supabase role claim
-
-Controllers use this context to scope queries and enforce authorization.
+---
 
 # RLS & Authorization Strategy
 
-*** Supabase Row Level Security (RLS) protects data when using user-scoped queries with anon keys. ***
+Supabase provides **Row Level Security (RLS)** when queries are performed using Supabase client keys.
 
-*However*:
+However, this backend uses **direct pgx PostgreSQL connections**, meaning RLS may not apply automatically.
 
-- When using direct pgx connections
-
-- When using privileged roles
-
-RLS may not apply automatically.
-
-<ins>Therefore, this backend enforces authorization explicitly by:</ins>
+Therefore the backend enforces authorization by:
 
 - Never trusting client-supplied IDs
+- Scoping queries using the verified `user_id`
+- Returning **only non-sensitive fields**
+- Preventing over-fetching at the query level
 
-- Scoping queries using verified user_id
-
-- Returning only non-sensitive fields
-
-- Preventing over-fetching at query level
+---
 
 # Implemented Features
+
 ## Core Infrastructure
 
 - Fiber server bootstrapped with global error handling
-
-- Structured logging middleware
-
+- Structured request logging middleware
 - Panic recovery middleware
-
-- CORS configured for React dev origins
-
+- CORS configuration for development
 - Request size limits
 
 ## Database Layer
 
 - pgxpool connection manager
-
 - Startup DB connectivity verification
-
-- Clean separation between DB layer and controllers
+- Separation between DB layer and controllers
 
 ## JWT Middleware (RS256 + JWKS)
 
 - JWKS loaded once at startup
-
-- Token extracted from Authorization header
-
-- Signature verified via public key selection (kid)
-
+- Token extracted from `Authorization` header
+- Signature verified using public key (`kid`)
 - Claims validated
-
-- User context attached
-
+- User context attached to request
 - Unauthorized requests blocked
 
-# Current Endpoints
-***GET /health***
+---
 
-<ins>Confirms:</ins>
+# Current Endpoints
+
+### `GET /health`
+
+Confirms:
 
 - API uptime
-
 - Database connectivity
+
+### `GET /me`
+
+Returns the authenticated user's profile:
+
+
+{
+"first_name": "...",
+"last_name": "...",
+"age": ...
+}
+
+
+Sensitive fields are never returned.
+---
+
+# API Usage Examples
+
+## Get Authenticated User Profile
+
+Retrieves the profile of the currently authenticated user.
+
+End Point:
+### `GET /me`
+
+Headers:
+Authorization: Bearer <access_token>
+
+The `access_token` is issued by Supabase Auth when the user logs in on the frontend.
+
+## Example Request (cURL)
+```
+
+curl http://localhost:3000/me \
+  -H "Authorization: Bearer <access_token>"
+
+```
+
+## Example Response
+
+{
+  "status": "ok",
+  "message": "User info retrieved",
+  "data": {
+    "first_name": "Vintage",
+    "last_name": "Jones",
+    "age": 8
+  }
+}
+
+## Example Error Response
+Unauthorized (Missing or Invalid Token):
+
+{
+  "status": "error",
+  "message": "missing or invalid auth context"
+}
+
+Profile Not Found:
+
+{
+  "status": "error",
+  "message": "user profile not found"
+}
+
+## Frontend Example (React Fetch)
+
+```
+
+const response = await fetch("http://localhost:3000/me", {
+  method: "GET",
+  headers: {
+    Authorization: `Bearer ${session.access_token}`
+  }
+});
+
+const data = await response.json();
+console.log(data);
+
+```
+
+# How Authentication Works
+
+1. User logs in through Supabase Auth on the frontend.
+
+2. Supabase returns an access_token (JWT).
+
+3. The frontend includes that token in API requests.
+
+4. The backend middleware:
+
+  - Verifies the JWT signature using JWKS
+
+  - Validates claims (`iss`, `aud`, `exp`, `iat`, `nbf`)
+
+  - Extracts the authenticated user ID (sub)
+
+  - Attaches the user identity to the request context.
+
+5. Controllers use that identity to safely query the database.
+
+# Security Guidance
+
+The endpoint:
+
+  - Requires a valid JWT
+  - Only returns non-sensitive user fields
+  - Scopes database queries using the authenticated user id
+  - Rejects requests with invalid or missing tokens
+
+
+---
 
 # Planned API Endpoints
 
-- GET /me – Authenticated user profile
-
 - Lesson retrieval endpoints
-
-- Progress save/retrieve endpoints
-
+- Progress save and retrieval
 - Letter mastery tracking
-
 - Badge unlock logic
+- Device registration
+- Offline sync foundations
 
-- Device registration and offline sync foundations
+---
 
 # Environment Variables
 
-***Sensitive values must not be committed.***
+Sensitive values **must never be committed**.
 
-**Required**
->JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
->DATABASE_URL=postgres://...
+Required:
 
-**Frontend VITE_* variables are for client builds only and must not be reused in backend configuration.**
+
+JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
+DATABASE_URL=postgres://...
+
+
+Frontend `VITE_*` variables are **not used by the backend**.
+
+---
 
 # Development Principles
 
 - Single source of truth for configuration
-
 - Middleware handles cross-cutting concerns
-
 - Controllers remain thin
-
-- Database logic isolated in internal/databases
-
+- Database logic isolated in `internal/databases`
 - JWT verified once per request
-
 - No sensitive fields exposed in responses
-
 - Explicit authorization enforcement
+
+---
 
 # Upcoming Enhancements
 
 - Harden JWT verification (algorithm enforcement)
-
-- Protected route groups (/api/*)
-
-- User profile endpoint (age derived from birthday)
-
-- Lesson data persistence
-
+- Protected route groups (`/api/*`)
+- Lesson persistence
 - Progress analytics
+- Badge and mastery system logic
 
-- Badge & mastery system logic
+---
 
 # References
 
-[Fiber v3 Documentation](https://docs.gofiber.io/)
+- [Fiber v3 Documentation](https://docs.gofiber.io/)
+- [golang-jwt/jwt v5](https://pkg.go.dev/github.com/golang-jwt/jwt/v5)
+- [MicahParks/keyfunc v3 (JWKS)](https://github.com/MicahParks/keyfunc)
+- [Supabase Auth Documentation](https://supabase.com/docs/guides/auth)
+- [pgxpool Documentation](https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool)
 
-[golang-jwt/jwt v5](https://pkg.go.dev/github.com/golang-jwt/jwt/v5#Parser.ParseWithClaims)
-
-[MicahParks/keyfunc v3 (JWKS)](https://github.com/MicahParks/keyfunc)
-
-[Supabase Auth](https://supabase.com/docs/guides/auth/signing-keys) + [JWKS docs](https://www.rfc-editor.org/rfc/rfc7517.html)
-
-[pgxpool Documentation](https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool)
+---
 
 # About PenPath
 
-***PenPath is designed as a scalable cursive and literacy learning system that blends:***
+PenPath is designed as a scalable cursive and literacy learning system that combines:
 
 - Interactive SVG tracing
-
 - Modular lesson flows
-
 - Gamified progress tracking
-
 - Secure backend architecture
 
-Built with long-term extensibility and production readiness in mind.
+The system is built with **long-term extensibility and production readiness in mind**.
