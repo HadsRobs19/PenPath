@@ -214,6 +214,8 @@ curl http://localhost:3000/me \
 
 ## Example Response
 
+```
+
 {
   "status": "ok",
   "message": "User info retrieved",
@@ -224,20 +226,30 @@ curl http://localhost:3000/me \
   }
 }
 
+```
+
 ## Example Error Response
 Unauthorized (Missing or Invalid Token):
+
+```
 
 {
   "status": "error",
   "message": "missing or invalid auth context"
 }
 
+```
+
 Profile Not Found:
+
+```
 
 {
   "status": "error",
   "message": "user profile not found"
 }
+
+```
 
 ## Frontend Example (React Fetch)
 
