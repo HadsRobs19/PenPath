@@ -71,6 +71,7 @@ func main() {
 	)
 
 	routes.RegisterHealthRoute(app, dbManager)
+	routes.RegisterUserRoute(app, dbManager)
 
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
@@ -105,11 +106,11 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			ServiceRoleKey: "key",
 		},
 		JWTConfig: config.JWTConfig{
-			Issuer:        "",
+			Issuer:        os.Getenv("JWT_ISSUER"),
 			Audience:      "authenticated",
 			SigningMethod: "RS256",
 			UseJWKS:       true,
-			JWKSURL:       os.Getenv("JWK_URL"),
+			JWKSURL:       os.Getenv("JWKS_URL"),
 		},
 	}
 
