@@ -72,6 +72,7 @@ func main() {
 
 	routes.RegisterHealthRoute(app, dbManager)
 	routes.RegisterUserRoute(app, dbManager)
+	routes.RegisterDeviceRoute(app, dbManager)
 
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
@@ -101,9 +102,9 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			SSLMode:  "disabled",
 		},
 		SupabaseConfig: config.SupabaseConfig{
-			ProjectURL:     "url",
+			ProjectURL:     os.Getenv("SUPABASE_URL"),
 			AuthURL:        "auth-url",
-			ServiceRoleKey: "key",
+			ServiceRoleKey: os.Getenv("SERVICE_KEY"),
 		},
 		JWTConfig: config.JWTConfig{
 			Issuer:        os.Getenv("JWT_ISSUER"),
