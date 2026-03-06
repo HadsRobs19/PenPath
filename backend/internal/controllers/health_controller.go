@@ -13,7 +13,6 @@ type HealthController struct {
 	DB *databases.DBManager
 }
 
-// constructor
 func NewHealthController(db *databases.DBManager) *HealthController {
 	return &HealthController{DB: db}
 }
