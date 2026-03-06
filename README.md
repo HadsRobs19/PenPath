@@ -247,7 +247,7 @@ curl http://localhost:3000/me \
 
 ## Example Response
 
-```
+```json
 
 {
   "status": "ok",
@@ -264,7 +264,7 @@ curl http://localhost:3000/me \
 ## Example Error Response
 Unauthorized (Missing or Invalid Token):
 
-```
+```json
 
 {
   "status": "error",
@@ -275,7 +275,7 @@ Unauthorized (Missing or Invalid Token):
 
 Profile Not Found:
 
-```
+```json
 
 {
   "status": "error",
