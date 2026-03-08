@@ -5,7 +5,7 @@ type AppConfig struct {
 	CaddyConfig    CaddyConfig    `json:"caddy_config"`
 	DBConfig       DBConfig       `json:"db_config"`
 	JWTConfig      JWTConfig      `json:"jwt_config"`
-	StorageConfig  StorageConfig  `json:"storage_config`
-	SupabaseConfig SupabaseConfig `json:"supabase_config`
+	StorageConfig  StorageConfig  `json:"storage_config"`
+	SupabaseConfig SupabaseConfig `json:"supabase_config"`
 	ServiceConfig  ServiceConfig  `json:"service_config"`
 }

@@ -106,26 +106,29 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			PublicHost:  "api.penpath.app",
 			ProxyTarget: "localhost:3000",
 		},
-		// sample loaded database main configurations
 		DBConfig: config.DBConfig{
 			Host:     "localhost",
 			Port:     5432,
 			User:     "user",
-			Password: os.Getenv("DATABASE_PASSWORD"),
+			Password: os.Getenv("DB_PASSWORD"),
 			DBName:   "mydb",
-			SSLMode:  "disabled",
+			SSLMode:  "disable",
 		},
 		SupabaseConfig: config.SupabaseConfig{
 			ProjectURL:     os.Getenv("SUPABASE_URL"),
-			AuthURL:        "auth-url",
-			ServiceRoleKey: os.Getenv("SERVICE_KEY"),
+			AuthURL:        os.Getenv("SUPABASE_URL") + "/auth/v1",
+			ServiceRoleKey: os.Getenv("SUPABASE_SERVICE_KEY"),
 		},
 		JWTConfig: config.JWTConfig{
-			Issuer:        os.Getenv("JWT_ISSUER"),
+			Issuer:        os.Getenv("SUPABASE_JWT_ISSUER"),
 			Audience:      "authenticated",
 			SigningMethod: "RS256",
 			UseJWKS:       true,
-			JWKSURL:       os.Getenv("JWKS_URL"),
+			JWKSURL:       os.Getenv("SUPABASE_JWKS_URL"),
+		},
+		StorageConfig: config.StorageConfig{
+			BucketName: os.Getenv("SUPABASE_STORAGE_BUCKET"),
+			StorageURL: os.Getenv("SUPABASE_URL") + "/storage/v1",
 		},
 	}
 
