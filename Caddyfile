@@ -1,25 +1,40 @@
-# Caddyfile — PenPath reverse proxy config
+# Caddyfile — PenPath domain routing config
 #
-# Caddy is the front door. All traffic from the outside world hits Caddy first.
-# Caddy then forwards (reverse proxies) every request to Fiber on localhost:3000.
+# Caddy is the doorman of the apartment building.
+# It reads the domain on every incoming request and forwards it
+# to the correct Fiber process running on this server.
 #
-# Caddy automatically:
-#   - Obtains a TLS certificate from Let's Encrypt for your domain
-#   - Renews the certificate before it expires
-#   - Redirects all HTTP (port 80) traffic to HTTPS (port 443)
+# Caddy handles automatically for every domain block below:
+#   - TLS certificate from Let's Encrypt (free, auto-renewed)
+#   - HTTP -> HTTPS redirect
+#   - Forwarding (reverse proxy) to the correct Fiber port
 #
-# Fiber never touches TLS. It only sees plain HTTP from Caddy on localhost:3000.
+# Local development does NOT use this file.
+# Run Fiber directly with `go run ./cmd/server` for local dev.
 
 # -----------------------------------------------------------------------
-# PRODUCTION — replace penpath.app with your real domain before deploying
+# PRODUCTION
+# Public API — used by the live mobile app
+# DNS: api.penpath.app  ->  your server IP (A record)
 # -----------------------------------------------------------------------
-penpath.app {
+api.penpath.app {
     reverse_proxy localhost:3000
 }
 
 # -----------------------------------------------------------------------
-# LOCAL DEVELOPMENT — comment out the production block above and use this.
-# Run `caddy trust` once to make your browser accept Caddy's local cert.
+# STAGING
+# Internal testing API — used before releasing to production
+# DNS: staging.penpath.app  ->  your server IP (A record)
+# -----------------------------------------------------------------------
+staging.penpath.app {
+    reverse_proxy localhost:3001
+}
+
+# -----------------------------------------------------------------------
+# LOCAL DEVELOPMENT
+# Uncomment this block only when testing Caddy locally.
+# Run `caddy trust` once so your browser accepts the local certificate.
+# Leave commented out on the production server.
 # -----------------------------------------------------------------------
 # localhost {
 #     reverse_proxy localhost:3000

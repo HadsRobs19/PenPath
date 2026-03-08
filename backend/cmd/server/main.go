@@ -96,10 +96,14 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			IPv6Enabled: true,
 		},
 		// CaddyConfig describes how Caddy is set up in front of this Fiber backend.
-		// Caddy handles TLS, HTTP->HTTPS redirects, and forwards all traffic to ProxyTarget.
+		// Caddy handles TLS, HTTP->HTTPS redirects, and routes by domain to the correct port.
+		//
+		// Production config.json:  PublicHost = api.penpath.app,     ProxyTarget = localhost:3000
+		// Staging config.json:     PublicHost = staging.penpath.app, ProxyTarget = localhost:3001
+		// Local dev:               Caddy not used, Fiber runs directly on 127.0.0.1:3000
 		CaddyConfig: config.CaddyConfig{
 			AdminAPI:    "localhost:2019",
-			PublicHost:  "penpath.app",
+			PublicHost:  "api.penpath.app",
 			ProxyTarget: "localhost:3000",
 		},
 		// sample loaded database main configurations
