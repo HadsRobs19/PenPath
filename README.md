@@ -206,6 +206,18 @@ Each lesson step may contain:
 
 The backend performs **separate queries for lessons and lesson steps** and assembles the final response structure.
 
+## Progress Persistence System
+
+Student performance data is stored using the **user_progress table**.
+
+Features include:
+
+- Supports **multiple attempts per lesson step**
+- Tracks **accuracy and time spent**
+- Automatically increments **attempt numbers**
+- Records **completion timestamps**
+- Supports optional **device tracking and notes**
+
 ---
 
 # Current Endpoints
@@ -264,6 +276,34 @@ Returns all **writing lessons** with their ordered lesson steps.
 Lessons are filtered by category and returned alphabetically by letter.
 
 Sensitive fields are never returned.
+
+### `POST /api/progress/reading`
+
+Persists progress for a **reading lesson step**.
+
+Each submission records:
+
+- Student ID
+- Lesson step
+- Attempt number
+- Accuracy percentage
+- Time spent
+- Completion status
+- Optional notes
+- Device identifier
+- Completion timestamp
+
+Duplicate submissions are handled automatically by incrementing the attempt number.
+
+---
+
+### `POST /api/progress/writing`
+
+Persists progress for a **writing lesson step**.
+
+The same progress metrics are recorded as the reading endpoint.
+
+Both endpoints allow multiple attempts per lesson step, enabling detailed progress analytics and mastery tracking.
 ---
 
 # API Usage Examples
@@ -287,6 +327,8 @@ curl http://localhost:3000/me \
   -H "Authorization: Bearer <access_token>"
 
 ```
+
+
 
 ## Example Response
 
@@ -482,6 +524,64 @@ curl http://localhost:3000/api/lessons/reading \
 
 ```
 
+## Save Lesson Progress
+
+Stores the result of a student completing a lesson step.
+
+Endpoint:
+
+### `POST /api/progress/writing`
+
+Headers:
+
+Authorization: Bearer <access_token>
+
+Request Body:
+
+```json
+{
+  "lesson_step_id": "uuid",
+  "accuracy_percent": 92.5,
+  "time_spent_seconds": 18,
+  "is_completed": true,
+  "notes": "Improved letter shape",
+  "device_id": "uuid"
+}
+
+```
+
+Example Request (cURL):
+
+```
+
+curl -X POST http://localhost:3000/api/progress/writing \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "lesson_step_id": "uuid",
+    "accuracy_percent": 92.5,
+    "time_spent_seconds": 18,
+    "is_completed": true,
+    "notes": "Improved letter shape",
+    "device_id": "uuid"
+  }'
+
+```
+
+Example Response:
+
+```json
+
+{
+  "status": "ok",
+  "data": {
+    "lesson_step_id": "uuid",
+    "attempt_number": 3
+  }
+}
+
+```
+
 # How Authentication Works
 
 1. User logs in through Supabase Auth on the frontend.
@@ -516,7 +616,6 @@ The endpoint:
 
 # Planned API Endpoints
 
-- Progress save and retrieval
 - Letter mastery tracking
 - Badge unlock logic
 - Device heartbeat / sync endpoint
