@@ -303,7 +303,7 @@ Persists progress for a **writing lesson step**.
 
 The same progress metrics are recorded as the reading endpoint.
 
-Both endpoints allow multiple attempts per lesson step, enabling detailed progress analytics and mastery tracking.
+*** Both endpoints allow multiple attempts per lesson step, enabling detailed progress analytics and mastery tracking. ***
 ---
 
 # API Usage Examples
