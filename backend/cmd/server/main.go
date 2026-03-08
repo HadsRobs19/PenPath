@@ -74,6 +74,7 @@ func main() {
 	routes.RegisterUserRoute(app, dbManager)
 	routes.RegisterDeviceRoute(app, dbManager)
 	routes.RegisterLessonRoute(app, dbManager)
+	routes.RegisterProgressRoute(app, dbManager)
 
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
@@ -85,34 +86,50 @@ func main() {
 
 func loadAppConfig(appConfig *config.AppConfig) {
 	templateMainConfig := config.AppConfig{
+		// Fiber is locked to 127.0.0.1 so only Caddy (running on the same machine)
+		// can reach it. External traffic must go through Caddy on port 443.
 		ServiceConfig: config.ServiceConfig{
-			IPv4Host:    "0.0.0.0",
+			IPv4Host:    "127.0.0.1",
 			IPv4Port:    "3000",
 			IPv4Enabled: true,
 			IPv6Host:    "[::]",
 			IPv6Port:    "3000",
 			IPv6Enabled: true,
 		},
-		// sample loaded database main configurations
+		// CaddyConfig describes how Caddy is set up in front of this Fiber backend.
+		// Caddy handles TLS, HTTP->HTTPS redirects, and routes by domain to the correct port.
+		//
+		// Production config.json:  PublicHost = api.penpath.app,     ProxyTarget = localhost:3000
+		// Staging config.json:     PublicHost = staging.penpath.app, ProxyTarget = localhost:3001
+		// Local dev:               Caddy not used, Fiber runs directly on 127.0.0.1:3000
+		CaddyConfig: config.CaddyConfig{
+			AdminAPI:    "localhost:2019",
+			PublicHost:  "api.penpath.app",
+			ProxyTarget: "localhost:3000",
+		},
 		DBConfig: config.DBConfig{
 			Host:     "localhost",
 			Port:     5432,
 			User:     "user",
-			Password: os.Getenv("DATABASE_PASSWORD"),
+			Password: os.Getenv("DB_PASSWORD"),
 			DBName:   "mydb",
-			SSLMode:  "disabled",
+			SSLMode:  "disable",
 		},
 		SupabaseConfig: config.SupabaseConfig{
-			ProjectURL:     "url",
-			AuthURL:        "auth-url",
-			ServiceRoleKey: "key",
+			ProjectURL:     os.Getenv("SUPABASE_URL"),
+			AuthURL:        os.Getenv("SUPABASE_URL") + "/auth/v1",
+			ServiceRoleKey: os.Getenv("SUPABASE_SERVICE_KEY"),
 		},
 		JWTConfig: config.JWTConfig{
-			Issuer:        os.Getenv("JWT_ISSUER"),
+			Issuer:        os.Getenv("SUPABASE_JWT_ISSUER"),
 			Audience:      "authenticated",
 			SigningMethod: "RS256",
 			UseJWKS:       true,
-			JWKSURL:       os.Getenv("JWKS_URL"),
+			JWKSURL:       os.Getenv("SUPABASE_JWKS_URL"),
+		},
+		StorageConfig: config.StorageConfig{
+			BucketName: os.Getenv("SUPABASE_STORAGE_BUCKET"),
+			StorageURL: os.Getenv("SUPABASE_URL") + "/storage/v1",
 		},
 	}
 
