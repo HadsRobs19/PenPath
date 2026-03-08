@@ -108,7 +108,7 @@ func (d *DeviceController) PostDevice(c fiber.Ctx) error {
 					supports_wifi,
 					supports_offline
 				)
-				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+				VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
 				RETURNING id`,
 				body.DeviceID,
 				body.DeviceType,
