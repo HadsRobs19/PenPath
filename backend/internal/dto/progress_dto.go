@@ -6,4 +6,5 @@ type ProgressSubmission struct {
 	TimeSpentSeconds int     `json:"time_spent_seconds"`
 	IsCompleted      bool    `json:"is_completed"`
 	Notes            string  `json:"notes"`
+	DeviceID         string  `json:"device_id"`
 }

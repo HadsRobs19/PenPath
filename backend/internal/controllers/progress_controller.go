@@ -29,6 +29,8 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
+	_ = progressType
+
 	rawUserID := c.Locals("user_id")
 
 	userID, ok := rawUserID.(string)
@@ -82,9 +84,44 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 
 	attemptNumber := previousAttempt + 1
 
+	// inserting user progress into database
+	_, err = p.DB.DB.Exec(
+		ctx,
+		`INSERT INTO user_progress(
+			student_id,
+			lesson_step_id,
+			attempt_number,
+			accuracy_percent,
+			time_spent_seconds,
+			is_completed,
+			notes,
+			device_id,
+			completion_timestamp
+		)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW())`,
+		userID,
+		body.LessonStepID,
+		attemptNumber,
+		body.AccuracyPercent,
+		body.TimeSpentSeconds,
+		body.Notes,
+		body.DeviceID,
+		body.IsCompleted,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to save progress",
+		})
+	}
+
 	return c.JSON(fiber.Map{
-		"status":  "ok",
-		"attempt": attemptNumber,
+		"status": "ok",
+		"data": fiber.Map{
+			"lesson_step_id": body.LessonStepID,
+			"attempt_number": attemptNumber,
+		},
 	})
 
 }
