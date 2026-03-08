@@ -86,6 +86,7 @@ Database queries are scoped using `user_id`.
 
 # Backend Structure
 
+```
 
 cmd/
 internal/
@@ -96,6 +97,7 @@ middleware/ # Recovery, logging, CORS, JWT verification
 databases/ # pgxpool manager and DB access layer
 models/ # Shared models / JWT claim structs
 
+```
 
 The frontend communicates with this API via HTTP.
 
@@ -174,6 +176,36 @@ Therefore the backend enforces authorization by:
 - Metadata captured for hardware, OS, browser, and offline capabilities
 - Designed to support **Raspberry Pi classroom devices and future offline synchronization**
 
+## Lesson Retrieval System
+
+Lesson retrieval endpoints expose structured lesson content to authenticated clients.
+
+Features include:
+
+- Lessons returned in deterministic order
+- Step sequences returned in correct progression order
+- Rich metadata included for UI rendering
+- Compatible with **web, tablet, and Raspberry Pi clients**
+- Designed for **modular lesson delivery**
+
+Lesson data includes:
+
+- Lesson metadata
+- Difficulty level
+- Estimated duration
+- Cover imagery
+- Ordered step sequences
+
+Each lesson step may contain:
+
+- Step type (`tracing`, `reading`, `listening`, `checkpoint`)
+- Instruction text
+- Optional audio assets
+- Optional image assets
+- Sequence order
+
+The backend performs **separate queries for lessons and lesson steps** and assembles the final response structure.
+
 ---
 
 # Current Endpoints
@@ -196,7 +228,7 @@ Returns the authenticated user's profile:
 "age": ...
 }
 
-### `POST /devices/register`
+### `POST /api/devices/register`
 
 Registers a client device and associates it with the authenticated user.
 
@@ -219,6 +251,17 @@ Supported device types:
 - `raspberry_pi`
 - `desktop`
 
+### `GET /api/lessons/reading`
+
+Returns all **reading lessons** with their ordered lesson steps.
+
+Lessons are filtered by category and returned alphabetically by letter.
+
+### `GET /api/lessons/writing`
+
+Returns all **writing lessons** with their ordered lesson steps.
+
+Lessons are filtered by category and returned alphabetically by letter.
 
 Sensitive fields are never returned.
 ---
@@ -306,7 +349,7 @@ Registers a device and links it to the authenticated user account.
 
 Endpoint:
 
-### `POST /devices/register`
+### `POST /api/devices/register`
 
 Headers:
 
@@ -375,6 +418,70 @@ Example Response
 
 ```
 
+## Retrieve Writing Lessons
+
+Endpoint:
+### GET /api/lessons/writing
+
+Headers:
+Authorization: Bearer <access_token>
+
+Example Request:
+
+```
+
+curl http://localhost:3000/api/lessons/writing \
+  -H "Authorization: Bearer <access_token>"
+
+```
+
+## Retrieve Reading Lessons
+
+Endpoint:
+### GET /api/lessons/reading
+
+Headers:
+Authorization: Bearer <access_token>
+
+Example Request:
+
+```
+
+curl http://localhost:3000/api/lessons/reading \
+  -H "Authorization: Bearer <access_token>"
+
+```
+
+### Example Lesson Response
+
+```json
+{
+  "status": "ok",
+  "lessons": [
+    {
+      "lesson_id": "uuid",
+      "letter": "C",
+      "title": "Cursive Letter C",
+      "description": "Trace the cursive C",
+      "difficulty_level": 1,
+      "estimated_duration_minutes": 3,
+      "cover_image_url": "...",
+      "steps": [
+        {
+          "step_type": "tracing",
+          "sequence_order": 1,
+          "title": "Trace the Letter",
+          "instruction_text": "Follow the flow of the cursive letter.",
+          "audio_url": null,
+          "image_url": null
+        }
+      ]
+    }
+  ]
+}
+
+```
+
 # How Authentication Works
 
 1. User logs in through Supabase Auth on the frontend.
@@ -409,7 +516,6 @@ The endpoint:
 
 # Planned API Endpoints
 
-- Lesson retrieval endpoints
 - Progress save and retrieval
 - Letter mastery tracking
 - Badge unlock logic
@@ -448,7 +554,6 @@ Frontend `VITE_*` variables are **not used by the backend**.
 # Upcoming Enhancements
 
 - Harden JWT verification (algorithm enforcement)
-- Protected route groups (`/api/*`)
 - Lesson persistence
 - Progress analytics
 - Badge and mastery system logic
