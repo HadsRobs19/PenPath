@@ -85,13 +85,22 @@ func main() {
 
 func loadAppConfig(appConfig *config.AppConfig) {
 	templateMainConfig := config.AppConfig{
+		// Fiber is locked to 127.0.0.1 so only Caddy (running on the same machine)
+		// can reach it. External traffic must go through Caddy on port 443.
 		ServiceConfig: config.ServiceConfig{
-			IPv4Host:    "0.0.0.0",
+			IPv4Host:    "127.0.0.1",
 			IPv4Port:    "3000",
 			IPv4Enabled: true,
 			IPv6Host:    "[::]",
 			IPv6Port:    "3000",
 			IPv6Enabled: true,
+		},
+		// CaddyConfig describes how Caddy is set up in front of this Fiber backend.
+		// Caddy handles TLS, HTTP->HTTPS redirects, and forwards all traffic to ProxyTarget.
+		CaddyConfig: config.CaddyConfig{
+			AdminAPI:    "localhost:2019",
+			PublicHost:  "penpath.app",
+			ProxyTarget: "localhost:3000",
 		},
 		// sample loaded database main configurations
 		DBConfig: config.DBConfig{

@@ -1,0 +1,26 @@
+# Caddyfile — PenPath reverse proxy config
+#
+# Caddy is the front door. All traffic from the outside world hits Caddy first.
+# Caddy then forwards (reverse proxies) every request to Fiber on localhost:3000.
+#
+# Caddy automatically:
+#   - Obtains a TLS certificate from Let's Encrypt for your domain
+#   - Renews the certificate before it expires
+#   - Redirects all HTTP (port 80) traffic to HTTPS (port 443)
+#
+# Fiber never touches TLS. It only sees plain HTTP from Caddy on localhost:3000.
+
+# -----------------------------------------------------------------------
+# PRODUCTION — replace penpath.app with your real domain before deploying
+# -----------------------------------------------------------------------
+penpath.app {
+    reverse_proxy localhost:3000
+}
+
+# -----------------------------------------------------------------------
+# LOCAL DEVELOPMENT — comment out the production block above and use this.
+# Run `caddy trust` once to make your browser accept Caddy's local cert.
+# -----------------------------------------------------------------------
+# localhost {
+#     reverse_proxy localhost:3000
+# }
