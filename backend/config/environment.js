@@ -6,6 +6,7 @@ require('dotenv').config({
 const requiredVars = [
   'SUPABASE_URL',
   'SUPABASE_ANON_KEY',
+  'SUPABASE_SERVICE_KEY',
   'NODE_ENV',
   'DB_SCHEMA'
 ];

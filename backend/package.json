@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "NODE_ENV=local node server.js",
-    "staging": "NODE_ENV=staging node server.js",
-    "prod": "NODE_ENV=production node server.js",
+    "dev": "cross-env NODE_ENV=local node server.js",
+    "staging": "cross-env NODE_ENV=staging node server.js",
+    "prod": "cross-env NODE_ENV=production node server.js",
     "setup-db": "node setup-database.js"
   },
   "keywords": [
@@ -18,10 +18,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "@supabase/supabase-js": "^2.38.4"
+    "@supabase/supabase-js": "^2.38.4",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "nodemon": "^3.0.2"
   }
 }

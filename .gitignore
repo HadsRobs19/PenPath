@@ -21,6 +21,11 @@ yarn-error.log*
 package-lock.json
 
 # ============================================
+# Generated config — may contain secrets at runtime
+# ============================================
+backend/config/config.json
+
+# ============================================
 # Go (if used)
 # ============================================
 /bin/
