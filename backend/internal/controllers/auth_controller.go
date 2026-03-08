@@ -40,7 +40,7 @@ func (a *AuthController) GetProfile(c fiber.Ctx) error {
 		ctx,
 		`SELECT first_name, last_name, age
 		FROM users
-		WHERE id = $!`,
+		WHERE id = $1`,
 		userID,
 	).Scan(&firstName, &lastName, &age)
 
