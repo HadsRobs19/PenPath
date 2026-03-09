@@ -14,6 +14,7 @@ The backend API is responsible for:
 
 # Architecture Overview
 
+```
 
 React Frontend
 │
@@ -28,6 +29,64 @@ Go Backend (Fiber v3 API)
 ▼
 PostgreSQL (Supabase Hosted)
 
+```
+
+---
+
+# Learning Analytics Pipeline
+
+PenPath transforms raw lesson interactions into meaningful learning analytics through a structured backend pipeline.
+
+```
+
+Student Completes Lesson Step
+│
+▼
+POST /api/progress/(reading|writing)
+│
+│ ProgressController
+│
+▼
+user_progress table
+(Stores attempt data)
+│
+│ accuracy_percent
+│ time_spent_seconds
+│ attempt_number
+│ completion status
+│
+▼
+LetterMasteryService
+│
+│ Calculates mastery metrics
+│
+▼
+letter_mastery table
+│
+│ perfect_attempts_count
+│ average_accuracy_percent
+│ total_time_spent_seconds
+│ most_missed_step_id
+│ is_mastered
+│
+▼
+GET /api/progress
+│
+│ ProgressController
+│
+▼
+Progress Summary Response
+│
+├── Lessons Completed
+├── Letters Mastered
+├── Letters Needing Work
+└── Average Accuracy
+│
+▼
+Frontend Dashboard
+(Account Progress Page)
+
+```
 
 ---
 
