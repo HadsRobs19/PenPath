@@ -21,9 +21,16 @@ DROP TABLE IF EXISTS teachers_parents CASCADE;
 ALTER TABLE users
   ADD COLUMN IF NOT EXISTS username VARCHAR(20) UNIQUE;
 
-ALTER TABLE users
-  ADD CONSTRAINT IF NOT EXISTS username_alphanumeric
-  CHECK (username ~ '^[a-zA-Z0-9]{3,20}$');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'username_alphanumeric'
+  ) THEN
+    ALTER TABLE users
+      ADD CONSTRAINT username_alphanumeric
+      CHECK (username ~ '^[a-zA-Z0-9]{3,20}$');
+  END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 
