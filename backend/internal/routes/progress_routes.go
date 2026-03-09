@@ -14,4 +14,5 @@ func RegisterProgressRoute(app *fiber.App, db *databases.DBManager) {
 	api := app.Group("/api", middleware.JWTVerifierInstance.AuthMiddleware)
 	api.Post("/progress/reading", progressController.SaveReadingProgress)
 	api.Post("/progress/writing", progressController.SaveWritingProgress)
+	api.Get("/progress", progressController.GetProgressSummary)
 }
