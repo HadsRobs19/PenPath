@@ -538,6 +538,7 @@ Returned metrics include:
 - Overall **average accuracy**
 - Letters that have been **mastered**
 - Letters that **require additional practice**
+- Badges the student has earned
 
 The endpoint is optimized for performance by using **indexed lookups and SQL aggregation functions**.
 
@@ -892,7 +893,6 @@ The endpoint:
 
 # Planned API Endpoints
 
-- Badge unlock logic
 - Device heartbeat / sync endpoint
 - Offline lesson data synchronization
 - Device usage analytics
@@ -930,7 +930,6 @@ Frontend `VITE_*` variables are **not used by the backend**.
 - Harden JWT verification (algorithm enforcement)
 - Lesson persistence
 - Progress analytics
-- Badge and mastery system logic
 
 ---
 
