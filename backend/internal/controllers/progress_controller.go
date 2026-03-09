@@ -4,6 +4,7 @@ import (
 	"context"
 	"penpath-backend/internal/databases"
 	"penpath-backend/internal/dto"
+	"penpath-backend/internal/services"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -104,9 +105,25 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		attemptNumber,
 		body.AccuracyPercent,
 		body.TimeSpentSeconds,
+		body.IsCompleted,
 		body.Notes,
 		body.DeviceID,
-		body.IsCompleted,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to insert progress",
+		})
+	}
+
+	// auto updates letter mastery
+	masteryService := services.NewLetterMasteryService(p.DB)
+
+	err = masteryService.UpdateLetterMastery(
+		ctx,
+		userID,
+		body.LessonStepID,
 	)
 
 	if err != nil {
