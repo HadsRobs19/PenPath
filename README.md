@@ -70,6 +70,18 @@ letter_mastery table
 │ is_mastered
 │
 ▼
+BadgeService
+│
+│ Evaluates badge criteria
+│
+▼
+user_badges table
+│
+│ badge_id
+│ earned_at
+│ progress_count
+│
+▼
 GET /api/progress
 │
 │ ProgressController
@@ -80,7 +92,8 @@ Progress Summary Response
 ├── Lessons Completed
 ├── Letters Mastered
 ├── Letters Needing Work
-└── Average Accuracy
+├── Average Accuracy
+└── Earned Badges
 │
 ▼
 Frontend Dashboard
@@ -364,6 +377,63 @@ The progress summary powers the following frontend features:
 - Overall **student accuracy metrics**
 
 The endpoint is protected by **JWT authentication** and automatically scopes results using the authenticated `user_id`.
+
+## Badge Reward System
+
+PenPath includes an automated **badge awarding system** that rewards students when they complete lessons and achieve learning milestones.
+
+The badge system operates automatically whenever lesson progress is submitted.
+
+Features include:
+
+- Automatic **badge eligibility evaluation**
+- Prevention of **duplicate badge awards**
+- Storage of **badge timestamps**
+- Support for **future gamification mechanics**
+- Designed for **extensible achievement systems**
+
+Badge logic is implemented through the `BadgeService`, which evaluates badge criteria after each progress submission.
+
+### Badge Evaluation Flow
+
+When a student completes a lesson step:
+
+1. Progress is saved in the `user_progress` table
+2. The system checks whether the **entire lesson is completed**
+3. If the lesson is complete, the backend searches for a badge with a matching unlock condition
+4. If a badge is found and has not already been awarded:
+   - The badge is inserted into the `user_badges` table
+   - The `earned_at` timestamp is recorded
+
+Duplicate awards are prevented using a **database uniqueness constraint**:
+UNIQUE(student_id, badge_id)
+
+
+Combined with the SQL safeguard:
+
+
+ON CONFLICT (student_id, badge_id) DO NOTHING
+
+
+This guarantees that a student **cannot receive the same badge multiple times**.
+
+### Example Badge Criteria
+
+Badges are defined in the `badges` table and can represent:
+
+- Lesson completion rewards
+- Mastery milestones
+- Accuracy achievements
+
+Example badge conditions:
+
+|     Badge     | Unlock Condition       |
+|---------------|------------------------|
+| Colors Badge  | Complete Colors lesson |
+| Animals Badge | Complete Animals lesson|  
+| Letter Master | Master 5 letters       |
+
+This architecture allows new badges to be introduced **without modifying backend code**, simply by inserting new badge definitions into the database.
 
 ---
 
