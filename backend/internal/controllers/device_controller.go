@@ -18,22 +18,6 @@ func NewDeviceController(db *databases.DBManager) *DeviceController {
 	return &DeviceController{DB: db}
 }
 
-/*
-Inside PostDevice:
-
-read authenticated user from c.Locals("user_id")
-
-parse request JSON into local DeviceData
-
-validate required fields
-
-query/insert into devices
-
-query/insert into user_devices
-
-return JSON response
-*/
-
 func (d *DeviceController) PostDevice(c fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

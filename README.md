@@ -93,7 +93,20 @@ Progress Summary Response
 ├── Letters Mastered
 ├── Letters Needing Work
 ├── Average Accuracy
-└── Earned Badges
+│
+▼
+GET /api/badges
+│
+│ BadgeController
+│
+▼
+Earned Badge List
+│
+├── Badge Name
+├── Description
+├── Icon
+├── Badge Type
+└── Earned Timestamp
 │
 ▼
 Frontend Dashboard
@@ -435,6 +448,43 @@ Example badge conditions:
 
 This architecture allows new badges to be introduced **without modifying backend code**, simply by inserting new badge definitions into the database.
 
+## Badge Retrieval System
+
+PenPath exposes a dedicated endpoint that allows clients to retrieve the badges a student has earned.
+
+This endpoint enables the frontend to display:
+
+- Achievement badges
+- Lesson completion rewards
+- Gamification milestones
+- Student accomplishment history
+
+The system retrieves badge data from the following tables:
+
+- `user_badges`
+- `badges`
+
+A join query combines badge metadata with the student's earned badge records.
+
+Returned badge metadata includes:
+
+- Badge ID
+- Badge name
+- Description
+- Icon URL
+- Badge type
+- Points value
+- Earned timestamp
+
+Badges are returned **sorted by the time they were earned**, allowing the frontend to display the most recent achievements first.
+
+The endpoint is designed to support multiple client platforms, including:
+
+- Web browsers
+- Raspberry Pi Learning Tablet
+
+All badge retrieval requests are protected by **JWT authentication**, and results are automatically scoped to the authenticated `user_id`.
+
 ---
 
 # Current Endpoints
@@ -538,11 +588,33 @@ Returned metrics include:
 - Overall **average accuracy**
 - Letters that have been **mastered**
 - Letters that **require additional practice**
-- Badges the student has earned
+- Badges are retrieved separately via /api/badges
 
 The endpoint is optimized for performance by using **indexed lookups and SQL aggregation functions**.
 
 This endpoint powers the **frontend progress dashboard** displayed in the student account page.
+
+### `GET /api/badges`
+
+Returns all badges earned by the authenticated student.
+
+The endpoint includes full badge metadata along with the timestamp when the badge was earned.
+
+Returned badge fields include:
+
+- Badge ID
+- Name
+- Description
+- Icon URL
+- Badge type
+- Points value
+- Earned timestamp
+
+Badges are sorted by `earned_at` in **descending order**, ensuring the most recent achievements appear first.
+
+This endpoint powers the **student achievements display** used by the frontend dashboard and badge reward screens.
+
+Authentication is required and results are scoped using the verified `user_id`.
 ---
 
 # API Usage Examples
@@ -858,6 +930,59 @@ Example Response:
 
 ```
 
+## Retrieve Earned Badges
+
+Returns all badges earned by the authenticated student.
+
+Endpoint:
+
+### `GET /api/badges`
+
+Headers:
+
+Authorization: Bearer <access_token>
+
+Example Request:
+
+```
+
+curl http://localhost:3000/api/badges
+
+-H "Authorization: Bearer <access_token>"
+
+```
+
+Example Response:
+
+```json
+{
+  "status": "ok",
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Colors Badge",
+      "description": "Completed the Colors lesson",
+      "icon_url": "/assets/rainbow-pen.png",
+      "badge_type": "achievement",
+      "points": 50,
+      "earned_at": "2026-02-04T15:23:19Z"
+    },
+    {
+      "id": "uuid",
+      "name": "Animals Badge",
+      "description": "Completed the Animals lesson",
+      "icon_url": "/assets/animal-pen.png",
+      "badge_type": "achievement",
+      "points": 50,
+      "earned_at": "2026-02-04T15:30:02Z"
+    }
+  ]
+}
+
+```
+
+---
+
 
 # How Authentication Works
 
@@ -905,7 +1030,7 @@ Sensitive values **must never be committed**.
 Required:
 
 
-JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
+>JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
 DATABASE_URL=postgres://...
 
 
@@ -928,8 +1053,6 @@ Frontend `VITE_*` variables are **not used by the backend**.
 # Upcoming Enhancements
 
 - Harden JWT verification (algorithm enforcement)
-- Lesson persistence
-- Progress analytics
 
 ---
 
