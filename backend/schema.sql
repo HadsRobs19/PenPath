@@ -1,160 +1,80 @@
 -- ============================================
 -- PenPath PostgreSQL Database Schema
--- MS6-3: PostgreSQL Database Schema Design
+-- Student-only system. No parent or teacher tables.
 -- ============================================
--- This schema supports the PenPath cursive learning application
--- with progress tracking, badge system, and multi-device support
 
 -- ============================================
--- 1. USERS TABLE (Students)
+-- 1. USERS TABLE (Students only)
 -- ============================================
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   -- Authentication
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
+  username VARCHAR(20) UNIQUE NOT NULL,
+  -- Alphanumeric only, 3-20 characters
+  -- Example: "vintage42", "alex99"
 
   -- Profile Information
   first_name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100) NOT NULL,
-  age INT CHECK (age >= 3 AND age <= 12),
+  last_name  VARCHAR(100) NOT NULL,
+  age        INT CHECK (age >= 3 AND age <= 18),
   grade_level VARCHAR(20),
 
   -- Preferences
-  avatar_url TEXT,
-  theme_preference VARCHAR(20) DEFAULT 'light',
-  -- Options: 'light', 'dark', 'colorful'
-
-  sound_enabled BOOLEAN DEFAULT TRUE,
+  avatar_url         TEXT,
+  theme_preference   VARCHAR(20) DEFAULT 'light',
+  sound_enabled      BOOLEAN DEFAULT TRUE,
 
   -- Account Status
-  is_active BOOLEAN DEFAULT TRUE,
+  is_active  BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   last_login TIMESTAMP
 );
 
--- Index for faster email lookups
-CREATE INDEX idx_users_email ON users(email);
+-- Index for fast username lookups during login
+CREATE INDEX idx_users_username ON users(username);
 
 -- ============================================
--- 2. TEACHERS_PARENTS TABLE (Supervisors)
--- ============================================
-CREATE TABLE teachers_parents (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- Authentication
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-
-  -- Profile Information
-  first_name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100) NOT NULL,
-
-  -- Role and Organization
-  role VARCHAR(50) NOT NULL DEFAULT 'parent',
-  -- Options: 'teacher', 'parent', 'guardian', 'admin'
-
-  school_name VARCHAR(255),
-  class_name VARCHAR(100),
-
-  -- Account Status
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_teachers_parents_email ON teachers_parents(email);
-CREATE INDEX idx_teachers_parents_role ON teachers_parents(role);
-
--- ============================================
--- 3. USER_TEACHER_RELATIONS TABLE (Links Students to Supervisors)
--- ============================================
-CREATE TABLE user_teacher_relations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-
-  -- Foreign Keys
-  student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  teacher_parent_id UUID NOT NULL REFERENCES teachers_parents(id) ON DELETE CASCADE,
-
-  -- Relationship Type
-  relationship_type VARCHAR(50) NOT NULL,
-  -- Options: 'teacher', 'parent', 'guardian'
-
-  -- Status
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  -- Constraint: One student can't have duplicate relationships with same person
-  UNIQUE(student_id, teacher_parent_id)
-);
-
-CREATE INDEX idx_user_teacher_relations_student_id ON user_teacher_relations(student_id);
-CREATE INDEX idx_user_teacher_relations_teacher_id ON user_teacher_relations(teacher_parent_id);
-
--- ============================================
--- 4. LESSON_CATEGORIES TABLE (Comprehension Categories)
+-- 2. LESSON_CATEGORIES TABLE
 -- ============================================
 CREATE TABLE lesson_categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Category Information
-  name VARCHAR(100) NOT NULL UNIQUE,
+  name        VARCHAR(100) NOT NULL UNIQUE,
   description TEXT,
+  color_code  VARCHAR(7),
+  icon_url    TEXT,
 
-  -- Visual Properties
-  color_code VARCHAR(7),
-  -- Hex color: '#FF6B6B'
-
-  icon_url TEXT,
-
-  -- Organization
   sequence_order INT,
-  -- Controls the order categories appear in the app
 
-  -- Status
-  is_active BOOLEAN DEFAULT TRUE,
+  is_active  BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_lesson_categories_name ON lesson_categories(name);
 
 -- ============================================
--- 5. LESSONS TABLE (Individual Lessons)
+-- 3. LESSONS TABLE
 -- ============================================
 CREATE TABLE lessons (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Letter Being Taught
-  letter CHAR(1) NOT NULL,
-  -- A, B, C, ... Z
-
-  -- Lesson Information
-  title VARCHAR(255) NOT NULL,
+  letter      CHAR(1) NOT NULL,
+  title       VARCHAR(255) NOT NULL,
   description TEXT,
 
-  -- Relationship to Category
   category_id UUID NOT NULL REFERENCES lesson_categories(id) ON DELETE RESTRICT,
 
-  -- Difficulty
-  difficulty_level INT DEFAULT 1 CHECK (difficulty_level >= 1 AND difficulty_level <= 5),
-  -- 1 = Easiest (K), 5 = Hardest (Advanced)
-
-  -- Estimated Time
+  difficulty_level           INT DEFAULT 1 CHECK (difficulty_level >= 1 AND difficulty_level <= 5),
   estimated_duration_minutes INT,
+  cover_image_url            TEXT,
 
-  -- Content URLs
-  cover_image_url TEXT,
-
-  -- Status
-  is_active BOOLEAN DEFAULT TRUE,
-  version INT DEFAULT 1,
-  -- Version tracking for lesson updates
-
+  is_active  BOOLEAN DEFAULT TRUE,
+  version    INT DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  -- Constraint: Each letter + category combo is unique
   UNIQUE(letter, category_id)
 );
 
@@ -163,44 +83,31 @@ CREATE INDEX idx_lessons_category_id ON lessons(category_id);
 CREATE INDEX idx_lessons_difficulty_level ON lessons(difficulty_level);
 
 -- ============================================
--- 6. LESSON_STEPS TABLE (Activities Within a Lesson)
+-- 4. LESSON_STEPS TABLE
 -- ============================================
 CREATE TABLE lesson_steps (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Which Lesson This Step Belongs To
   lesson_id UUID NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
 
-  -- Step Type
-  step_type VARCHAR(50) NOT NULL,
+  step_type      VARCHAR(50) NOT NULL,
   -- Options: 'tracing', 'reading', 'listening', 'checkpoint'
 
-  -- Sequence (must be done in order)
   sequence_order INT NOT NULL,
-  -- 1, 2, 3, 4, ...
 
-  -- Step Information
-  title VARCHAR(255) NOT NULL,
-  description TEXT,
+  title            VARCHAR(255) NOT NULL,
+  description      TEXT,
   instruction_text TEXT,
+  audio_url        TEXT,
+  image_url        TEXT,
 
-  -- Content Assets
-  audio_url TEXT,
-  -- For listening steps: URL to audio file
-
-  image_url TEXT,
-  -- Visual reference image
-
-  -- Expected Performance Targets
   expected_duration_seconds INT,
-  target_accuracy_percent INT DEFAULT 80 CHECK (target_accuracy_percent >= 0 AND target_accuracy_percent <= 100),
+  target_accuracy_percent   INT DEFAULT 80 CHECK (target_accuracy_percent >= 0 AND target_accuracy_percent <= 100),
 
-  -- Status
-  is_active BOOLEAN DEFAULT TRUE,
+  is_active  BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  -- Constraint: Each lesson can't have duplicate sequence numbers
   UNIQUE(lesson_id, sequence_order)
 );
 
@@ -208,86 +115,54 @@ CREATE INDEX idx_lesson_steps_lesson_id ON lesson_steps(lesson_id);
 CREATE INDEX idx_lesson_steps_step_type ON lesson_steps(step_type);
 
 -- ============================================
--- 7. USER_PROGRESS TABLE (Progress on Each Step)
+-- 5. USER_PROGRESS TABLE
 -- ============================================
 CREATE TABLE user_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Who and What
-  student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  student_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   lesson_step_id UUID NOT NULL REFERENCES lesson_steps(id) ON DELETE CASCADE,
 
-  -- Attempt Information
-  attempt_number INT NOT NULL DEFAULT 1,
-  -- 1st attempt, 2nd attempt, etc.
-
-  -- Performance Metrics
-  accuracy_percent DECIMAL(5,2) CHECK (accuracy_percent >= 0 AND accuracy_percent <= 100),
-  -- How accurate was their response (0-100%)
-
+  attempt_number    INT NOT NULL DEFAULT 1,
+  accuracy_percent  DECIMAL(5,2) CHECK (accuracy_percent >= 0 AND accuracy_percent <= 100),
   time_spent_seconds INT,
-  -- How long they spent on this step
 
-  -- Completion Status
-  is_completed BOOLEAN DEFAULT FALSE,
-  completion_timestamp TIMESTAMP,
+  is_completed          BOOLEAN DEFAULT FALSE,
+  completion_timestamp  TIMESTAMP,
 
-  -- Additional Information
-  notes TEXT,
-  -- "Struggled with letter shape", "Great improvement", etc.
-
-  -- Metadata
+  notes     TEXT,
   device_id UUID,
-  -- Which device was used (optional, can be null)
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Indexes for common queries
 CREATE INDEX idx_user_progress_student_id ON user_progress(student_id);
 CREATE INDEX idx_user_progress_lesson_step_id ON user_progress(lesson_step_id);
 CREATE INDEX idx_user_progress_created_at ON user_progress(created_at);
 CREATE INDEX idx_user_progress_student_lesson ON user_progress(student_id, lesson_step_id);
 
 -- ============================================
--- 8. LETTER_MASTERY TABLE (Tracks Letter Mastery)
+-- 6. LETTER_MASTERY TABLE
 -- ============================================
 CREATE TABLE letter_mastery (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Who Mastered What
-  student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  letter CHAR(1) NOT NULL,
+  student_id UUID   NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  letter     CHAR(1) NOT NULL,
 
-  -- Mastery Tracking
   perfect_attempts_count INT DEFAULT 0,
-  -- Number of times they completed all steps with 100% accuracy
+  is_mastered            BOOLEAN DEFAULT FALSE,
+  mastery_date           TIMESTAMP,
 
-  is_mastered BOOLEAN DEFAULT FALSE,
-  -- True when perfect_attempts_count reaches threshold (e.g., 3)
+  total_attempts            INT DEFAULT 0,
+  average_accuracy_percent  DECIMAL(5,2),
+  total_time_spent_seconds  INT,
+  most_missed_step_id       UUID REFERENCES lesson_steps(id),
 
-  mastery_date TIMESTAMP,
-  -- When they achieved mastery
-
-  -- Statistics
-  total_attempts INT DEFAULT 0,
-  -- Total times they attempted this letter
-
-  average_accuracy_percent DECIMAL(5,2),
-  -- Average accuracy across all attempts
-
-  total_time_spent_seconds INT,
-  -- Total time spent on this letter
-
-  most_missed_step_id UUID REFERENCES lesson_steps(id),
-  -- Which step do they struggle with most?
-
-  -- Metadata
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  -- Constraint: Each student has one mastery record per letter
   UNIQUE(student_id, letter)
 );
 
@@ -296,53 +171,39 @@ CREATE INDEX idx_letter_mastery_letter ON letter_mastery(letter);
 CREATE INDEX idx_letter_mastery_is_mastered ON letter_mastery(is_mastered);
 
 -- ============================================
--- 9. BADGES TABLE (Badge Definitions)
+-- 7. BADGES TABLE
 -- ============================================
 CREATE TABLE badges (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Badge Information
-  name VARCHAR(255) NOT NULL UNIQUE,
+  name        VARCHAR(255) NOT NULL UNIQUE,
   description TEXT,
-  icon_url TEXT,
+  icon_url    TEXT,
 
-  -- Badge Classification
-  badge_type VARCHAR(50) NOT NULL,
+  badge_type       VARCHAR(50) NOT NULL,
   -- Options: 'achievement', 'milestone', 'bonus', 'streak'
 
-  -- Unlock Condition
   unlock_condition TEXT NOT NULL,
-  -- Description: "Master 5 letters", "100% accuracy 10 times", etc.
+  points           INT DEFAULT 0,
 
-  -- Gamification
-  points INT DEFAULT 0,
-  -- Optional: points earned with badge
-
-  -- Status
-  is_active BOOLEAN DEFAULT TRUE,
+  is_active  BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_badges_badge_type ON badges(badge_type);
 
 -- ============================================
--- 10. USER_BADGES TABLE (Badges Earned by Students)
+-- 8. USER_BADGES TABLE
 -- ============================================
 CREATE TABLE user_badges (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Who Earned What
   student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  badge_id UUID NOT NULL REFERENCES badges(id) ON DELETE CASCADE,
+  badge_id   UUID NOT NULL REFERENCES badges(id) ON DELETE CASCADE,
 
-  -- When They Earned It
-  earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  -- Progress (for repeatable badges)
+  earned_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   progress_count INT DEFAULT 1,
-  -- For badges that can be earned multiple times
 
-  -- Constraint: Each student earns each badge once (though progress_count can increase)
   UNIQUE(student_id, badge_id)
 );
 
@@ -351,75 +212,50 @@ CREATE INDEX idx_user_badges_badge_id ON user_badges(badge_id);
 CREATE INDEX idx_user_badges_earned_at ON user_badges(earned_at);
 
 -- ============================================
--- 11. DEVICES TABLE (Device Information)
+-- 9. DEVICES TABLE
 -- ============================================
 CREATE TABLE devices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Device Identification
   device_identifier VARCHAR(255) UNIQUE NOT NULL,
-  -- Unique ID from the device (UUID, serial number, etc.)
-
-  device_type VARCHAR(50) NOT NULL,
+  device_type       VARCHAR(50) NOT NULL,
   -- Options: 'mobile', 'tablet', 'raspberry_pi', 'desktop'
 
-  -- Operating System
-  os_name VARCHAR(100),
-  -- iOS, Android, Linux (Raspberry Pi OS), Windows, macOS
-
-  os_version VARCHAR(50),
-
-  -- Hardware Specifications
+  os_name          VARCHAR(100),
+  os_version       VARCHAR(50),
   screen_size_inches DECIMAL(4,2),
-  -- 7.0, 10.1, 13.3, etc.
+  browser_name     VARCHAR(100),
+  browser_version  VARCHAR(50),
+  processor_info   VARCHAR(255),
+  ram_gb           INT,
+  storage_gb       INT,
 
-  browser_name VARCHAR(100),
-  -- Safari, Chrome, Firefox, etc.
-
-  browser_version VARCHAR(50),
-
-  processor_info VARCHAR(255),
-  -- For Raspberry Pi: "Raspberry Pi 4 Model B"
-
-  ram_gb INT,
-  storage_gb INT,
-
-  -- Connectivity
-  supports_wifi BOOLEAN DEFAULT TRUE,
+  supports_wifi    BOOLEAN DEFAULT TRUE,
   supports_offline BOOLEAN DEFAULT FALSE,
 
-  -- Status
   last_sync_timestamp TIMESTAMP,
-  is_active BOOLEAN DEFAULT TRUE,
-
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  is_active           BOOLEAN DEFAULT TRUE,
+  created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_devices_device_type ON devices(device_type);
 CREATE INDEX idx_devices_device_identifier ON devices(device_identifier);
 
 -- ============================================
--- 12. USER_DEVICES TABLE (Links Users to Devices)
+-- 10. USER_DEVICES TABLE
 -- ============================================
 CREATE TABLE user_devices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-  -- Link
   student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  device_id UUID NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
+  device_id  UUID NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
 
-  -- Device Nickname
-  device_nickname VARCHAR(255),
-  -- User-friendly name: "Vintage's iPad", "Classroom Tablet", etc.
-
-  -- Usage Information
+  device_nickname   VARCHAR(255),
   is_primary_device BOOLEAN DEFAULT FALSE,
-  last_used TIMESTAMP,
+  last_used         TIMESTAMP,
+  pairing_date      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-  pairing_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  -- Constraint: Each student has unique relationship with each device
   UNIQUE(student_id, device_id)
 );
 
@@ -427,24 +263,19 @@ CREATE INDEX idx_user_devices_student_id ON user_devices(student_id);
 CREATE INDEX idx_user_devices_device_id ON user_devices(device_id);
 
 -- ============================================
--- SUMMARY OF RELATIONSHIPS
+-- RELATIONSHIPS SUMMARY
 -- ============================================
 --
--- users (1) ──→ (many) user_progress
--- users (1) ──→ (many) letter_mastery
--- users (1) ──→ (many) user_badges
--- users (1) ──→ (many) user_devices
--- users (1) ──→ (many) user_teacher_relations
+-- users (1) --> (many) user_progress
+-- users (1) --> (many) letter_mastery
+-- users (1) --> (many) user_badges
+-- users (1) --> (many) user_devices
 --
--- lessons (1) ──→ (many) lesson_steps
--- lesson_steps (1) ──→ (many) user_progress
+-- lessons (1)      --> (many) lesson_steps
+-- lesson_steps (1) --> (many) user_progress
 --
--- lesson_categories (1) ──→ (many) lessons
---
--- badges (1) ──→ (many) user_badges
---
--- devices (1) ──→ (many) user_devices
---
--- teachers_parents (1) ──→ (many) user_teacher_relations
+-- lesson_categories (1) --> (many) lessons
+-- badges (1)            --> (many) user_badges
+-- devices (1)           --> (many) user_devices
 --
 -- ============================================
