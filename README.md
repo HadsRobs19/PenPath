@@ -88,14 +88,15 @@ Database queries are scoped using `user_id`.
 
 ```
 
-cmd/
 internal/
-config/ # Configuration structs + loading
-controllers/ # HTTP handlers
-routes/ # Route registration
-middleware/ # Recovery, logging, CORS, JWT verification
-databases/ # pgxpool manager and DB access layer
-models/ # Shared models / JWT claim structs
+config/        # Configuration structs + loading
+controllers/   # HTTP request handlers
+routes/        # Route registration
+middleware/    # Recovery, logging, CORS, JWT verification
+services/      # Business logic and analytics layer
+databases/     # pgxpool manager and DB access layer
+models/        # Shared models / JWT claim structs
+dto/           # Data transfer objects for API requests/responses
 
 ```
 
