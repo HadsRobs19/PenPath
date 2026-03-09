@@ -11,6 +11,6 @@ import (
 func RegisterBadgeRoute(app *fiber.App, db *databases.DBManager) {
 	badgeController := controllers.NewBadgeController(db)
 
-	api = app.Group("/api", middleware.JWTVerifierInstance.AuthMiddleware)
+	api := app.Group("/api", middleware.JWTVerifierInstance.AuthMiddleware)
 	api.Get("/badge", badgeController.GetUserBadges)
 }
