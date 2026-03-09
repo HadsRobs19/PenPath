@@ -142,3 +142,78 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 	})
 
 }
+
+// retrieves lesson progress summary
+func (p *ProgressController) GetProgressSummary(c fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	rawUserID := c.Locals("user_id")
+	userID, ok := rawUserID.(string)
+	if !ok || userID == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status":  "error",
+			"message": "missing and invalid user context",
+		})
+	}
+
+	var summary dto.ProgressSummary
+
+	err := p.DB.DB.QueryRow(
+		ctx,
+		`
+		SELECT
+			COUNT(*) AS lessons_completed,
+
+			COALESCE(AVG(up.accuracy_percent),0),
+
+			(
+				SELECT COALESCE(ARRAY_AGG(letter ORDER BY letter), '{}')
+				FROM letter_mastery
+				WHERE student_id = $1
+				AND is_mastered = true
+			),
+
+			(
+				SELECT COALESCE(ARRAY_AGG(letter ORDER BY letter), '{}')
+				FROM letter_mastery
+				WHERE student_id = $1
+				AND is_mastered = false
+			)
+
+		FROM lessons l
+
+		LEFT JOIN user_progress up ON up.student_id = $1
+
+		WHERE (
+			SELECT COUNT(*)
+			FROM lesson_steps ls
+			WHERE ls.lesson_id = l.id
+		) = (
+			SELECT COUNT(DISTINCT up.lesson_step_id)
+			FROM user_progress up
+			JOIN lesson_steps ls ON up.lesson_step_id = ls.id
+			WHERE up.student_id = $1
+			AND ls.lesson_id = l.id
+			AND up.is_completed = true
+		)`,
+		userID,
+	).Scan(
+		&summary.LessonsCompleted,
+		&summary.AverageAccuracy,
+		&summary.LettersMastered,
+		&summary.LettersNeedingWork,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to retrieve progress summary",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"status": "ok",
+		"data":   summary,
+	})
+}

@@ -268,6 +268,44 @@ This ensures the mastery logic is:
 - Automatically executed after progress submissions
 - Consistent across reading and writing lesson types
 
+## Progress Retrieval & Learning Dashboard System
+
+PenPath provides a **progress retrieval endpoint** that aggregates a student's overall learning performance.
+
+This endpoint powers the **student progress dashboard** used by the frontend account page.
+
+Features include:
+
+- Retrieval of **completed lesson counts**
+- Aggregation of **overall accuracy performance**
+- Listing of **mastered letters**
+- Identification of **letters needing additional practice**
+- Efficient query execution using **indexed database lookups**
+
+Lesson completion is determined using a **step validation rule**:
+
+A lesson is considered completed **only when all lesson steps for that lesson have been completed at least once**.
+
+This prevents partial lesson attempts from being incorrectly marked as complete.
+
+The endpoint aggregates information from multiple tables:
+
+- `user_progress`
+- `lesson_steps`
+- `lessons`
+- `letter_mastery`
+
+This design enables the system to generate a **student learning summary** using a single efficient database query.
+
+The progress summary powers the following frontend features:
+
+- **Lessons Completed**
+- **Letters Perfected**
+- **Letters That Need Work**
+- Overall **student accuracy metrics**
+
+The endpoint is protected by **JWT authentication** and automatically scopes results using the authenticated `user_id`.
+
 ---
 
 # Current Endpoints
@@ -358,6 +396,23 @@ Both endpoints allow multiple attempts per lesson step, enabling:
 - Detailed progress analytics
 - Automatic letter mastery evaluation
 - Learning performance tracking
+
+### `GET /api/progress`
+
+Returns a summary of the authenticated student's learning progress.
+
+This endpoint aggregates data across lessons, lesson steps, and mastery records to produce a **learning progress overview**.
+
+Returned metrics include:
+
+- Total **completed lessons**
+- Overall **average accuracy**
+- Letters that have been **mastered**
+- Letters that **require additional practice**
+
+The endpoint is optimized for performance by using **indexed lookups and SQL aggregation functions**.
+
+This endpoint powers the **frontend progress dashboard** displayed in the student account page.
 ---
 
 # API Usage Examples
@@ -635,6 +690,44 @@ Example Response:
 }
 
 ```
+
+## Retrieve Progress Summary
+
+Returns a summary of the authenticated student's learning progress.
+
+Endpoint:
+
+### `GET /api/progress`
+
+Headers:
+
+Authorization: Bearer <access_token>
+
+Example Request:
+
+```
+
+curl http://localhost:3000/api/progress
+
+-H "Authorization: Bearer <access_token>"
+
+```
+
+Example Response:
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "lessons_completed": 6,
+    "average_accuracy": 91.4,
+    "letters_mastered": ["A","B","C"],
+    "letters_needing_work": ["D","F"]
+  }
+}
+
+```
+
 
 # How Authentication Works
 
