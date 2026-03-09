@@ -3,6 +3,7 @@ package controllers
 import (
 	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/dto"
+	services "PenPath/backend/internal/service"
 	"context"
 	"time"
 
@@ -104,9 +105,25 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		attemptNumber,
 		body.AccuracyPercent,
 		body.TimeSpentSeconds,
+		body.IsCompleted,
 		body.Notes,
 		body.DeviceID,
-		body.IsCompleted,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to insert progress",
+		})
+	}
+
+	// auto updates letter mastery
+	masteryService := services.NewLetterMasteryService(p.DB)
+
+	err = masteryService.UpdateLetterMastery(
+		ctx,
+		userID,
+		body.LessonStepID,
 	)
 
 	if err != nil {

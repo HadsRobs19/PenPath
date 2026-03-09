@@ -217,6 +217,55 @@ Features include:
 - Automatically increments **attempt numbers**
 - Records **completion timestamps**
 - Supports optional **device tracking and notes**
+- Automatically triggers **letter mastery recalculation**
+
+Whenever a student completes a lesson step:
+
+1. Progress is stored in the `user_progress` table
+2. Attempt numbers are automatically incremented
+3. Performance metrics are recorded
+4. The **Letter Mastery Service recalculates mastery status**
+
+This design allows the system to support:
+
+- Detailed progress tracking
+- Mastery analytics
+- Student learning dashboards
+- Adaptive learning insights
+
+## Letter Mastery Analytics System
+
+PenPath automatically calculates **letter mastery metrics** based on student lesson performance.
+
+This system transforms raw lesson progress into meaningful learning analytics.
+
+Features include:
+
+- Automatic **letter mastery detection**
+- **Perfect attempt tracking** (100% accuracy)
+- Aggregated performance statistics across all attempts
+- **Average accuracy calculations**
+- **Total time spent per letter**
+- Detection of **most missed lesson step**
+- Automatic mastery updates whenever progress is saved
+
+Mastery criteria:
+
+- A letter is considered **mastered** when the student achieves **3 perfect attempts** on steps associated with that letter.
+
+When mastery is achieved:
+
+- `is_mastered` is set to `true`
+- `mastery_date` is recorded
+- Letter statistics are updated for dashboard analytics
+
+The system uses a dedicated **service layer (`LetterMasteryService`)** to calculate and update mastery records.
+
+This ensures the mastery logic is:
+
+- Reusable across endpoints
+- Automatically executed after progress submissions
+- Consistent across reading and writing lesson types
 
 ---
 
@@ -303,7 +352,11 @@ Persists progress for a **writing lesson step**.
 
 The same progress metrics are recorded as the reading endpoint.
 
-*** Both endpoints allow multiple attempts per lesson step, enabling detailed progress analytics and mastery tracking. ***
+Both endpoints allow multiple attempts per lesson step, enabling:
+
+- Detailed progress analytics
+- Automatic letter mastery evaluation
+- Learning performance tracking
 ---
 
 # API Usage Examples
@@ -616,7 +669,6 @@ The endpoint:
 
 # Planned API Endpoints
 
-- Letter mastery tracking
 - Badge unlock logic
 - Device heartbeat / sync endpoint
 - Offline lesson data synchronization
