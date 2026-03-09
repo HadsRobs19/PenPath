@@ -2,140 +2,160 @@
 -- Migration 000002: Student-Only System
 -- ============================================
 -- Run this in the Supabase SQL editor.
--- It modifies the live database to:
---   1. Remove parent/teacher tables and relations
---   2. Add username column to users
---   3. Clean up auth tables of parent references
---   4. Update RLS policies to student-only
+-- Safe to run even if auth tables do not exist yet.
 -- ============================================
 
+
 -- ============================================
--- STEP 1: Drop parent/teacher tables
--- (CASCADE removes foreign keys that depend on them)
+-- STEP 1: Drop parent/teacher tables if they exist
 -- ============================================
 
 DROP TABLE IF EXISTS user_teacher_relations CASCADE;
 DROP TABLE IF EXISTS teachers_parents CASCADE;
 
+
 -- ============================================
--- STEP 2: Add username to users table
+-- STEP 2: Add username column to users
 -- ============================================
 
 ALTER TABLE users
   ADD COLUMN IF NOT EXISTS username VARCHAR(20) UNIQUE;
 
--- Constraint: alphanumeric only
 ALTER TABLE users
-  ADD CONSTRAINT username_alphanumeric
+  ADD CONSTRAINT IF NOT EXISTS username_alphanumeric
   CHECK (username ~ '^[a-zA-Z0-9]{3,20}$');
 
--- Index for fast login lookups
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 
--- Note: if you have existing rows, set a username for each one before
--- adding NOT NULL. Once all rows have a value, run:
---   ALTER TABLE users ALTER COLUMN username SET NOT NULL;
-
--- ============================================
--- STEP 3: Remove email requirement from users
--- Students log in with username + PIN, not email
--- ============================================
-
+-- Make email optional (students log in with username + PIN)
 ALTER TABLE users
   ALTER COLUMN email DROP NOT NULL;
 
--- ============================================
--- STEP 4: Clean up student_pins table
--- Remove parent foreign key columns
--- ============================================
-
-ALTER TABLE student_pins
-  DROP COLUMN IF EXISTS created_by_parent_id,
-  DROP COLUMN IF EXISTS updated_by_parent_id,
-  DROP COLUMN IF EXISTS change_reason;
-
--- Add last_changed if it does not already exist
-ALTER TABLE student_pins
-  ADD COLUMN IF NOT EXISTS last_changed TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 -- ============================================
--- STEP 5: Clean up device_sessions table
--- Remove parent foreign key columns
+-- STEP 3: Drop old auth tables if they exist
+-- and recreate them cleanly without parent columns
 -- ============================================
 
-ALTER TABLE device_sessions
-  DROP COLUMN IF EXISTS created_by_parent_id,
-  DROP COLUMN IF EXISTS revoked_by_parent_id;
+DROP TABLE IF EXISTS auth_logs       CASCADE;
+DROP TABLE IF EXISTS device_sessions CASCADE;
+DROP TABLE IF EXISTS student_pins    CASCADE;
 
--- device_id was UUID referencing user_devices; change to VARCHAR
--- so a plain device identifier string can be used without a FK
-ALTER TABLE device_sessions
-  DROP CONSTRAINT IF EXISTS device_sessions_device_id_fkey;
+
+-- STUDENT_PINS
+CREATE TABLE student_pins (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+
+  pin_hash VARCHAR(255) NOT NULL,
+
+  failed_attempts     INT DEFAULT 0,
+  last_failed_attempt TIMESTAMP,
+  locked_until        TIMESTAMP,
+
+  created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_changed TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_student_pins_student_id ON student_pins(student_id);
+
+
+-- DEVICE_SESSIONS
+CREATE TABLE device_sessions (
+  id         UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+  device_id  VARCHAR(255) NOT NULL,
+  student_id UUID    NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+  session_token TEXT      NOT NULL,
+  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at    TIMESTAMP NOT NULL,
+  last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_active     BOOLEAN   DEFAULT TRUE,
+
+  ip_address  VARCHAR(45),
+  user_agent  TEXT,
+  device_name VARCHAR(255),
+  device_type VARCHAR(50),
+  os_name     VARCHAR(100),
+
+  auto_logout_after_inactivity_minutes INT DEFAULT 480,
+
+  revoked_at        TIMESTAMP,
+  revocation_reason VARCHAR(255)
+);
+
+CREATE INDEX idx_device_sessions_device_id  ON device_sessions(device_id);
+CREATE INDEX idx_device_sessions_student_id ON device_sessions(student_id);
+CREATE INDEX idx_device_sessions_active     ON device_sessions(is_active, expires_at);
+CREATE INDEX idx_device_sessions_token      ON device_sessions(session_token);
+
+
+-- AUTH_LOGS
+CREATE TABLE auth_logs (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id    UUID REFERENCES users(id) ON DELETE CASCADE,
+  username_tried VARCHAR(20),
+
+  auth_method    VARCHAR(50) NOT NULL,
+  device_id      VARCHAR(255),
+  success        BOOLEAN     NOT NULL,
+  failure_reason VARCHAR(255),
+  attempt_number INT         DEFAULT 1,
+  ip_address     VARCHAR(45),
+  user_agent     TEXT,
+
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_auth_logs_student_id ON auth_logs(student_id, created_at DESC);
+CREATE INDEX idx_auth_logs_created_at ON auth_logs(created_at DESC);
+CREATE INDEX idx_auth_logs_success    ON auth_logs(success, created_at DESC);
+
 
 -- ============================================
--- STEP 6: Clean up auth_logs table
--- Remove parent_id column and add username_tried
+-- STEP 4: Enable RLS on auth tables
 -- ============================================
 
-ALTER TABLE auth_logs
-  DROP COLUMN IF EXISTS parent_id;
+ALTER TABLE student_pins    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE device_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE auth_logs       ENABLE ROW LEVEL SECURITY;
 
-ALTER TABLE auth_logs
-  ADD COLUMN IF NOT EXISTS username_tried VARCHAR(20);
-
--- ============================================
--- STEP 7: Drop old RLS policies that reference parents
--- ============================================
-
-DROP POLICY IF EXISTS "Parents can manage their students' PINs"     ON student_pins;
-DROP POLICY IF EXISTS "Parents can update their students' PINs"     ON student_pins;
-DROP POLICY IF EXISTS "Parents can see their students' device sessions" ON device_sessions;
-DROP POLICY IF EXISTS "Parents can revoke device sessions"          ON device_sessions;
-DROP POLICY IF EXISTS "Parents can see their students' auth logs"   ON auth_logs;
-DROP POLICY IF EXISTS "Prevent user PIN insertion"                  ON student_pins;
-DROP POLICY IF EXISTS "Prevent user device session insertion"       ON device_sessions;
-DROP POLICY IF EXISTS "Prevent user auth log insertion"             ON auth_logs;
 
 -- ============================================
--- STEP 8: Create student-only RLS policies
+-- STEP 5: Student-only RLS policies
 -- ============================================
 
--- student_pins
-DROP POLICY IF EXISTS "Students view own PIN record" ON student_pins;
 CREATE POLICY "Students view own PIN record"
 ON student_pins FOR SELECT
 USING (auth.uid() = student_id);
 
--- device_sessions
-DROP POLICY IF EXISTS "Students view own device sessions" ON device_sessions;
 CREATE POLICY "Students view own device sessions"
 ON device_sessions FOR SELECT
 USING (auth.uid() = student_id);
 
--- auth_logs
-DROP POLICY IF EXISTS "Students view own auth logs" ON auth_logs;
 CREATE POLICY "Students view own auth logs"
 ON auth_logs FOR SELECT
 USING (auth.uid() = student_id);
 
+
 -- ============================================
--- STEP 9: Verify the migration worked
+-- STEP 6: Verify
 -- ============================================
 
--- Should return 0 rows (tables are gone)
+-- Should show all 3 tables
+SELECT tablename FROM pg_tables
+WHERE schemaname = 'public'
+AND tablename IN ('student_pins', 'device_sessions', 'auth_logs')
+ORDER BY tablename;
+
+-- Should return 0 rows (parent tables are gone)
 SELECT tablename FROM pg_tables
 WHERE schemaname = 'public'
 AND tablename IN ('teachers_parents', 'user_teacher_relations');
 
--- Should show username column exists on users
+-- Should show username column on users
 SELECT column_name, data_type, is_nullable
 FROM information_schema.columns
 WHERE table_name = 'users'
 AND column_name IN ('username', 'email')
 ORDER BY column_name;
-
--- Should show only student policies remain
-SELECT tablename, policyname FROM pg_policies
-WHERE schemaname = 'public'
-AND tablename IN ('student_pins', 'device_sessions', 'auth_logs')
-ORDER BY tablename, policyname;
