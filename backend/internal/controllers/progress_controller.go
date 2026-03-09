@@ -133,6 +133,21 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		})
 	}
 
+	badgeService := services.NewBadgeService(p.DB)
+
+	err = badgeService.CheckBadgeCriteria(
+		ctx,
+		userID,
+		body.LessonStepID,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to award a badge",
+		})
+	}
+
 	return c.JSON(fiber.Map{
 		"status": "ok",
 		"data": fiber.Map{
