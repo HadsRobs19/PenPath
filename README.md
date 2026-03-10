@@ -125,7 +125,7 @@ Frontend Dashboard
 3. The frontend sends API requests with:
 
 
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 
 ## Backend Responsibilities
@@ -202,9 +202,9 @@ The backend:
 - Validates:
 
 
-iss (issuer)
-aud (audience)
-exp, iat, nbf
+`iss` (issuer)
+`aud` (audience)
+`exp`, `iat`, `nbf`
 
 
 - Rejects unauthorized requests
@@ -504,13 +504,13 @@ When a student completes a lesson step:
    - The `earned_at` timestamp is recorded
 
 Duplicate awards are prevented using a **database uniqueness constraint**:
-UNIQUE(student_id, badge_id)
+`UNIQUE(student_id, badge_id)`
 
 
 Combined with the SQL safeguard:
 
 
-ON CONFLICT (student_id, badge_id) DO NOTHING
+`ON CONFLICT (student_id, badge_id) DO NOTHING`
 
 
 This guarantees that a student **cannot receive the same badge multiple times**.
@@ -553,13 +553,13 @@ A join query combines badge metadata with the student's earned badge records.
 
 Returned badge metadata includes:
 
-- Badge ID
-- Badge name
-- Description
-- Icon URL
-- Badge type
-- Points value
-- Earned timestamp
+- `Badge ID`
+- `Badge name`
+- `Description`
+- `Icon URL`
+- `Badge type`
+- `Points value`
+- `Earned timestamp`
 
 Badges are returned **sorted by the time they were earned**, allowing the frontend to display the most recent achievements first.
 
@@ -585,12 +585,14 @@ Confirms:
 
 Returns the authenticated user's profile:
 
+```json
 
 {
 "first_name": "...",
 "last_name": "...",
 "age": ...
 }
+```
 
 ### `POST /api/devices/register`
 
@@ -635,15 +637,15 @@ Persists progress for a **reading lesson step**.
 
 Each submission records:
 
-- Student ID
-- Lesson step
-- Attempt number
-- Accuracy percentage
-- Time spent
-- Completion status
-- Optional notes
-- Device identifier
-- Completion timestamp
+- `Student ID`
+- `Lesson step`
+- `Attempt number`
+- `Accuracy percentage`
+- `Time spent`
+- `Completion status`
+- `Optional notes`
+- `Device identifier`
+- `Completion timestamp`
 
 Duplicate submissions are handled automatically by incrementing the attempt number.
 
@@ -687,13 +689,13 @@ The endpoint includes full badge metadata along with the timestamp when the badg
 
 Returned badge fields include:
 
-- Badge ID
-- Name
-- Description
-- Icon URL
-- Badge type
-- Points value
-- Earned timestamp
+- `Badge ID`
+- `Name`
+- `Description`
+- `Icon URL`
+- `Badge type`
+- `Points value`
+- `Earned timestamp`
 
 Badges are sorted by `earned_at` in **descending order**, ensuring the most recent achievements appear first.
 
@@ -791,7 +793,7 @@ Endpoint:
 
 Headers:
 
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 Request Body:
 
@@ -810,7 +812,7 @@ Request Body:
 }
 ```
 
-Example Request (cURL)
+Example Request:
 
 ```
 
@@ -832,7 +834,7 @@ curl -X POST http://localhost:3000/devices/register \
 
 ```
 
-Example Response
+Example Response:
 
 ```json
 {
@@ -862,7 +864,7 @@ Endpoint:
 ### GET /api/lessons/writing
 
 Headers:
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 Example Request:
 
@@ -879,7 +881,7 @@ Endpoint:
 ### GET /api/lessons/reading
 
 Headers:
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 Example Request:
 
@@ -930,7 +932,7 @@ Endpoint:
 
 Headers:
 
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 Request Body:
 
@@ -946,7 +948,7 @@ Request Body:
 
 ```
 
-Example Request (cURL):
+Example Request:
 
 ```
 
@@ -988,7 +990,7 @@ Endpoint:
 
 Headers:
 
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 Example Request:
 
@@ -1025,7 +1027,7 @@ Endpoint:
 
 Headers:
 
-Authorization: Bearer <access_token>
+`Authorization: Bearer <access_token>`
 
 Example Request:
 
@@ -1083,7 +1085,7 @@ Example Response:
 
   - Validates claims (`iss`, `aud`, `exp`, `iat`, `nbf`)
 
-  - Extracts the authenticated user ID (sub)
+  - Extracts the authenticated user ID (`sub`)
 
   - Attaches the user identity to the request context.
 
