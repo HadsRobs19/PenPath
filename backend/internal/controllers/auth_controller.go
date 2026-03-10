@@ -63,9 +63,9 @@ func (a *AuthController) GetProfile(c fiber.Ctx) error {
 			"status":  "ok",
 			"message": "User info retrieved",
 			"data": fiber.Map{
-				"firstname": firstName,
-				"lastname":  lastName,
-				"age":       age,
+				"first_name": firstName,
+				"last_name":  lastName,
+				"age":        age,
 			},
 		})
 }

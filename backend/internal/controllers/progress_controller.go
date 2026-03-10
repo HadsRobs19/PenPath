@@ -5,6 +5,7 @@ import (
 	"penpath-backend/internal/databases"
 	"penpath-backend/internal/dto"
 	"penpath-backend/internal/services"
+	"penpath-backend/internal/validation"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -44,18 +45,13 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 
 	body := new(dto.ProgressSubmission)
 	if err := c.Bind().Body(body); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "bad request binding",
-		})
+		return validation.BadRequest(c, "invalid request body")
 	}
 
-	if body.LessonStepID == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "lesson_step_id is required",
-		})
+	if err := validation.Validate(body); err != nil {
+		return validation.ValidationError(c, err)
 	}
+
 	if body.AccuracyPercent < 0 || body.AccuracyPercent > 100 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
