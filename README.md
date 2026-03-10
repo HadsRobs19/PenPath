@@ -159,6 +159,7 @@ Database queries are scoped using `user_id`.
 - **pgx / pgxpool**
 - **Supabase (PostgreSQL + Auth)**
 - **JWKS / RS256 JWT verification**
+- **go-playground/validator v10** (API request validation)
 
 ## Frontend
 
@@ -179,6 +180,7 @@ controllers/   # HTTP request handlers
 routes/        # Route registration
 middleware/    # Recovery, logging, CORS, JWT verification
 services/      # Business logic and analytics layer
+validation/    # Centralized request payload validation layer
 databases/     # pgxpool manager and DB access layer
 models/        # Shared models / JWT claim structs
 dto/           # Data transfer objects for API requests/responses
@@ -251,6 +253,89 @@ Therefore the backend enforces authorization by:
 - Claims validated
 - User context attached to request
 - Unauthorized requests blocked
+
+## Input Validation Layer
+
+PenPath includes a centralized **input validation layer** that ensures all API request payloads contain valid and properly structured data before reaching controller logic.
+
+The validation system is implemented using:
+
+- **go-playground/validator v10**
+
+This validator operates on **DTO structs** using validation tags that define rules such as:
+
+- Required fields
+- Numeric ranges
+- UUID format validation
+- Allowed enumerated values
+- Email format validation
+
+Example DTO validation:
+
+```go
+type ProgressSubmission struct {
+	LessonStepID     string  `json:"lesson_step_id" validate:"required,uuid"`
+	AccuracyPercent  float64 `json:"accuracy_percent" validate:"required,gte=0,lte=100"`
+	TimeSpentSeconds int     `json:"time_spent_seconds" validate:"gte=0"`
+	IsCompleted      bool    `json:"is_completed"`
+	Notes            string  `json:"notes"`
+	DeviceID         string  `json:"device_id" validate:"omitempty,uuid"`
+}
+```
+
+### Validation Request Flow
+
+```
+
+Client Request
+│
+▼
+Bind Request Body → DTO
+│
+▼
+Validation Layer
+│
+▼
+Controller Logic
+│
+▼
+Service Layer
+│
+▼
+Database
+
+```
+
+If validation fails, the API returns a standardized error response:
+
+```json
+
+{
+  "status": "error",
+  "message": "validation failed",
+  "errors": "AccuracyPercent must be less than or equal to 100"
+}
+
+```
+Benefits:
+
+- Prevents invalid data from reaching the database
+
+- Removes manual validation logic from controllers
+
+- Ensures consistent validation behavior across endpoints
+
+- Produces clear, standardized API error responses
+
+- Improves maintainability of the backend codebase
+
+- The validation layer is used by endpoints that accept request bodies, including:
+
+`POST /api/devices/register`
+
+`POST /api/progress/reading`
+
+`POST /api/progress/writing`
 
 ## Device Registration System
 

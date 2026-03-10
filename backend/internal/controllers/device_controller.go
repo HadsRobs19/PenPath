@@ -3,6 +3,7 @@ package controllers
 import (
 	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/dto"
+	"PenPath/backend/internal/validation"
 	"context"
 	"time"
 
@@ -35,18 +36,12 @@ func (d *DeviceController) PostDevice(c fiber.Ctx) error {
 	// Bind request JSON into DTO.
 	body := new(dto.DeviceData)
 	if err := c.Bind().Body(body); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "bad request binding",
-		})
+		return validation.BadRequest(c, "invalid request body")
 	}
 
 	// required field validation
-	if body.DeviceID == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "device_identifier is required",
-		})
+	if err := validation.Validate(body); err != nil {
+		return validation.ValidationError(c, err)
 	}
 
 	if body.DeviceType == "" {
