@@ -41,6 +41,8 @@ PenPath transforms raw lesson interactions into meaningful learning analytics th
 
 Student Completes Lesson Step
 │
+│ (event stored locally if device is offline)
+│
 ▼
 POST /api/progress/(reading|writing)
 │
@@ -570,6 +572,74 @@ The endpoint is designed to support multiple client platforms, including:
 
 All badge retrieval requests are protected by **JWT authentication**, and results are automatically scoped to the authenticated `user_id`.
 
+## Offline Sync Support (Foundational)
+
+PenPath supports **offline-first learning environments**, allowing student devices to continue recording lesson progress even when an internet connection is unavailable.
+
+This feature is designed primarily for **Raspberry Pi classroom tablets**, but also supports mobile and tablet devices.
+
+### Offline Progress Strategy
+
+When a device is offline:
+
+1. Lesson progress events are stored locally on the device.
+2. Each event is assigned a unique `client_event_id` (UUID).
+3. The event also includes a `completed_at` timestamp indicating when the student finished the lesson step.
+4. When connectivity is restored, the device submits the stored events to the backend using the standard progress endpoints.
+
+### Idempotent Progress Processing
+
+To ensure reliable synchronization, progress submissions are processed using **idempotent database operations**.
+
+Each progress event includes:
+
+- `client_event_id`
+- `lesson_step_id`
+- `completed_at`
+
+The backend enforces uniqueness using a composite index:
+
+
+`UNIQUE(student_id, client_event_id)`
+
+
+If a device retries the same event multiple times, PostgreSQL resolves the conflict and prevents duplicate progress records.
+
+Example SQL safeguard:
+
+
+`ON CONFLICT (student_id, client_event_id) DO UPDATE`
+
+
+This guarantees that:
+
+- Duplicate events are ignored
+- Retries are safe
+- Offline submissions produce the same final database state
+
+### Timestamp-Based Event Tracking
+
+Each progress submission includes a client timestamp:
+
+
+`completed_at`
+
+
+This timestamp represents when the student actually completed the lesson step.
+
+Because offline devices may reconnect later, the system preserves the **true learning timeline** rather than the server receipt time.
+
+### Benefits
+
+This architecture allows the system to tolerate:
+
+- Unstable classroom WiFi
+- Offline learning sessions
+- Device retries
+- Delayed progress submissions
+
+It also prepares the platform for **future batch synchronization endpoints** and **device event queues**.
+
 ---
 
 # Current Endpoints
@@ -649,8 +719,6 @@ Each submission records:
 
 Duplicate submissions are handled automatically by incrementing the attempt number.
 
----
-
 ### `POST /api/progress/writing`
 
 Persists progress for a **writing lesson step**.
@@ -662,6 +730,35 @@ Both endpoints allow multiple attempts per lesson step, enabling:
 - Detailed progress analytics
 - Automatic letter mastery evaluation
 - Learning performance tracking
+
+### Offline Submission Support
+
+The progress endpoints support **offline-first client devices**.
+
+Each progress submission includes a unique event identifier:
+
+
+`client_event_id`
+
+
+This identifier allows the backend to detect duplicate submissions when devices retry events after reconnecting.
+
+Because the backend enforces:
+
+
+`UNIQUE(student_id, client_event_id)`
+
+
+the API guarantees **idempotent progress processing**.
+
+This means that submitting the same event multiple times will always produce the same database result.
+
+This behavior is essential for supporting:
+
+- Offline lesson completion
+- Device retry logic
+- Network interruptions
+- Classroom tablet environments
 
 ### `GET /api/progress`
 
@@ -943,7 +1040,9 @@ Request Body:
   "time_spent_seconds": 18,
   "is_completed": true,
   "notes": "Improved letter shape",
-  "device_id": "uuid"
+  "device_id": "uuid",
+  "client_event_id": "uuid",
+  "completed_at": "2026-02-04T15:22:10Z"
 }
 
 ```
