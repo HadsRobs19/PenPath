@@ -28,6 +28,8 @@ func (p *ProgressController) SaveWritingProgress(c fiber.Ctx) error {
 }
 
 func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) error {
+	var attemptNumber, previousAttempt int
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -52,15 +54,7 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		return validation.ValidationError(c, err)
 	}
 
-	if body.AccuracyPercent < 0 || body.AccuracyPercent > 100 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "accuracy_percent is required",
-		})
-	}
-
 	// because users can have multiple attempts on a lesson, tracking duplicate entries is done
-	var previousAttempt int
 
 	err := p.DB.DB.QueryRow(
 		ctx,
@@ -79,14 +73,13 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		})
 	}
 
-	attemptNumber := previousAttempt + 1
-
 	// inserting user progress into database
-	_, err = p.DB.DB.Exec(
+	err = p.DB.DB.QueryRow(
 		ctx,
 		`INSERT INTO user_progress(
 			student_id,
 			lesson_step_id,
+			client_event_id,
 			attempt_number,
 			accuracy_percent,
 			time_spent_seconds,
@@ -95,16 +88,29 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 			device_id,
 			completion_timestamp
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW())`,
+		SELECT
+			$1,
+			$2,
+			$3,
+			COALESCE(MAX(attempt_number),0) + 1,
+			$4,$5,$6,$7,$8,$9
+		FROM user_progress
+		WHERE student_id = $1
+		AND lesson_step_id = $2
+		ON CONFLICT (student_id, client_event_id)
+		DO UPDATE SET client_event_id = EXCLUDED.client_event_id
+		RETURNING attempt_number`,
 		userID,
 		body.LessonStepID,
+		body.ClientEventID,
 		attemptNumber,
 		body.AccuracyPercent,
 		body.TimeSpentSeconds,
 		body.IsCompleted,
 		body.Notes,
 		body.DeviceID,
-	)
+		body.CompletedAt,
+	).Scan(&attemptNumber)
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -129,6 +135,7 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		})
 	}
 
+	// bagde checks
 	badgeService := services.NewBadgeService(p.DB)
 
 	err = badgeService.CheckBadgeCriteria(
