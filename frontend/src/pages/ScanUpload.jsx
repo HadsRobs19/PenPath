@@ -1,44 +1,66 @@
 import "../App.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 const ScanUpload = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <div className="account-bg">
-            <div className="account-heading">
-                <h1>Scan</h1>
-            </div>
+  const handleUploadTap = () => {
+    // TODO: Implement file/image picker logic
+    console.log("Tap to upload file pressed");
+  };
 
-            <div style={styles.container}>
-                <button
-                    style={{ ...styles.btn, ...styles.primaryBtn }}
-                    onClick={() => navigate('/scan/camera')}
-                >
-                    Use Camera
-                </button>
-            </div>
+  const handleOpenCamera = () => {
+    navigate("/scan/camera");
+  };
+
+  const handleUploadButton = () => {
+    // TODO: Implement file/image upload logic
+    console.log("Upload Image/File pressed");
+  };
+
+  return (
+    <div className="scan-container">
+      <h1 className="scan-title">Scan</h1>
+
+      <div className="scan-card">
+        <div className="scan-iconCircle" aria-hidden="true">
+          ☁️
         </div>
-    );
-};
 
-const styles = {
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '16px',
-        marginTop: '32px',
-    },
-    btn: {
-        padding: '12px 32px',
-        fontSize: '16px',
-        borderRadius: '8px',
-        border: 'none',
-        cursor: 'pointer',
-        fontWeight: '500',
-    },
-    primaryBtn: { background: 'linear-gradient(135deg, #B2F7FF, #98AEFD)', color: '#1a1a2e' },
+        <button className="scan-uploadText" onClick={handleUploadTap}>
+          Tap to upload file
+        </button>
+
+        <p className="scan-orText">OR</p>
+
+        <button className="scan-cameraButton" onClick={handleOpenCamera}>
+          Open Camera
+        </button>
+      </div>
+
+      <div className="scan-bottomSection">
+        <button className="scan-uploadButton" onClick={handleUploadButton}>
+          Upload Image/File
+        </button>
+      </div>
+
+      {/* Footer Navigation */}
+      <footer className="bottom-nav">
+        <button onClick={() => navigate("/home")}>
+          <FaHome />
+        </button>
+
+        <button onClick={() => navigate("/scan")}>
+          <FaCamera />
+        </button>
+
+        <button onClick={() => navigate("/account")}>
+          <FaUser />
+        </button>
+      </footer>
+    </div>
+  );
 };
 
 export default ScanUpload;

@@ -7,6 +7,9 @@ export default function ScanResults() {
   const navigate = useNavigate();
   const [selectedAI, setSelectedAI] = useState("penpath");
 
+  const location = useLocation();
+  const capturedImage = location.state?.image;
+
   const aiOptions = useMemo(
     () => [
       { key: "penpath", label: "PenPath AI" },
@@ -15,9 +18,6 @@ export default function ScanResults() {
     ],
     []
   );
-
-  const location = useLocation();
-  const capturedImage = location.state?.image;
 
   const handleBack = () => navigate(-1);
   const handleClose = () => navigate("/scan");
@@ -87,20 +87,20 @@ export default function ScanResults() {
         </div>
       </div>
 
-{/* Footer Navigation */}
-<footer className="bottom-nav">
-  <button onClick={() => navigate("/home")}>
-    <FaHome />
-  </button>
+      {/* Footer Navigation */}
+      <footer className="bottom-nav">
+        <button onClick={() => navigate("/home")}>
+          <FaHome />
+        </button>
 
-  <button onClick={() => navigate("/scan")}>
-    <FaCamera />
-  </button>
+        <button onClick={() => navigate("/scan")}>
+          <FaCamera />
+        </button>
 
-  <button onClick={() => navigate("/account")}>
-    <FaUser />
-  </button>
-</footer>
+        <button onClick={() => navigate("/account")}>
+          <FaUser />
+        </button>
+      </footer>
     </div>
   );
 }

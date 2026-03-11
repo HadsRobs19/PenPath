@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Button from '../components/Button';
 import { FaEnvelope } from 'react-icons/fa';
+import { supabase } from "../lib/Client"
 
 /*
 * <summary>
@@ -23,29 +24,32 @@ const ForgotPw = () => {
     const [error, setError] = useState(null);
 
     async function handleSubmit(e){
-        e.preventDefault();
 
-        setError(null);
-        setLoading(true);
+    e.preventDefault()
 
-        try {
-            const res = await fetch('http://localhost:8080/forgot-password', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email})
-            });
+    setLoading(true)
+    setError(null)
 
-            if(!res.ok){
-                throw new Error('invalid credentials');
-            }
+    try {
 
-            navigate('/email-sent');
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "http://localhost:5173/reset-password"
+        })
 
-        }catch(err) {
-            setError("Something went wrong. Try again.");
-        }finally {
-            setLoading(false);
-        }
+        if (error) throw error
+
+        navigate("/email-sent")
+
+    } catch (err) {
+
+        setError(err.message)
+
+    } finally {
+
+        setLoading(false)
+
+    }
+
     }
 
     return (

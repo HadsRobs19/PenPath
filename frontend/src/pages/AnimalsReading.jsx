@@ -2,6 +2,7 @@ import "../App.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { apiFetch } from "../lib/api";
 
 const TARGET_SENTENCE = "a bug hid in the big rug. the bug loved to be snug.";
 
@@ -42,7 +43,25 @@ const AnimalsReading = () => {
           <Button
             className="animals-reading-next"
             disabled={!isCorrect}
-            onClick={() => navigate("/animals/writing")}
+            onClick={async () => {
+
+              try {
+                await apiFetch("/api/progress/reading", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    lesson_step_id: "animals-reading",
+                    accuracy_percent: 100,
+                    time_spent_seconds: 12,
+                    is_completed: true,
+                    client_event_id: crypto.randomUUID(),
+                    completed_at: new Date().toISOString()
+                  })
+                });
+                navigate("/animals/writing");
+              } catch(err) {
+                console.error("Reading progress failed:", err);
+              }
+            }}
           >
             Next
           </Button>

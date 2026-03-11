@@ -42,7 +42,7 @@ const ReadingColors = () => {
 
             <div className="button-row">
                 <div className="exit">
-                    <Button className="exit-button" onClick={() => navigate('/colors/reading')} >
+                    <Button className="exit-button" onClick={() => navigate('/home')} >
                         Back
                     </Button>
                 </div>
@@ -53,7 +53,7 @@ const ReadingColors = () => {
                         disabled={!isComplete}
                         onClick={() => {
                             localStorage.setItem("colors_readingComplete", "true");
-                            navigate("/colors/checkpoint");
+                            navigate("/colors/writing");
                         }}
                     >
                         Next

@@ -1,30 +1,53 @@
-import '../App.css';
-import { useRef, useState } from 'react';
+import "../App.css";
+import { useRef, useState } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 
 const ACCURACY_RADIUS = 18;
 
-/*
-* <summary>
-* Interactive SVG tracing component for letters or shapes
-*   -> displays handwriting guide lines (ascender, midline, baseline)
-*   -> renders an animated dashed guide path with direction arrow
-*   -> shows a green start dot indicating where tracing should begin
-*   -> tracks pointer input (touch, pen, mouse) to draw a user path
-*   -> checks real-time accuracy against the guide path using distance tolerance
-*   -> dynamically colors the guide path green/red based on tracing accuracy
-*   -> hides guidance indicators once tracing begins
-*   -> supports customizable width and height for different letter sizes
-* </summary>
-*/
+const TracingBox = forwardRef(
+({ svgPath, onComplete, width = 360, height = 180 }, ref) => {
 
-
-const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
   const svgRef = useRef(null);
   const guidePathRef = useRef(null);
 
-  const [userPath, setUserPath] = useState('');
+  const [userPath, setUserPath] = useState("");
   const [isTracing, setIsTracing] = useState(false);
-  const [accuracy, setAccuracy] = useState('idle');
+  const [accuracy, setAccuracy] = useState("idle");
+
+  useImperativeHandle(ref, () => ({
+    exportDrawing: async () => {
+      const svg = svgRef.current;
+      if (!svg) return null;
+
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(svg);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+
+      const img = new Image();
+      const blob = new Blob([svgString], {
+        type: "image/svg+xml;charset=utf-8"
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      return new Promise((resolve) => {
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((b) => {
+            resolve(b);
+            URL.revokeObjectURL(url);
+          }, "image/png");
+        };
+
+        img.src = url;
+      });
+    }
+  }));
 
   const getSVGPoint = (e) => {
     const svg = svgRef.current;
@@ -35,11 +58,6 @@ const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
     pt.y = e.clientY;
 
     return pt.matrixTransform(svg.getScreenCTM().inverse());
-  };
-
-  const getPathPoint = (pathEl, distance) => {
-    const len = pathEl.getTotalLength();
-    return pathEl.getPointAtLength(Math.min(distance, len));
   };
 
   const isPointNearPath = (x, y) => {
@@ -57,11 +75,13 @@ const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
         return true;
       }
     }
+
     return false;
   };
 
   const handlePointerDown = (e) => {
     e.preventDefault();
+
     const { x, y } = getSVGPoint(e);
     setUserPath(`M ${x} ${y}`);
     setIsTracing(true);
@@ -71,25 +91,26 @@ const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
     if (!isTracing) return;
 
     const { x, y } = getSVGPoint(e);
+
     setUserPath((prev) => `${prev} L ${x} ${y}`);
 
     const close = isPointNearPath(x, y);
-    setAccuracy(close ? 'good' : 'bad');
+    setAccuracy(close ? "good" : "bad");
   };
 
   const handlePointerUp = () => {
     setIsTracing(false);
 
     if (accuracy === "good") {
-        onComplete?.();
+      onComplete?.();
     }
-    
-    setAccuracy('idle');
+
+    setAccuracy("idle");
   };
 
-  /* create a clear starting point to begin tracing: user base is new and children to dumb it down */
   const startPoint =
-    guidePathRef.current && getPathPoint(guidePathRef.current, 0);
+    guidePathRef.current &&
+    guidePathRef.current.getPointAtLength(0);
 
   return (
     <div className="tracing-box" style={{ width, height }}>
@@ -106,51 +127,22 @@ const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* arrow directional lines to show users where to follow */}
-        <defs>
-          <marker
-            id="arrow"
-            viewBox="0 0 10 10"
-            refX="5"
-            refY="5"
-            markerWidth="6"
-            markerHeight="6"
-            orient="auto"
-          >
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#9CA3AF" />
-          </marker>
-        </defs>
-
-        {/* Tracing starting point */}
-        {startPoint && !isTracing && (
-          <circle
-            cx={startPoint.x}
-            cy={startPoint.y}
-            r="6"
-            fill="#22C55E"
-          />
-        )}
-
-        {/* Guided tracing path */}
         <path
           ref={guidePathRef}
           d={svgPath}
           fill="none"
           stroke={
-            accuracy === 'good'
-              ? '#22C55E'
-              : accuracy === 'bad'
-              ? '#EF4444'
-              : '#9CA3AF'
+            accuracy === "good"
+              ? "#22C55E"
+              : accuracy === "bad"
+              ? "#EF4444"
+              : "#9CA3AF"
           }
           strokeWidth="4"
           strokeDasharray="6 12"
           strokeLinecap="round"
-          markerEnd={!isTracing ? 'url(#arrow)' : undefined}
-          className="trace-path"
         />
 
-        {/* User traced path */}
         <path
           d={userPath}
           fill="none"
@@ -162,6 +154,6 @@ const TracingBox = ({ svgPath, onComplete, width = 360, height = 180 }) => {
       </svg>
     </div>
   );
-};
+});
 
 export default TracingBox;
