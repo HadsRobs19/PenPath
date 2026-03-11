@@ -6,6 +6,7 @@ import rainbowPen from "../assets/rainbow-pen.png"
 import animalPen from "../assets/animal-pen.png";
 import { FaHome, FaCamera, FaUser, FaBook, FaScroll, FaMap } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { apiFetch } from "../lib/api";
 
 /*
 * <summary>
@@ -24,12 +25,34 @@ const Home = () => {
   const [lesson2Complete, setLesson2Complete] = useState(false);
 
   useEffect(() => {
-    const completed1 = localStorage.getItem("lesson1Complete");
-    const completed2 = localStorage.getItem("lesson2Complete");
 
-    setLesson1Complete(completed1 === "true");
-    setLesson2Complete(completed2 === "true");
-  }, []);
+  async function loadProgress() {
+
+    try {
+
+      const data = await apiFetch("/api/progress")
+
+      const masteredLetters = data.data.letters_mastered
+
+      if (masteredLetters.includes("Colors")) {
+        setLesson1Complete(true)
+      }
+
+      if (masteredLetters.includes("Animals")) {
+        setLesson2Complete(true)
+      }
+
+    } catch (err) {
+
+      console.error("Failed to load progress:", err)
+
+    }
+
+  }
+
+  loadProgress()
+
+}, [])
 
   return (
     <div className="home-bg">

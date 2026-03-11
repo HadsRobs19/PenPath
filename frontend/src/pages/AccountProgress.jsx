@@ -1,8 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { apiFetch } from "../lib/api";
 
 export default function AccountProgress() {
   const navigate = useNavigate();
+  const [progress, setProgress] = useState(null);
+
+  useEffect(() => {
+  async function loadProgress(){
+
+    try {
+      const data = await apiFetch("/api/progress");
+      setProgress(data.data);
+    } catch(err){
+      console.error("Failed to load progress", err);
+    }
+  }
+
+  loadProgress();
+
+}, []);
 
   const lessonTiles = [
     { number: "1", color: "#FFB380" },

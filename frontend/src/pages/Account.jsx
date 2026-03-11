@@ -1,16 +1,38 @@
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { apiFetch } from "../lib/api";
 
 export default function Account() {
   const navigate = useNavigate();
 
+  const [profile, setProfile] = useState(null);
+  const [badges, setBadges] = useState([]);
+
   const handleSettings = () => navigate("/settings");
-  const handleProgress = () => navigate("/account/progress"); // you’ll add this route later
+  const handleProgress = () => navigate("/account/progress");
+
   const handleCameraPress = () => {
     console.log("Camera button pressed");
     // optional: navigate("/scan/camera");
   };
+
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const user = await apiFetch("/me");
+        setProfile(user.data);
+
+        const badgeData = await apiFetch("/api/badges");
+        setBadges(badgeData.data);
+      } catch (err) {
+        console.error("Failed to load account", err);
+      }
+    }
+
+    loadProfile();
+  }, []);
 
   const badgeColors = [
     "#FF6B6B",
@@ -34,18 +56,29 @@ export default function Account() {
           </div>
 
           <div className="acct-profileInfo">
-            <div className="acct-profileName">Daniel Jones</div>
-            <div className="acct-profileAge">8 years old</div>
+            <div className="acct-profileName">
+              {profile?.first_name} {profile?.last_name}
+            </div>
+
+            <div className="acct-profileAge">
+              {profile?.age} years old
+            </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="acct-buttonsContainer">
-          <button className="acct-actionButton" onClick={handleSettings}>
+          <button
+            className="acct-actionButton"
+            onClick={handleSettings}
+          >
             Settings
           </button>
 
-          <button className="acct-actionButton" onClick={handleProgress}>
+          <button
+            className="acct-actionButton"
+            onClick={handleProgress}
+          >
             Progress
           </button>
         </div>
@@ -64,20 +97,20 @@ export default function Account() {
         </div>
       </div>
 
-{/* Footer Navigation */}
-<footer className="bottom-nav">
-  <button onClick={() => navigate("/home")}>
-    <FaHome />
-  </button>
+      {/* Footer Navigation */}
+      <footer className="bottom-nav">
+        <button onClick={() => navigate("/home")}>
+          <FaHome />
+        </button>
 
-  <button onClick={() => navigate("/scan")}>
-    <FaCamera />
-  </button>
+        <button onClick={() => navigate("/scan")}>
+          <FaCamera />
+        </button>
 
-  <button onClick={() => navigate("/account")}>
-    <FaUser />
-  </button>
-</footer>
+        <button onClick={() => navigate("/account")}>
+          <FaUser />
+        </button>
+      </footer>
     </div>
   );
 }

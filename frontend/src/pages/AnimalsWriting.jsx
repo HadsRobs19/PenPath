@@ -1,159 +1,133 @@
 import "../App.css";
-import { useRef, useState } from "react";
-import { forwardRef, useImperativeHandle } from "react";
+import { useNavigate } from "react-router-dom";
+import WritingBox from "../components/WritingBox";
+import Button from "../components/Button";
+import animalAudio1 from "../assets/audio/meow.mp3";
+import animalAudio2 from "../assets/audio/woof.mp3";
+import { useAudio } from "../hooks/useAudio";
+import { useRef } from "react";
+import { supabase } from "../lib/Client";
+import { apiFetch } from "../lib/api";
 
-const ACCURACY_RADIUS = 18;
+const AnimalsWriting = () => {
+  const navigate = useNavigate();
 
-const TracingBox = forwardRef(
-({ svgPath, onComplete, width = 360, height = 180 }, ref) => {
+  const playOne = useAudio(animalAudio1);
+  const playTwo = useAudio(animalAudio2);
 
-  const svgRef = useRef(null);
-  const guidePathRef = useRef(null);
+  const box1Ref = useRef(null);
+  const box2Ref = useRef(null);
 
-  const [userPath, setUserPath] = useState("");
-  const [isTracing, setIsTracing] = useState(false);
-  const [accuracy, setAccuracy] = useState("idle");
+  const uploadDrawing = async (blob, lessonId, stepId, attempt) => {
+    if (!blob) return null;
 
-  useImperativeHandle(ref, () => ({
-    exportDrawing: async () => {
-      const svg = svgRef.current;
-      if (!svg) return null;
+    try {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
 
-      const serializer = new XMLSerializer();
-      const svgString = serializer.serializeToString(svg);
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-
-      const img = new Image();
-      const blob = new Blob([svgString], {
-        type: "image/svg+xml;charset=utf-8"
-      });
-
-      const url = URL.createObjectURL(blob);
-
-      return new Promise((resolve) => {
-        img.onload = () => {
-          ctx.drawImage(img, 0, 0);
-          canvas.toBlob((b) => {
-            resolve(b);
-            URL.revokeObjectURL(url);
-          }, "image/png");
-        };
-
-        img.src = url;
-      });
-    }
-  }));
-
-  const getSVGPoint = (e) => {
-    const svg = svgRef.current;
-    if (!svg) return { x: 0, y: 0 };
-
-    const pt = svg.createSVGPoint();
-    pt.x = e.clientX;
-    pt.y = e.clientY;
-
-    return pt.matrixTransform(svg.getScreenCTM().inverse());
-  };
-
-  const isPointNearPath = (x, y) => {
-    const path = guidePathRef.current;
-    if (!path) return false;
-
-    const length = path.getTotalLength();
-
-    for (let i = 0; i < length; i += 4) {
-      const pt = path.getPointAtLength(i);
-      const dx = pt.x - x;
-      const dy = pt.y - y;
-
-      if (Math.sqrt(dx * dx + dy * dy) < ACCURACY_RADIUS) {
-        return true;
+      if (!user) {
+        console.error("User not authenticated");
+        return null;
       }
+
+      const path = `${user.id}/${lessonId}/${stepId}/${attempt}.png`;
+
+      const { error } = await supabase.storage
+        .from("user-drawings-production")
+        .upload(path, blob, {
+          contentType: "image/png",
+          upsert: true
+        });
+
+      if (error) {
+        console.error("Upload failed:", error);
+        return null;
+      }
+
+      const { data: urlData } = await supabase.storage
+        .from("user-drawings-production")
+        .createSignedUrl(path, 60 * 60 * 24);
+
+      return urlData?.signedUrl || null;
+
+    } catch (err) {
+      console.error("Upload error:", err);
+      return null;
     }
-
-    return false;
   };
-
-  const handlePointerDown = (e) => {
-    e.preventDefault();
-
-    const { x, y } = getSVGPoint(e);
-    setUserPath(`M ${x} ${y}`);
-    setIsTracing(true);
-  };
-
-  const handlePointerMove = (e) => {
-    if (!isTracing) return;
-
-    const { x, y } = getSVGPoint(e);
-
-    setUserPath((prev) => `${prev} L ${x} ${y}`);
-
-    const close = isPointNearPath(x, y);
-    setAccuracy(close ? "good" : "bad");
-  };
-
-  const handlePointerUp = () => {
-    setIsTracing(false);
-
-    if (accuracy === "good") {
-      onComplete?.();
-    }
-
-    setAccuracy("idle");
-  };
-
-  const startPoint =
-    guidePathRef.current &&
-    guidePathRef.current.getPointAtLength(0);
 
   return (
-    <div className="tracing-box" style={{ width, height }}>
-      <div className="guide-line ascender" />
-      <div className="guide-line midline" />
-      <div className="guide-line baseline" />
+    <div className="animals-writing-bg">
+      <div className="animals-writing-content">
+        <h2 className="animals-writing-header">
+          Write what you hear in cursive!
+        </h2>
 
-      <svg
-        ref={svgRef}
-        className="tracing-svg"
-        viewBox="0 0 300 180"
-        preserveAspectRatio="none"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        <path
-          ref={guidePathRef}
-          d={svgPath}
-          fill="none"
-          stroke={
-            accuracy === "good"
-              ? "#22C55E"
-              : accuracy === "bad"
-              ? "#EF4444"
-              : "#9CA3AF"
-          }
-          strokeWidth="4"
-          strokeDasharray="6 12"
-          strokeLinecap="round"
-        />
+        {/* Prompt row */}
+        <div className="animals-audio-row">
+          <div className="animals-audio-card">
+            <span className="animals-number">1.</span>
+            <button className="animals-audio-btn" onClick={playOne}>
+              🔊
+            </button>
+          </div>
 
-        <path
-          d={userPath}
-          fill="none"
-          stroke="#2563EB"
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+          <div className="animals-audio-card">
+            <span className="animals-number">2.</span>
+            <button className="animals-audio-btn" onClick={playTwo}>
+              🔊
+            </button>
+          </div>
+        </div>
+
+        {/* Writing boxes */}
+        <div className="animals-writing-boxes">
+          <WritingBox ref={box1Ref} />
+          <WritingBox ref={box2Ref} />
+        </div>
+
+        {/* Buttons */}
+        <div className="animals-button-row">
+          <Button
+            className="animals-writing-exit"
+            onClick={() => navigate("/home")}
+          >
+            Exit
+          </Button>
+
+          <Button
+            className="animals-writing-next"
+            onClick={async () => {
+
+              const blob1 = await box1Ref.current?.exportDrawing();
+              const blob2 = await box2Ref.current?.exportDrawing();
+
+              const url1 = await uploadDrawing(blob1, "animals", "step1", Date.now());
+              const url2 = await uploadDrawing(blob2, "animals", "step2", Date.now());
+
+              console.log("Drawing URLs:", url1, url2);
+
+              await apiFetch("/api/progress/writing", {
+                method: "POST",
+                body: JSON.stringify({
+                  lesson_step_id: "animals-writing",
+                  accuracy_percent: 100,
+                  time_spent_seconds: 20,
+                  is_completed: true,
+                  client_event_id: crypto.randomUUID(),
+                  completed_at: new Date().toISOString()
+                })
+              });
+
+              navigate("/animals/checkpoint");
+            }}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
   );
-});
+};
 
-export default TracingBox;
+export default AnimalsWriting;

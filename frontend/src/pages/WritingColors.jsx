@@ -4,6 +4,7 @@ import Button from '../components/Button';
 import { useState } from 'react';
 import F from "../assets/F.png";
 import N from "../assets/N.png";
+import { apiFetch } from "../lib/api";
 
 const WritingColors = () => {
     const navigate = useNavigate();
@@ -55,12 +56,35 @@ const WritingColors = () => {
                     </div>
 
                     <div className="writing-next">
-                        <Button 
-                            className="write-next-button"  
+                        <Button
+                            className="write-next-button"
                             disabled={!isCorrect}
-                            onClick={() => {
-                                localStorage.setItem("colors_writingComplete", "true");
-                                navigate("/colors/checkpoint");
+                            onClick={async () => {
+
+                                try {
+
+                                await apiFetch("/api/progress/writing", {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                    lesson_step_id: "colors-writing-step",
+                                    accuracy_percent: 100,
+                                    time_spent_seconds: 10,
+                                    is_completed: true,
+                                    client_event_id: crypto.randomUUID(),
+                                    completed_at: new Date().toISOString()
+                                    })
+                                })
+
+                                localStorage.setItem("colors_writingComplete", "true")
+
+                                navigate("/colors/checkpoint")
+
+                                } catch (err) {
+
+                                console.error("Progress save failed:", err)
+
+                                }
+
                             }}
                         >
                             Next
