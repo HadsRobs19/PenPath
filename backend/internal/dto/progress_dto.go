@@ -11,4 +11,5 @@ type ProgressSubmission struct {
 	DeviceID         string    `json:"device_id" validate:"omitempty,uuid"`
 	CompletedAt      time.Time `json:"completed_at" validate:"required"`
 	ClientEventID    string    `json:"client_event_id" validate:"required,uuid"`
+	DrawingURL       string    `json:"drawing_url" validate:"omitempty,url"`
 }

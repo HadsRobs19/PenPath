@@ -86,14 +86,15 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 			is_completed,
 			notes,
 			device_id,
-			completion_timestamp
+			completion_timestamp,
+			drawing_url
 		)
 		SELECT
 			$1,
 			$2,
 			$3,
 			COALESCE(MAX(attempt_number),0) + 1,
-			$4,$5,$6,$7,$8,$9
+			$4,$5,$6,$7,$8,$9,$10
 		FROM user_progress
 		WHERE student_id = $1
 		AND lesson_step_id = $2
@@ -110,6 +111,7 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		body.Notes,
 		body.DeviceID,
 		body.CompletedAt,
+		body.DrawingURL,
 	).Scan(&attemptNumber)
 
 	if err != nil {

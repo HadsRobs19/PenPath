@@ -38,10 +38,30 @@ PostgreSQL (Supabase Hosted)
 PenPath transforms raw lesson interactions into meaningful learning analytics through a structured backend pipeline.
 
 ```
-
 Student Completes Lesson Step
 │
 │ (event stored locally if device is offline)
+│
+▼
+Student Drawing Captured
+│
+│ SVG strokes recorded by WritingBox / TracingBox
+│
+▼
+Drawing Export
+│
+│ PNG image generated from SVG
+│ JSON stroke data generated for replay
+│
+▼
+Supabase Storage
+(user-drawings bucket)
+│
+│ Path format:
+│ {student_uuid}/{lesson_uuid}/{step_uuid}/{attempt}.{ext}
+│
+▼
+Drawing URL Generated
 │
 ▼
 POST /api/progress/(reading|writing)
@@ -56,6 +76,7 @@ user_progress table
 │ time_spent_seconds
 │ attempt_number
 │ completion status
+│ drawing_url
 │
 ▼
 LetterMasteryService
@@ -113,9 +134,7 @@ Earned Badge List
 ▼
 Frontend Dashboard
 (Account Progress Page)
-
 ```
-
 ---
 
 # Authentication Flow
@@ -390,6 +409,7 @@ Features include:
 - Automatically increments **attempt numbers**
 - Records **completion timestamps**
 - Supports optional **device tracking and notes**
+- Supports **drawing submission URLs**
 - Automatically triggers **letter mastery recalculation**
 
 Whenever a student completes a lesson step:
@@ -399,12 +419,102 @@ Whenever a student completes a lesson step:
 3. Performance metrics are recorded
 4. The **Letter Mastery Service recalculates mastery status**
 
-This design allows the system to support:
+### Drawing Storage Column
 
-- Detailed progress tracking
-- Mastery analytics
-- Student learning dashboards
-- Adaptive learning insights
+The `user_progress` table includes an additional column used for linking stored drawings:
+
+```
+drawing_url TEXT
+```
+
+This column stores the Supabase Storage URL associated with a student's drawing submission.
+
+### Drawing Submission Support
+
+For tracing and listening activities that involve handwriting input, PenPath also stores student drawings.
+
+When a student submits a drawing:
+
+1. The frontend exports the drawing as a **PNG image**.
+2. The image is uploaded to **Supabase Storage**.
+3. The returned **drawing URL** is included in the progress submission payload.
+4. The backend stores the URL in the `user_progress.drawing_url` column.
+
+This allows the system to support:
+
+- Student handwriting review
+- Future stroke replay visualization
+- Handwriting analytics
+
+## Drawing Storage System
+
+PenPath supports storing student handwriting drawings generated during tracing and listening lessons.
+
+Student drawings are uploaded to **Supabase Storage**, which provides secure file storage with Row Level Security (RLS) policies.
+
+### Storage Bucket
+
+Student drawings are stored in the following bucket:
+
+```
+user-drawings-{environment}
+```
+
+Example:
+
+```
+user-drawings-production
+```
+
+### File Structure
+
+Each drawing follows a deterministic path format:
+
+```
+{student_uuid}/{lesson_uuid}/{step_uuid}/{attempt}.{ext}
+```
+
+Example:
+
+```
+550e8400-e29b-41d4-a716-446655440000/animals/step1/1.png
+```
+
+This structure enables:
+
+- Student data isolation
+- Efficient file lookups
+- Secure access control through storage policies
+
+### Stored Drawing Formats
+
+PenPath stores two types of drawing data:
+
+|    Format            |                   Purpose                                      |
+|----------------------|----------------------------------------------------------------|
+| **PNG Image**        | Visual representation of the student drawing                   |
+| **JSON Stroke Data** | Raw stroke data used for replay or handwriting analysis        |
+
+### Storage Security
+
+Supabase **Row Level Security (RLS)** policies ensure that:
+
+- Students can only upload drawings to their own folder
+- Students can only read their own drawings
+- Teachers can read drawings from students assigned to them
+- Deletion is restricted to backend service operations
+
+These policies prevent unauthorized access to student-generated content.
+
+### Integration with Progress Tracking
+
+After a drawing is uploaded:
+
+1. Supabase returns a storage URL
+2. The frontend includes the URL in the progress submission payload
+3. The backend stores the URL in the `user_progress.drawing_url` column
+
+This links each drawing submission directly to the corresponding lesson step attempt.
 
 ## Letter Mastery Analytics System
 
@@ -1042,9 +1152,9 @@ Request Body:
   "notes": "Improved letter shape",
   "device_id": "uuid",
   "client_event_id": "uuid",
-  "completed_at": "2026-02-04T15:22:10Z"
+  "completed_at": "2026-02-04T15:22:10Z",
+  "drawing_url": "https://project.supabase.co/storage/v1/object/..."
 }
-
 ```
 
 Example Request:
