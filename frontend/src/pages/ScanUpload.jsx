@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
@@ -5,20 +6,21 @@ import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 const ScanUpload = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
-  const handleUploadTap = () => {
-    // TODO: Implement file/image picker logic
-    console.log("Tap to upload file pressed");
+  const openPicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    navigate("/scan/results", { state: { image: url } });
   };
 
   const handleOpenCamera = () => {
-    // Web version of router.push('/scan/camera')
     navigate("/scan/camera");
-  };
-
-  const handleUploadButton = () => {
-    // TODO: Implement file/image upload logic
-    console.log("Upload Image/File pressed");
   };
 
 return (
@@ -30,7 +32,7 @@ return (
         ☁️
       </div>
 
-      <button className="scan-uploadText" onClick={handleUploadTap}>
+      <button className="scan-uploadText" onClick={openPicker}>
         Tap to upload file
       </button>
 
@@ -42,10 +44,18 @@ return (
     </div>
 
     <div className="scan-bottomSection">
-      <button className="scan-uploadButton" onClick={handleUploadButton}>
+      <button className="scan-uploadButton" onClick={openPicker}>
         Upload Image/File
       </button>
     </div>
+
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept="image/*"
+      style={{ display: "none" }}
+      onChange={handleFileChange}
+    />
 
     {/* Footer Navigation */}
     <footer className="bottom-nav">
