@@ -1,5 +1,47 @@
+# Dependencies
 node_modules
-dist
-.dockerignore
-Dockerfile
 **/node_modules
+
+# Build outputs
+dist
+**/dist
+build
+**/build
+
+# Go
+backend/tmp
+**/*.test
+**/*.exe
+
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*.yaml
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE/Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Test coverage
+coverage
+.nyc_output

@@ -1,6 +1,7 @@
 package routes
 
 import (
+	backend "PenPath/backend"
 	"PenPath/backend/internal/controllers"
 	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/middleware"
@@ -14,4 +15,6 @@ func RegisterLessonRoute(app *fiber.App, db *databases.DBManager) {
 
 	api.Get("/lessons/reading", lessonController.GetReadingLessons)
 	api.Get("/lessons/writing", lessonController.GetWritingLessons)
+
+	backend.PrintInfo("Successfully Registered /api/lessons/reading and /api/lessons/writing routes!")
 }

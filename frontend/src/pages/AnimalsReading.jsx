@@ -36,7 +36,7 @@ const AnimalsReading = () => {
         />
 
         <div className="animals-button-row">
-          <Button className="animals-reading-back" onClick={() => navigate("/animals/writing")}>
+          <Button className="animals-reading-back" onClick={() => navigate("/home")}>
             Back
           </Button>
 

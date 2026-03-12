@@ -47,7 +47,7 @@ const ColorsCheckpoint = () => {
                         </Button>
                     </div>
                     <div className="check-claim">
-                        <Button 
+                        <Button
                             className="check-claim-button"
                             disabled={!canFinish}
                             onClick={async () => {
@@ -64,6 +64,7 @@ const ColorsCheckpoint = () => {
                                     completed_at: new Date().toISOString()
                                     })
                                 });
+                                localStorage.setItem("lesson1Complete", "true");
                                 navigate("/colors/badge");
                                 } catch(err) {
                                 console.error("Checkpoint save failed", err);

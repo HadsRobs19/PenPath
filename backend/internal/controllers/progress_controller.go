@@ -137,7 +137,7 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		})
 	}
 
-	// bagde checks
+	// badge checks
 	badgeService := services.NewBadgeService(p.DB)
 
 	err = badgeService.CheckBadgeCriteria(

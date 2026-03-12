@@ -6,7 +6,7 @@ export async function apiFetch(url, options={}){
 
  const token = session.data.session?.access_token
 
- return fetch(`http://localhost:3000${url}`,{
+ const response = await fetch(`http://localhost:3000${url}`,{
    ...options,
    headers:{
      "Content-Type":"application/json",
@@ -15,4 +15,9 @@ export async function apiFetch(url, options={}){
    }
  })
 
+ if (!response.ok) {
+   throw new Error(`API error: ${response.status}`)
+ }
+
+ return response.json()
 }

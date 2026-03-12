@@ -1,7 +1,3 @@
-# =========================
-# GO
-# =========================
-
 # Build artifacts
 /bin/
 /build/
@@ -19,10 +15,6 @@ coverage.out
 
 # Dependencies (legacy Go tooling)
 vendor/
-
-# =========================
-# NODE / FRONTEND
-# =========================
 
 # Dependencies
 node_modules/
@@ -46,10 +38,6 @@ lerna-debug.log*
 # TypeScript
 *.tsbuildinfo
 
-# =========================
-# EXPO / REACT NATIVE
-# =========================
-
 .expo/
 expo-env.d.ts
 .metro-health-check*
@@ -61,10 +49,6 @@ expo-env.d.ts
 # Kotlin / Android
 .kotlin/
 
-# =========================
-# ENVIRONMENT FILES
-# =========================
-
 # Local env files (never commit secrets)
 .env
 .env.*
@@ -74,20 +58,12 @@ expo-env.d.ts
 # Allow example template
 !.env.example
 
-# =========================
-# CERTIFICATES / KEYS
-# =========================
-
 *.pem
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
-
-# =========================
-# EDITORS / IDE
-# =========================
 
 .vscode/*
 !.vscode/extensions.json
@@ -99,15 +75,7 @@ expo-env.d.ts
 *.sw?
 *.orig.*
 
-# =========================
-# OS FILES
-# =========================
-
 .DS_Store
 Thumbs.db
-
-# =========================
-# MISC
-# =========================
 
 app-example

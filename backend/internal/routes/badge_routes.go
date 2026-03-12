@@ -1,6 +1,7 @@
 package routes
 
 import (
+	backend "PenPath/backend"
 	"PenPath/backend/internal/controllers"
 	"PenPath/backend/internal/databases"
 	"PenPath/backend/internal/middleware"
@@ -13,4 +14,6 @@ func RegisterBadgeRoute(app *fiber.App, db *databases.DBManager) {
 
 	api := app.Group("/api", middleware.JWTVerifierInstance.AuthMiddleware)
 	api.Get("/badges", badgeController.GetUserBadges)
+
+	backend.PrintInfo("Successfully Registered /api/badges route!")
 }

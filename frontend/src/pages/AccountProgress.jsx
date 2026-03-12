@@ -8,19 +8,17 @@ export default function AccountProgress() {
   const [progress, setProgress] = useState(null);
 
   useEffect(() => {
-  async function loadProgress(){
-
-    try {
-      const data = await apiFetch("/api/progress");
-      setProgress(data.data);
-    } catch(err){
-      console.error("Failed to load progress", err);
+    async function loadProgress() {
+      try {
+        const response = await apiFetch("/api/progress");
+        setProgress(response.data);
+      } catch (err) {
+        console.error("Failed to load progress", err);
+      }
     }
-  }
 
-  loadProgress();
-
-}, []);
+    loadProgress();
+  }, []);
 
   const lessonTiles = [
     { number: "1", color: "#FFB380" },

@@ -21,11 +21,11 @@ export default function Account() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const user = await apiFetch("/me");
+        const user = await apiFetch("/api/me");
         setProfile(user.data);
 
         const badgeData = await apiFetch("/api/badges");
-        setBadges(badgeData.data);
+        setBadges(badgeData.data || []);
       } catch (err) {
         console.error("Failed to load account", err);
       }

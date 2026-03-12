@@ -23,8 +23,9 @@ export default function Settings() {
     [sliderPosition]
   );
 
-  const handleLogOut = () => navigate("/welcome");{
+  const handleLogOut = () => {
     console.log("Log Out pressed");
+    navigate("/welcome");
   };
 
   const handleInkColorPress = () => {
