@@ -1973,6 +1973,32 @@ p {
   aspect-ratio: 1 / 1;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.acct-badgeTile--earned {
+  border: 3px solid #22C55E;
+}
+
+.acct-badgeImage {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.acct-badgeIcon {
+  font-size: 32px;
+  color: #FFD700;
+}
+
+.acct-noBadges {
+  font-size: 14px;
+  color: #6B7280;
+  font-style: italic;
+  margin: 8px 0;
 }
 
 .acct-bottomBar {

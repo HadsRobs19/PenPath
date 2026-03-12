@@ -8,12 +8,12 @@ import (
 	"PenPath/backend/internal/routes"
 	"PenPath/backend/internal/utils"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/joho/godotenv"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -24,8 +24,22 @@ var (
 )
 
 func main() {
+	// Load .env file if it exists (for local development)
+	// Try multiple locations: current dir, backend/, and project root
+	envFiles := []string{".env", "backend/.env", "../.env", "../../.env"}
+	envLoaded := false
+	for _, envFile := range envFiles {
+		if err := godotenv.Load(envFile); err == nil {
+			backend.PrintInfo("Loaded environment variables from " + envFile)
+			envLoaded = true
+			break
+		}
+	}
+	if !envLoaded {
+		backend.PrintInfo("No .env file found, using system environment variables")
+	}
 
-	// loads all sub configs that make up the main app config (or backend building blocks) of PenPath to main: keeps routes out of main
+	// loads all sub configs that make up the main app config
 	loadAppConfig(&AppConfig)
 	backend.PrintInfo("Loaded main app configs!")
 
@@ -86,11 +100,12 @@ func main() {
 }
 
 func loadAppConfig(appConfig *config.AppConfig) {
-	templateMainConfig := config.AppConfig{
-		// Fiber is locked to 127.0.0.1 so only Caddy (running on the same machine)
-		// can reach it. External traffic must go through Caddy on port 443.
+	// Always use environment variables for sensitive config (they take priority)
+	// This ensures .env values are used even if config.json exists
+	*appConfig = config.AppConfig{
+		// Fiber is locked to 127.0.0.1 so only Caddy (running on the same machine) can reach it. External traffic must go through Caddy on port 443.
 		ServiceConfig: config.ServiceConfig{
-			IPv4Host:    "127.0.0.1",
+			IPv4Host:    "0.0.0.0", // Listen on all interfaces for Docker/dev
 			IPv4Port:    "3000",
 			IPv4Enabled: true,
 			IPv6Host:    "[::]",
@@ -111,9 +126,9 @@ func loadAppConfig(appConfig *config.AppConfig) {
 		DBConfig: config.DBConfig{
 			Host:     "localhost",
 			Port:     5432,
-			User:     "user",
+			User:     "postgres",
 			Password: os.Getenv("DB_PASSWORD"),
-			DBName:   "mydb",
+			DBName:   "postgres",
 			SSLMode:  "disable",
 		},
 		SupabaseConfig: config.SupabaseConfig{
@@ -134,37 +149,27 @@ func loadAppConfig(appConfig *config.AppConfig) {
 		},
 	}
 
-	if _, unknownFolder := os.Stat("config"); os.IsNotExist(unknownFolder) {
-		// if a config directory does not exist, it will be created
-		err := os.Mkdir("config", 0755)
-		if err != nil {
-			backend.PrintError("Error creating directory:" + err.Error())
-			return
+	if _, err := os.Stat("config"); os.IsNotExist(err) {
+		if mkErr := os.Mkdir("config", 0755); mkErr != nil {
+			backend.PrintError("Error creating config directory: " + mkErr.Error())
+		} else {
+			backend.PrintInfo("Directory 'config' created successfully")
 		}
-		backend.PrintInfo("Directory 'config' created successfully")
 	}
 
-	data, err := os.ReadFile("config/config.json")
-	if errors.Is(err, os.ErrNotExist) {
-		file, _ := os.Create("config/config.json")
-		value, err1 := json.Marshal(templateMainConfig)
-		if err1 != nil {
-			backend.PrintError(err.Error())
+	// Try to read config.json for service-level overrides (but env vars take priority for secrets)
+	if data, err := os.ReadFile("config/config.json"); err == nil {
+		var fileConfig config.AppConfig
+		if jsonErr := json.Unmarshal(data, &fileConfig); jsonErr == nil {
+			// Only override non-sensitive service config from file
+			if fileConfig.ServiceConfig.IPv4Port != "" {
+				appConfig.ServiceConfig = fileConfig.ServiceConfig
+			}
+			if fileConfig.CaddyConfig.PublicHost != "" {
+				appConfig.CaddyConfig = fileConfig.CaddyConfig
+			}
 		}
-		_, err2 := file.Write(value)
-		if err2 != nil {
-			backend.PrintError("failed to write to file config.json: ")
-		}
-
-		backend.PrintError("Can't find main config file, creating config.json in config directory...")
-		defer file.Close()
 	}
-	if err != nil {
-		backend.PrintError("Failed to read file config/config.json")
-		return
-	}
-
-	_ = json.Unmarshal(data, appConfig)
 }
 
 // this is VERY extra but wanted to try out lipgloss and put some ownership on our backend <3

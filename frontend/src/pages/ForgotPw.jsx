@@ -78,7 +78,7 @@ const ForgotPw = () => {
                             required
                         />
                     </div>
-                    <Button type="submit" disabled={loading} onClick={() => navigate('/email-sent')}>
+                    <Button type="submit" disabled={loading}>
                         {loading ? 'Sending...' : 'Send Reset Link'}
                     </Button>
 
