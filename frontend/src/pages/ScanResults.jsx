@@ -1,10 +1,12 @@
 import "../App.css";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 
 export default function ScanResults() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const capturedImage = state?.image ?? null;
   const [selectedAI, setSelectedAI] = useState("penpath");
 
   const aiOptions = useMemo(
@@ -38,13 +40,17 @@ export default function ScanResults() {
       <div className="res-scroll">
         {/* Scanned Image Preview */}
         <div className="res-imageContainer">
-          <div className="res-imagePlaceholder" aria-hidden="true">
-            <div className="res-handwritingLines">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="res-handwritingLine" />
-              ))}
+          {capturedImage ? (
+            <img src={capturedImage} alt="Scanned" className="res-scannedImage" />
+          ) : (
+            <div className="res-imagePlaceholder" aria-hidden="true">
+              <div className="res-handwritingLines">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="res-handwritingLine" />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* AI Assistant Card */}
