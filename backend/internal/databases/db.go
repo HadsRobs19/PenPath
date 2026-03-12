@@ -1,8 +1,8 @@
 package databases
 
 import (
-	"PenPath/backend/internal/config"
 	"context"
+	"penpath-backend/internal/config"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"

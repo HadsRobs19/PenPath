@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"PenPath/backend/internal/databases"
 	"context"
+	"penpath-backend/internal/databases"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -13,7 +13,6 @@ type HealthController struct {
 	DB *databases.DBManager
 }
 
-// constructor
 func NewHealthController(db *databases.DBManager) *HealthController {
 	return &HealthController{DB: db}
 }

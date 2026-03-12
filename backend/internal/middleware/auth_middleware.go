@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"PenPath/backend"
-	"PenPath/backend/internal/models"
 	"context"
 	"fmt"
+	backend "penpath-backend"
+	"penpath-backend/internal/models"
 	"strings"
 
 	"github.com/MicahParks/keyfunc/v3"
@@ -49,25 +49,16 @@ func NewJWTVerifier(issuer string, audience string, jwksURL string) {
 func (jw *JWTVerifier) AuthMiddleware(c fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		backend.PrintError("[Auth] No Authorization header present")
 		return fiber.ErrUnauthorized
 	}
 	const bearerPrefix = "Bearer "
 	if !strings.HasPrefix(authHeader, bearerPrefix) {
-		backend.PrintError("[Auth] Authorization header missing Bearer prefix")
 		return fiber.ErrUnauthorized
 	}
 	tokenString := strings.TrimPrefix(authHeader, bearerPrefix)
 
-	// Check for empty or "undefined" token
-	if tokenString == "" || tokenString == "undefined" || tokenString == "null" {
-		backend.PrintError("[Auth] Token is empty or undefined")
-		return fiber.ErrUnauthorized
-	}
-
 	// if JWKS arent loaded, token relaibility can't be verified
 	if jw.keyfunc == nil {
-		backend.PrintError("[Auth] JWKS keyfunc not loaded - cannot verify tokens")
 		return fiber.ErrInternalServerError
 	}
 
@@ -78,28 +69,21 @@ func (jw *JWTVerifier) AuthMiddleware(c fiber.Ctx) error {
 		jw.keyfunc,
 		jwt.WithExpirationRequired(),
 		jwt.WithIssuedAt(),
-		// Note: Supabase JWTs don't include nbf claim, so we don't require it
+		jwt.WithNotBeforeRequired(),
 	)
 
 	//TODO: harden rejecting tokens whos alg header isnt RS256 AND token headers that say "none"
-	if err != nil {
-		backend.PrintError(fmt.Sprintf("[Auth] Token parse error: %v", err))
-		return fiber.ErrUnauthorized
-	}
-	if !token.Valid {
-		backend.PrintError("[Auth] Token is not valid")
+	if err != nil || !token.Valid {
 		return fiber.ErrUnauthorized
 	}
 
 	claims, ok := token.Claims.(*models.SupabaseClaims)
 	if !ok {
-		backend.PrintError("[Auth] Failed to cast claims to SupabaseClaims")
 		return fiber.ErrUnauthorized
 	}
 
 	// validate issuer, or supabase issuer string,
 	if claims.Issuer != jw.issuer {
-		backend.PrintError(fmt.Sprintf("[Auth] Issuer mismatch: got '%s', expected '%s'", claims.Issuer, jw.issuer))
 		return fiber.ErrUnauthorized
 	}
 
@@ -111,7 +95,6 @@ func (jw *JWTVerifier) AuthMiddleware(c fiber.Ctx) error {
 		}
 	}
 	if !audOK {
-		backend.PrintError(fmt.Sprintf("[Auth] Audience mismatch: got %v, expected '%s'", claims.Audience, jw.audience))
 		return fiber.ErrUnauthorized
 	}
 

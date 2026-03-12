@@ -1,17 +1,14 @@
 package controllers
 
 import (
-	"PenPath/backend"
-	"PenPath/backend/internal/databases"
-	"PenPath/backend/internal/dto"
-	services "PenPath/backend/internal/service"
-	"PenPath/backend/internal/validation"
 	"context"
-	"fmt"
+	"penpath-backend/internal/databases"
+	"penpath-backend/internal/dto"
+	"penpath-backend/internal/services"
+	"penpath-backend/internal/validation"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/google/uuid"
 )
 
 type ProgressController struct {
@@ -20,33 +17,6 @@ type ProgressController struct {
 
 func NewProgressController(db *databases.DBManager) *ProgressController {
 	return &ProgressController{DB: db}
-}
-
-// resolveLessonStepID converts a string identifier to a UUID
-// If it's already a valid UUID, returns it directly
-// Otherwise, looks it up in the lesson_steps table by title
-func (p *ProgressController) resolveLessonStepID(ctx context.Context, identifier string) (string, error) {
-	// First, check if it's already a valid UUID
-	if _, err := uuid.Parse(identifier); err == nil {
-		return identifier, nil
-	}
-
-	// Not a UUID, try to look it up by title in lesson_steps table
-	// The title field stores identifiers like "colors-writing-step", "animals-reading", etc.
-	var lessonStepID string
-	err := p.DB.DB.QueryRow(
-		ctx,
-		`SELECT id::text FROM lesson_steps WHERE title = $1 LIMIT 1`,
-		identifier,
-	).Scan(&lessonStepID)
-
-	if err != nil {
-		backend.PrintError(fmt.Sprintf("[Progress] Could not find lesson step with title '%s': %v", identifier, err))
-		return "", err
-	}
-
-	backend.PrintInfo(fmt.Sprintf("[Progress] Resolved '%s' to UUID: %s", identifier, lessonStepID))
-	return lessonStepID, nil
 }
 
 func (p *ProgressController) SaveReadingProgress(c fiber.Ctx) error {
@@ -58,9 +28,9 @@ func (p *ProgressController) SaveWritingProgress(c fiber.Ctx) error {
 }
 
 func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) error {
-	var attemptNumber int
+	var attemptNumber, previousAttempt int
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	_ = progressType
@@ -84,46 +54,27 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		return validation.ValidationError(c, err)
 	}
 
-	// Try to resolve lesson step ID (convert slug to UUID if needed)
-	lessonStepID, err := p.resolveLessonStepID(ctx, body.LessonStepID)
-	if err != nil {
-		// Lesson step not found in database - return success anyway for dev purposes
-		// This allows frontend to function while database is being set up
-		backend.PrintInfo(fmt.Sprintf("[Progress] Skipping DB save for unknown lesson step: %s", body.LessonStepID))
-		return c.JSON(fiber.Map{
-			"status": "ok",
-			"data": fiber.Map{
-				"lesson_step_id": body.LessonStepID,
-				"attempt_number": 1,
-				"note":           "progress not saved - lesson step not in database",
-			},
-		})
-	}
+	// because users can have multiple attempts on a lesson, tracking duplicate entries is done
 
-	// Get previous attempt count
-	var previousAttempt int
-	err = p.DB.DB.QueryRow(
+	err := p.DB.DB.QueryRow(
 		ctx,
 		`SELECT COALESCE(MAX(attempt_number), 0)
 		FROM user_progress
 		WHERE student_id = $1
 		AND lesson_step_id = $2`,
 		userID,
-		lessonStepID,
+		body.LessonStepID,
 	).Scan(&previousAttempt)
 
 	if err != nil {
-		backend.PrintError(fmt.Sprintf("[Progress] DB query error: %v", err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "failed to retrieve attempt history",
 		})
 	}
 
-	attemptNumber = previousAttempt + 1
-
-	// Insert user progress into database
-	_, err = p.DB.DB.Exec(
+	// inserting user progress into database
+	err = p.DB.DB.QueryRow(
 		ctx,
 		`INSERT INTO user_progress(
 			student_id,
@@ -135,15 +86,22 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 			is_completed,
 			notes,
 			device_id,
-			completion_timestamp,
-			drawing_url
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+			completion_timestamp
+		)
+		SELECT
+			$1,
+			$2,
+			$3,
+			COALESCE(MAX(attempt_number),0) + 1,
+			$4,$5,$6,$7,$8,$9
+		FROM user_progress
+		WHERE student_id = $1
+		AND lesson_step_id = $2
 		ON CONFLICT (student_id, client_event_id)
-		DO UPDATE SET
-			accuracy_percent = EXCLUDED.accuracy_percent,
-			is_completed = EXCLUDED.is_completed`,
+		DO UPDATE SET client_event_id = EXCLUDED.client_event_id
+		RETURNING attempt_number`,
 		userID,
-		lessonStepID,
+		body.LessonStepID,
 		body.ClientEventID,
 		attemptNumber,
 		body.AccuracyPercent,
@@ -152,27 +110,45 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 		body.Notes,
 		body.DeviceID,
 		body.CompletedAt,
-		body.DrawingURL,
-	)
+	).Scan(&attemptNumber)
 
 	if err != nil {
-		backend.PrintError(fmt.Sprintf("[Progress] Insert error: %v", err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
 			"message": "failed to insert progress",
 		})
 	}
 
-	// auto updates letter mastery (skip if it fails - non-critical)
+	// auto updates letter mastery
 	masteryService := services.NewLetterMasteryService(p.DB)
-	if err := masteryService.UpdateLetterMastery(ctx, userID, lessonStepID); err != nil {
-		backend.PrintError(fmt.Sprintf("[Progress] Letter mastery update failed: %v", err))
+
+	err = masteryService.UpdateLetterMastery(
+		ctx,
+		userID,
+		body.LessonStepID,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to save progress",
+		})
 	}
 
-	// badge checks (skip if it fails - non-critical)
+	// bagde checks
 	badgeService := services.NewBadgeService(p.DB)
-	if err := badgeService.CheckBadgeCriteria(ctx, userID, lessonStepID); err != nil {
-		backend.PrintError(fmt.Sprintf("[Progress] Badge check failed: %v", err))
+
+	err = badgeService.CheckBadgeCriteria(
+		ctx,
+		userID,
+		body.LessonStepID,
+	)
+
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": "failed to award a badge",
+		})
 	}
 
 	return c.JSON(fiber.Map{
@@ -182,6 +158,7 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 			"attempt_number": attemptNumber,
 		},
 	})
+
 }
 
 // retrieves lesson progress summary

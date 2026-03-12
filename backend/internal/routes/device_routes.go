@@ -1,10 +1,10 @@
 package routes
 
 import (
-	backend "PenPath/backend"
-	"PenPath/backend/internal/controllers"
-	"PenPath/backend/internal/databases"
-	"PenPath/backend/internal/middleware"
+	backend "penpath-backend"
+	"penpath-backend/internal/controllers"
+	"penpath-backend/internal/databases"
+	"penpath-backend/internal/middleware"
 
 	"github.com/gofiber/fiber/v3"
 )
