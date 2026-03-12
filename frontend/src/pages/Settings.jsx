@@ -1,6 +1,7 @@
-﻿import { useMemo, useState } from "react";
+﻿import { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
+import { supabase } from "../lib/Client";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -9,6 +10,16 @@ export default function Settings() {
   const [selectedFontSize, setSelectedFontSize] = useState(2);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [sliderPosition, setSliderPosition] = useState(0.3);
+  const [avatarUrl, setAvatarUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const url = data?.user?.user_metadata?.avatar_url;
+      if (url) setAvatarUrl(url);
+    });
+  }, []);
 
   const themeColors = [
     { key: "blue", color: "#A8D8EA" },
@@ -33,7 +44,48 @@ export default function Settings() {
   };
 
   const handleCameraPress = () => {
-    console.log("Camera button pressed");
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData?.user?.id ?? "anonymous";
+    const ext = file.name.split(".").pop();
+    const path = `avatars/${userId}/profile.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("penpath-handwriting")
+      .upload(path, file, { upsert: true });
+
+    if (uploadError) {
+      console.error("Upload failed:", uploadError.message);
+      setUploading(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("penpath-handwriting")
+      .getPublicUrl(path);
+
+    const publicUrl = urlData.publicUrl;
+    await supabase.auth.updateUser({ data: { avatar_url: publicUrl } });
+    setAvatarUrl(publicUrl);
+    setUploading(false);
+  };
+
+  const handleRemovePhoto = async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData?.user?.id ?? "anonymous";
+    const ext = avatarUrl?.split(".").pop();
+    await supabase.storage
+      .from("penpath-handwriting")
+      .remove([`avatars/${userId}/profile.${ext}`]);
+    await supabase.auth.updateUser({ data: { avatar_url: null } });
+    setAvatarUrl(null);
   };
 
   return (
@@ -48,6 +100,35 @@ export default function Settings() {
         <h1 style={styles.title}>Settings</h1>
 
         <div style={styles.headerSpacer} />
+      </div>
+
+      {/* Profile Picture */}
+      <div style={styles.avatarSection}>
+        <div style={styles.avatarWrapper}>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="Profile" style={styles.avatarImage} />
+          ) : (
+            <div style={styles.avatarPlaceholder}>
+              <FaUser size={36} color="#9CA3AF" />
+            </div>
+          )}
+          <button onClick={handleCameraPress} style={styles.avatarCameraBtn} aria-label="Upload photo">
+            📷
+          </button>
+        </div>
+        {avatarUrl && (
+          <button onClick={handleRemovePhoto} style={styles.removePhotoBtn}>
+            Remove Photo
+          </button>
+        )}
+        {uploading && <span style={styles.uploadingText}>Uploading...</span>}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
       </div>
 
       <div style={styles.scrollContent}>
@@ -300,6 +381,63 @@ const styles = {
     fontWeight: 700,
     border: "none",
     cursor: "pointer",
+  },
+
+  avatarSection: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 16,
+    gap: 8,
+  },
+  avatarWrapper: {
+    position: "relative",
+    width: 90,
+    height: 90,
+  },
+  avatarPlaceholder: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "#E5E7EB",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    objectFit: "cover",
+    border: "2px solid #E5E5E5",
+  },
+  avatarCameraBtn: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#1A1A1A",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 14,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  removePhotoBtn: {
+    background: "transparent",
+    border: "none",
+    color: "#EF4444",
+    fontSize: 13,
+    cursor: "pointer",
+    fontWeight: 600,
+  },
+  uploadingText: {
+    fontSize: 12,
+    color: "#6B7280",
   },
 
   bottomBar: {
