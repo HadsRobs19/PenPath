@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"PenPath/backend/internal/databases"
+	"PenPath/backend/internal/dto"
 	"context"
-	"penpath-backend/internal/databases"
-	"penpath-backend/internal/dto"
 	"time"
 
 	"github.com/gofiber/fiber/v3"

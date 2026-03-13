@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"PenPath/backend/internal/databases"
+	"PenPath/backend/internal/dto"
+	"PenPath/backend/internal/validation"
 	"context"
-	"penpath-backend/internal/databases"
-	"penpath-backend/internal/dto"
-	"penpath-backend/internal/validation"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -18,22 +18,6 @@ type DeviceController struct {
 func NewDeviceController(db *databases.DBManager) *DeviceController {
 	return &DeviceController{DB: db}
 }
-
-/*
-Inside PostDevice:
-
-read authenticated user from c.Locals("user_id")
-
-parse request JSON into local DeviceData
-
-validate required fields
-
-query/insert into devices
-
-query/insert into user_devices
-
-return JSON response
-*/
 
 func (d *DeviceController) PostDevice(c fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -58,6 +42,13 @@ func (d *DeviceController) PostDevice(c fiber.Ctx) error {
 	// required field validation
 	if err := validation.Validate(body); err != nil {
 		return validation.ValidationError(c, err)
+	}
+
+	if body.DeviceType == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": "device_type is required",
+		})
 	}
 
 	// what devices are allowed to use PenPath
@@ -96,7 +87,7 @@ func (d *DeviceController) PostDevice(c fiber.Ctx) error {
 					supports_wifi,
 					supports_offline
 				)
-				VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 				RETURNING id`,
 				body.DeviceID,
 				body.DeviceType,

@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"penpath-backend/internal/controllers"
-	"penpath-backend/internal/databases"
-	"penpath-backend/internal/middleware"
+	backend "PenPath/backend"
+	"PenPath/backend/internal/controllers"
+	"PenPath/backend/internal/databases"
+	"PenPath/backend/internal/middleware"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -15,4 +16,6 @@ func RegisterProgressRoute(app *fiber.App, db *databases.DBManager) {
 	api.Post("/progress/reading", progressController.SaveReadingProgress)
 	api.Post("/progress/writing", progressController.SaveWritingProgress)
 	api.Get("/progress", progressController.GetProgressSummary)
+
+	backend.PrintInfo("Successfully Registered /api/progress/reading, /api/progress/writing, and /progress routes!")
 }
