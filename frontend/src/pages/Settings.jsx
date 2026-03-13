@@ -36,7 +36,7 @@ export default function Settings() {
 
   const handleLogOut = () => {
     console.log("Log Out pressed");
-    navigate("/");
+    navigate("/welcome");
   };
 
   const handleInkColorPress = () => {

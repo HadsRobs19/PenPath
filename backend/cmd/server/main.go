@@ -14,7 +14,6 @@ import (
 	"penpath-backend/internal/utils"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/joho/godotenv"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -26,23 +25,7 @@ var (
 
 func main() {
 
-	// Load .env file if it exists (for local development)
-	// Try multiple locations: current dir, backend/, and project root
-	envFiles := []string{".env", "backend/.env", "../.env", "../../.env"}
-	envLoaded := false
-	for _, envFile := range envFiles {
-		if err := godotenv.Load(envFile); err == nil {
-			backend.PrintInfo("Loaded environment variables from " + envFile)
-			envLoaded = true
-			break
-		}
-	}
-	if !envLoaded {
-		backend.PrintInfo("No .env file found, using system environment variables")
-	}
-
-	// loads all sub configs that make up the main app config
-
+	// loads all sub configs that make up the main app config (or backend building blocks) of PenPath to main: keeps routes out of main
 	loadAppConfig(&AppConfig)
 	backend.PrintInfo("Loaded main app configs!")
 
