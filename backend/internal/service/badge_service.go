@@ -1,8 +1,8 @@
 package services
 
 import (
-	"PenPath/backend/internal/databases"
 	"context"
+	"penpath-backend/internal/databases"
 )
 
 type BadgeService struct {
