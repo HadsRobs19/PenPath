@@ -3,6 +3,10 @@ html, body, #root {
   height: 100%;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 @font-face {
   font-family: 'PlayKiddo';
   src: url('./assets/fonts/PlayKiddo.ttf') format('truetype');

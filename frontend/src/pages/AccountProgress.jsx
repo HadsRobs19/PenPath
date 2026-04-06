@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { FaHome, FaCamera, FaUser, FaCheck, FaTimes } from "react-icons/fa";
+import { FaHome, FaCamera, FaUser, FaCheck } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
 
-// Lesson colors for the tiles
 const lessonColors = ["#FFB380", "#C9B1FF", "#A8E6CF", "#FFD93D", "#FF6B6B", "#A8D8EA"];
 
 export default function AccountProgress() {
@@ -22,23 +21,33 @@ export default function AccountProgress() {
         setLoading(false);
       }
     }
-
     loadProgress();
   }, []);
 
-  // Generate lesson tiles based on completed count
   const getLessonTiles = () => {
     const completed = progress?.lessons_completed || 0;
+    const total = progress?.total_lessons || Math.max(completed, 3);
     const tiles = [];
-    for (let i = 1; i <= Math.max(completed, 3); i++) {
+    for (let i = 1; i <= Math.max(total, 3); i++) {
       tiles.push({
         number: i,
         color: lessonColors[(i - 1) % lessonColors.length],
-        completed: i <= completed
+        completed: i <= completed,
       });
     }
     return tiles;
   };
+
+  const masteredCount = progress?.letters_mastered?.length || 0;
+  const needsWorkCount = progress?.letters_needing_work?.length || 0;
+  const totalLettersTouched = masteredCount + needsWorkCount;
+  const masteryPercent =
+    totalLettersTouched > 0 ? Math.round((masteredCount / totalLettersTouched) * 100) : 0;
+
+  const lessonsCompleted = progress?.lessons_completed || 0;
+  const totalLessons = progress?.total_lessons || 0;
+  const lessonPercent =
+    totalLessons > 0 ? Math.round((lessonsCompleted / totalLessons) * 100) : 0;
 
   return (
     <div className="acct-container">
@@ -54,23 +63,56 @@ export default function AccountProgress() {
 
         {/* Content */}
         <div style={styles.content}>
+          {/* Overall Progress Bar */}
+          {totalLessons > 0 && (
+            <div style={styles.card}>
+              <div style={styles.cardRow}>
+                <span style={styles.cardLabel}>Overall Completion</span>
+                <span style={styles.cardValue}>{lessonPercent}%</span>
+              </div>
+              <div style={styles.progressTrack}>
+                <div
+                  style={{
+                    ...styles.progressFill,
+                    width: `${lessonPercent}%`,
+                    backgroundColor: "#4B7BE5",
+                  }}
+                />
+              </div>
+              <span style={styles.subLabel}>
+                {lessonsCompleted} of {totalLessons} lessons completed
+              </span>
+            </div>
+          )}
+
           {/* Average Accuracy */}
           {progress?.average_accuracy > 0 && (
-            <div style={styles.accuracyCard}>
-              <span style={styles.accuracyLabel}>Average Accuracy</span>
-              <span style={styles.accuracyValue}>
-                {Math.round(progress.average_accuracy)}%
-              </span>
+            <div style={styles.card}>
+              <div style={styles.cardRow}>
+                <span style={styles.cardLabel}>Average Accuracy</span>
+                <span style={{ ...styles.cardValue, color: "#22C55E" }}>
+                  {Math.round(progress.average_accuracy)}%
+                </span>
+              </div>
+              <div style={styles.progressTrack}>
+                <div
+                  style={{
+                    ...styles.progressFill,
+                    width: `${Math.round(progress.average_accuracy)}%`,
+                    backgroundColor: "#22C55E",
+                  }}
+                />
+              </div>
             </div>
           )}
 
           {/* Lessons Completed */}
           <h2 style={styles.sectionTitle}>
-            Lessons Completed ({progress?.lessons_completed || 0})
+            Lessons Completed ({lessonsCompleted})
           </h2>
-          <div style={styles.lessonsRow}>
+          <div style={styles.tilesRow}>
             {loading ? (
-              <p style={styles.loadingText}>Loading...</p>
+              <p style={styles.mutedText}>Loading...</p>
             ) : (
               getLessonTiles().map((tile) => (
                 <div
@@ -78,55 +120,68 @@ export default function AccountProgress() {
                   style={{
                     ...styles.lessonTile,
                     backgroundColor: tile.completed ? tile.color : "#E5E5E5",
-                    opacity: tile.completed ? 1 : 0.5
+                    opacity: tile.completed ? 1 : 0.45,
                   }}
                 >
                   <span style={styles.lessonNumber}>{tile.number}</span>
-                  {tile.completed && (
-                    <FaCheck style={styles.checkIcon} />
-                  )}
+                  {tile.completed && <FaCheck style={styles.checkIcon} />}
                 </div>
               ))
             )}
           </div>
 
-          {/* Letters Perfected */}
-          <h2 style={styles.sectionTitle}>
-            Letters Perfected ({progress?.letters_mastered?.length || 0})
-          </h2>
-          <div style={styles.lettersRow}>
-            {loading ? (
-              <p style={styles.loadingText}>Loading...</p>
-            ) : progress?.letters_mastered?.length > 0 ? (
-              progress.letters_mastered.map((letter) => (
-                <div key={letter} style={styles.letterTile}>
-                  <span style={styles.letterText}>{letter}</span>
-                  <FaCheck style={styles.letterCheckIcon} />
+          {/* Letter Mastery */}
+          <h2 style={styles.sectionTitle}>Letter Mastery</h2>
+          {loading ? (
+            <p style={styles.mutedText}>Loading...</p>
+          ) : totalLettersTouched > 0 ? (
+            <div style={styles.card}>
+              <div style={styles.cardRow}>
+                <span style={styles.cardLabel}>Letters Perfected</span>
+                <span style={styles.cardValue}>{masteryPercent}%</span>
+              </div>
+              <div style={styles.progressTrack}>
+                <div
+                  style={{
+                    ...styles.progressFill,
+                    width: `${masteryPercent}%`,
+                    backgroundColor: "#A8E6CF",
+                  }}
+                />
+              </div>
+              <div style={styles.masteryStats}>
+                <span style={styles.masteredBadge}>
+                  ✓ {masteredCount} mastered
+                </span>
+                {needsWorkCount > 0 && (
+                  <span style={styles.needsWorkBadge}>
+                    ✗ {needsWorkCount} need practice
+                  </span>
+                )}
+              </div>
+              {/* Letter chips */}
+              {masteredCount > 0 && (
+                <div style={styles.chipsRow}>
+                  {progress.letters_mastered.map((letter) => (
+                    <div key={letter} style={styles.chipMastered}>
+                      {letter}
+                    </div>
+                  ))}
                 </div>
-              ))
-            ) : (
-              <p style={styles.emptyText}>Keep practicing to perfect letters!</p>
-            )}
-          </div>
-
-          {/* Letters that need work */}
-          <h2 style={styles.sectionTitle}>
-            Letters that need work ({progress?.letters_needing_work?.length || 0})
-          </h2>
-          <div style={styles.lettersRow}>
-            {loading ? (
-              <p style={styles.loadingText}>Loading...</p>
-            ) : progress?.letters_needing_work?.length > 0 ? (
-              progress.letters_needing_work.map((letter) => (
-                <div key={letter} style={{ ...styles.letterTile, ...styles.letterTileNeedsWork }}>
-                  <span style={styles.letterText}>{letter}</span>
-                  <FaTimes style={styles.letterNeedsWorkIcon} />
+              )}
+              {needsWorkCount > 0 && (
+                <div style={{ ...styles.chipsRow, marginTop: 8 }}>
+                  {progress.letters_needing_work.map((letter) => (
+                    <div key={letter} style={styles.chipNeedsWork}>
+                      {letter}
+                    </div>
+                  ))}
                 </div>
-              ))
-            ) : (
-              <p style={styles.emptyText}>Great job! No letters need extra work.</p>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <p style={styles.mutedText}>Complete lessons to track letter mastery.</p>
+          )}
         </div>
 
         {/* Footer Navigation */}
@@ -134,11 +189,9 @@ export default function AccountProgress() {
           <button onClick={() => navigate("/home")}>
             <FaHome />
           </button>
-
           <button onClick={() => navigate("/scan")}>
             <FaCamera />
           </button>
-
           <button onClick={() => navigate("/account")}>
             <FaUser />
           </button>
@@ -180,25 +233,45 @@ const styles = {
     flex: 1,
     padding: "0 24px 24px",
   },
-  accuracyCard: {
+  card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: "16px 20px",
-    marginBottom: 16,
+    borderRadius: 14,
+    padding: "14px 18px",
+    marginBottom: 14,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+  },
+  cardRow: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    marginBottom: 8,
   },
-  accuracyLabel: {
-    fontSize: 16,
+  cardLabel: {
+    fontSize: 15,
     fontWeight: 600,
-    color: "#6B7280",
+    color: "#4B5563",
   },
-  accuracyValue: {
-    fontSize: 24,
+  cardValue: {
+    fontSize: 20,
     fontWeight: 800,
-    color: "#22C55E",
+    color: "#1A1A1A",
+  },
+  progressTrack: {
+    height: 10,
+    backgroundColor: "#E5E7EB",
+    borderRadius: 99,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 99,
+    transition: "width 0.4s ease",
+  },
+  subLabel: {
+    fontSize: 12,
+    color: "#9CA3AF",
+    marginTop: 6,
+    display: "block",
   },
   sectionTitle: {
     margin: "20px 0 12px",
@@ -206,10 +279,11 @@ const styles = {
     fontWeight: 700,
     color: "#1A1A1A",
   },
-  lessonsRow: {
+  tilesRow: {
     display: "flex",
     gap: 12,
     flexWrap: "wrap",
+    marginBottom: 4,
   },
   lessonTile: {
     width: 64,
@@ -234,46 +308,54 @@ const styles = {
     fontSize: 12,
     color: "#22C55E",
   },
-  lettersRow: {
+  masteryStats: {
     display: "flex",
-    gap: 10,
-    flexWrap: "wrap",
+    gap: 12,
+    marginTop: 10,
   },
-  letterTile: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
+  masteredBadge: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#16A34A",
+  },
+  needsWorkBadge: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#DC2626",
+  },
+  chipsRow: {
+    display: "flex",
+    gap: 8,
+    flexWrap: "wrap",
+    marginTop: 10,
+  },
+  chipMastered: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
     backgroundColor: "#D1FAE5",
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-  },
-  letterTileNeedsWork: {
-    backgroundColor: "#FEE2E2",
-  },
-  letterText: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 700,
-    color: "#1A1A1A",
+    color: "#065F46",
   },
-  letterCheckIcon: {
-    fontSize: 10,
-    color: "#22C55E",
+  chipNeedsWork: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: "#FEE2E2",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 16,
+    fontWeight: 700,
+    color: "#991B1B",
   },
-  letterNeedsWorkIcon: {
-    fontSize: 10,
-    color: "#EF4444",
-  },
-  loadingText: {
+  mutedText: {
     fontSize: 14,
-    color: "#6B7280",
-    fontStyle: "italic",
-  },
-  emptyText: {
-    fontSize: 14,
-    color: "#6B7280",
+    color: "#9CA3AF",
     fontStyle: "italic",
   },
 };

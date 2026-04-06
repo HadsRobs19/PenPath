@@ -90,6 +90,7 @@ func main() {
 	routes.RegisterLessonRoute(app, dbManager)
 	routes.RegisterProgressRoute(app, dbManager)
 	routes.RegisterBadgeRoute(app, dbManager)
+	routes.RegisterScanRoute(app, AppConfig.AnthropicConfig)
 
 	backend.PrintInfo("Now Listening on " + AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
 	err = app.Listen(AppConfig.ServiceConfig.IPv4Host + ":" + AppConfig.ServiceConfig.IPv4Port)
@@ -146,6 +147,10 @@ func loadAppConfig(appConfig *config.AppConfig) {
 		StorageConfig: config.StorageConfig{
 			BucketName: os.Getenv("SUPABASE_STORAGE_BUCKET"),
 			StorageURL: os.Getenv("SUPABASE_URL") + "/storage/v1",
+		},
+		AnthropicConfig: config.AnthropicConfig{
+			APIKey: os.Getenv("ANTHROPIC_API_KEY"),
+			Model:  "claude-haiku-4-5-20251001",
 		},
 	}
 

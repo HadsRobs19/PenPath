@@ -206,6 +206,8 @@ func (p *ProgressController) GetProgressSummary(c fiber.Ctx) error {
 		SELECT
 			COUNT(*) AS lessons_completed,
 
+			(SELECT COUNT(*) FROM lessons) AS total_lessons,
+
 			COALESCE(AVG(up.accuracy_percent),0),
 
 			(
@@ -241,6 +243,7 @@ func (p *ProgressController) GetProgressSummary(c fiber.Ctx) error {
 		userID,
 	).Scan(
 		&summary.LessonsCompleted,
+		&summary.TotalLessons,
 		&summary.AverageAccuracy,
 		&summary.LettersMastered,
 		&summary.LettersNeedingWork,

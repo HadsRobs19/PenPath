@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser, FaTrophy } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
+import { supabase } from "../lib/Client";
 import rainbowPen from "../assets/rainbow-pen.png";
 import animalPen from "../assets/animal-pen.png";
 
@@ -29,6 +30,7 @@ export default function Account() {
 
   const [profile, setProfile] = useState(null);
   const [badges, setBadges] = useState([]);
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const handleSettings = () => navigate("/settings");
@@ -37,11 +39,15 @@ export default function Account() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const user = await apiFetch("/api/me");
+        const [user, badgeData, { data: authData }] = await Promise.all([
+          apiFetch("/api/me"),
+          apiFetch("/api/badges"),
+          supabase.auth.getUser(),
+        ]);
         setProfile(user.data);
-
-        const badgeData = await apiFetch("/api/badges");
         setBadges(badgeData.data || []);
+        const url = authData?.user?.user_metadata?.avatar_url;
+        if (url) setAvatarUrl(url);
       } catch (err) {
         console.error("Failed to load account", err);
       } finally {
@@ -67,8 +73,16 @@ export default function Account() {
       <div className="acct-scroll">
         {/* Profile Info Row */}
         <div className="acct-profileRow">
-          <div className="acct-avatarCircle" aria-hidden="true">
-            👤
+          <div className="acct-avatarCircle">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                style={{ width: "100%", height: "100%", borderRadius: "999px", objectFit: "cover" }}
+              />
+            ) : (
+              <FaUser size={26} color="#9CA3AF" />
+            )}
           </div>
 
           <div className="acct-profileInfo">

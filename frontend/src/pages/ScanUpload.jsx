@@ -15,8 +15,11 @@ const ScanUpload = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    navigate("/scan/results", { state: { image: url } });
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      navigate("/scan/results", { state: { image: evt.target.result } });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleOpenCamera = () => {

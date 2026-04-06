@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { SettingsProvider } from "./context/SettingsContext";
 
 import Welcome from "./pages/Welcome";
 import LogIn from "./pages/LogIn";
@@ -27,6 +28,7 @@ import AnimalsCheckpoint from './pages/AnimalsCheckpoint';
 
 const App = () => {
   return (
+    <SettingsProvider>
     <Routes>
       <Route path="/" element={<Welcome />} />
       <Route path="/login" element={<LogIn />} />
@@ -56,6 +58,7 @@ const App = () => {
       <Route path="/colors/reading" element={<ReadingColors />} />
       <Route path="/colors/writing" element={<WritingColors />} />
     </Routes>
+    </SettingsProvider>
   );
 };
 
