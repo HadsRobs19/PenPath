@@ -21,10 +21,18 @@ export default function Settings() {
   const colorInputRef = useRef(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      const url = data?.user?.user_metadata?.avatar_url;
-      if (url) setAvatarUrl(`${url.split("?")[0]}?t=${Date.now()}`);
-    });
+    const cached = localStorage.getItem("penpath_avatar_url");
+    if (cached) {
+      setAvatarUrl(`${cached}?t=${Date.now()}`);
+    } else {
+      supabase.auth.getUser().then(({ data }) => {
+        const url = data?.user?.user_metadata?.avatar_url;
+        if (url) {
+          localStorage.setItem("penpath_avatar_url", url);
+          setAvatarUrl(`${url}?t=${Date.now()}`);
+        }
+      });
+    }
   }, []);
 
   const handleLogOut = () => {
@@ -38,31 +46,41 @@ export default function Settings() {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    console.log("Step 1: file selected", file.name);
 
     setUploading(true);
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData?.user?.id ?? "anonymous";
+    console.log("Step 2: userId", userId);
+
     const ext = file.name.split(".").pop();
     const path = `avatars/${userId}/profile.${ext}`;
+    console.log("Step 3: uploading to path", path);
 
     const { error: uploadError } = await supabase.storage
       .from("penpath-handwriting")
       .upload(path, file, { upsert: true });
 
     if (uploadError) {
-      console.error("Upload failed:", uploadError.message);
+      console.error("Step 4 FAILED - upload error:", uploadError.message);
       setUploading(false);
       return;
     }
+    console.log("Step 4: upload success");
 
     const { data: urlData } = supabase.storage
       .from("penpath-handwriting")
       .getPublicUrl(path);
 
     const publicUrl = urlData.publicUrl;
+    console.log("Step 5: public URL", publicUrl);
+
     await supabase.auth.updateUser({ data: { avatar_url: publicUrl } });
+    await supabase.auth.refreshSession();
+    localStorage.setItem("penpath_avatar_url", publicUrl);
     setAvatarUrl(`${publicUrl}?t=${Date.now()}`);
     setUploading(false);
+    console.log("Step 6: done");
   };
 
   const handleRemovePhoto = async () => {
@@ -73,6 +91,8 @@ export default function Settings() {
       .from("penpath-handwriting")
       .remove([`avatars/${userId}/profile.${ext}`]);
     await supabase.auth.updateUser({ data: { avatar_url: null } });
+    await supabase.auth.refreshSession();
+    localStorage.removeItem("penpath_avatar_url");
     setAvatarUrl(null);
   };
 

@@ -38,16 +38,27 @@ export default function Account() {
 
   useEffect(() => {
     async function loadProfile() {
+      // Load avatar — check localStorage first, fall back to Supabase session
+      const cached = localStorage.getItem("penpath_avatar_url");
+      if (cached) {
+        setAvatarUrl(`${cached}?t=${Date.now()}`);
+      } else {
+        supabase.auth.getUser().then(({ data: authData }) => {
+          const url = authData?.user?.user_metadata?.avatar_url;
+          if (url) {
+            localStorage.setItem("penpath_avatar_url", url);
+            setAvatarUrl(`${url}?t=${Date.now()}`);
+          }
+        });
+      }
+
       try {
-        const [user, badgeData, { data: authData }] = await Promise.all([
+        const [user, badgeData] = await Promise.all([
           apiFetch("/api/me"),
           apiFetch("/api/badges"),
-          supabase.auth.getUser(),
         ]);
         setProfile(user.data);
         setBadges(badgeData.data || []);
-        const url = authData?.user?.user_metadata?.avatar_url;
-        if (url) setAvatarUrl(url);
       } catch (err) {
         console.error("Failed to load account", err);
       } finally {
