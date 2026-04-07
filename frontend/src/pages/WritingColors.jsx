@@ -11,6 +11,8 @@ const WritingColors = () => {
 
     const [fInput, setFInput] = useState("");
     const [nInput, setNInput] = useState("");
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
 
     const isCorrect =
         fInput.toLowerCase() === "f" &&
@@ -48,6 +50,9 @@ const WritingColors = () => {
                     </div>
                 </div>
 
+                {/* Error message */}
+                {error && <p style={{ color: "#DC2626", textAlign: "center", marginBottom: 12 }}>{error}</p>}
+
                 <div className="writing-button-row">
                     <div className="back">
                         <Button className="back-button" onClick={() => navigate('/home')}>
@@ -58,36 +63,35 @@ const WritingColors = () => {
                     <div className="writing-next">
                         <Button
                             className="write-next-button"
-                            disabled={!isCorrect}
+                            disabled={!isCorrect || saving}
                             onClick={async () => {
+                                setSaving(true);
+                                setError(null);
 
                                 try {
+                                    await apiFetch("/api/progress/writing", {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                            lesson_step_id: "colors-writing-step",
+                                            accuracy_percent: 100,
+                                            time_spent_seconds: 10,
+                                            is_completed: true,
+                                            client_event_id: crypto.randomUUID(),
+                                            completed_at: new Date().toISOString()
+                                        })
+                                    });
 
-                                await apiFetch("/api/progress/writing", {
-                                    method: "POST",
-                                    body: JSON.stringify({
-                                    lesson_step_id: "colors-writing-step",
-                                    accuracy_percent: 100,
-                                    time_spent_seconds: 10,
-                                    is_completed: true,
-                                    client_event_id: crypto.randomUUID(),
-                                    completed_at: new Date().toISOString()
-                                    })
-                                })
-
-                                localStorage.setItem("colors_writingComplete", "true")
-
-                                navigate("/colors/checkpoint")
-
+                                    localStorage.setItem("colors_writingComplete", "true");
+                                    navigate("/colors/checkpoint");
                                 } catch (err) {
-
-                                console.error("Progress save failed:", err)
-
+                                    console.error("Progress save failed:", err);
+                                    setError("Failed to save progress. Please try again.");
+                                } finally {
+                                    setSaving(false);
                                 }
-
                             }}
                         >
-                            Next
+                            {saving ? "Saving..." : "Next"}
                         </Button>
                     </div>
                 </div>

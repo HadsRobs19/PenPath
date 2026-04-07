@@ -59,9 +59,10 @@ func main() {
 			}
 			log.Printf("Error: %v\n", err)
 
+			// Use standard response format for consistency with all other endpoints
 			return c.Status(code).JSON(fiber.Map{
-				"error":   true,
-				"message": err.Error(), // will probably change this message later to avoid showing raw errors
+				"status":  "error",
+				"message": err.Error(),
 				"code":    code,
 			})
 		},

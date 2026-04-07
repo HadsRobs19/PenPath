@@ -12,7 +12,7 @@ func ValidationError(c fiber.Ctx, err error) error {
 
 func BadRequest(c fiber.Ctx, message string) error {
 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-		"status":  " error",
+		"status":  "error",
 		"message": message,
 	})
 }

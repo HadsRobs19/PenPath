@@ -10,31 +10,35 @@ import { apiFetch } from "../lib/api";
 const AnimalsCheckpoint = () => {
     const navigate = useNavigate();
     const [attempted, setAttempted] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
     const playCheckpoint = useAudio(checkpointAudio);
 
     const handleClaim = async () => {
+        setSaving(true);
+        setError(null);
 
-    try {
-        await apiFetch("/api/progress/writing", {
-        method: "POST",
-        body: JSON.stringify({
-            lesson_step_id: "animals-checkpoint",
-            accuracy_percent: 100,
-            time_spent_seconds: 15,
-            is_completed: true,
-            client_event_id: crypto.randomUUID(),
-            completed_at: new Date().toISOString()
-        })
-        });
+        try {
+            await apiFetch("/api/progress/writing", {
+                method: "POST",
+                body: JSON.stringify({
+                    lesson_step_id: "animals-checkpoint",
+                    accuracy_percent: 100,
+                    time_spent_seconds: 15,
+                    is_completed: true,
+                    client_event_id: crypto.randomUUID(),
+                    completed_at: new Date().toISOString()
+                })
+            });
 
-    navigate("/animals/badge");
-
-  } catch(err) {
-
-    console.error("Checkpoint save failed:", err);
-  }
-
-};
+            navigate("/animals/badge");
+        } catch(err) {
+            console.error("Checkpoint save failed:", err);
+            setError("Failed to save progress. Please try again.");
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <div className="animals-checkpoint-bg">
@@ -62,17 +66,20 @@ const AnimalsCheckpoint = () => {
                     <WritingBox />
                 </div>
 
+                {/* Error message */}
+                {error && <p style={{ color: "#DC2626", textAlign: "center", marginBottom: 12 }}>{error}</p>}
+
                 <div className="animals-button-row">
-                <Button className="animals-checkpoint-back"onClick={() => navigate("/animals/reading")}>
+                <Button className="animals-checkpoint-back" onClick={() => navigate("/animals/reading")}>
                     Back
                 </Button>
 
                 <Button
                     className="animals-checkpoint-claim"
-                    disabled={!attempted}
+                    disabled={!attempted || saving}
                     onClick={handleClaim}
                 >
-                    Claim Badge
+                    {saving ? "Saving..." : "Claim Badge"}
                 </Button>
                 </div>
             </div>

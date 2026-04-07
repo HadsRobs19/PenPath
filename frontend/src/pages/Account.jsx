@@ -99,7 +99,7 @@ export default function Account() {
           <div className="acct-profileInfo">
             <div className="acct-profileName">
               {loading ? "Loading..." : (
-                profile ? `${profile.first_name} ${profile.last_name}` : "Guest"
+                profile ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || "Guest" : "Guest"
               )}
             </div>
 

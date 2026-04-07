@@ -130,7 +130,9 @@ func (l *LessonController) getLessonsByCategory(c fiber.Ctx, category string) er
 	}
 
 	return c.JSON(fiber.Map{
-		"status":  "ok",
-		"lessons": lessons,
+		"status": "ok",
+		"data": fiber.Map{
+			"lessons": lessons,
+		},
 	})
 }

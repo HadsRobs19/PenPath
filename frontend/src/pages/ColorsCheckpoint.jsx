@@ -1,4 +1,5 @@
 import "../App.css";
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import colors from "../assets/colors.png";
 import WritingBox from "../components/WritingBox";
@@ -12,12 +13,14 @@ import { apiFetch } from "../lib/api";
 *   -> provides a freehand writing box for cursive practice
 *   -> allows the learner to retry writing as needed
 *   -> includes navigation to return to the lesson or claim a badge
-*   -> designed as a progress checkpoint before rewarding the user 
+*   -> designed as a progress checkpoint before rewarding the user
 * </summary>
 */
 
 const ColorsCheckpoint = () => {
     const navigate = useNavigate();
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
 
     const readingDone = localStorage.getItem("colors_readingComplete") === "true";
     const writingDone = localStorage.getItem("colors_writingComplete") === "true";
@@ -40,6 +43,9 @@ const ColorsCheckpoint = () => {
                     <WritingBox />
                 </div>
 
+                {/* Error message */}
+                {error && <p style={{ color: "#DC2626", textAlign: "center", marginBottom: 12 }}>{error}</p>}
+
                 <div className="colors-button-row">
                     <div className="check-back">
                         <Button className="check-back-button" onClick={() => navigate('/colors/writing')}>
@@ -49,32 +55,36 @@ const ColorsCheckpoint = () => {
                     <div className="check-claim">
                         <Button
                             className="check-claim-button"
-                            disabled={!canFinish}
+                            disabled={!canFinish || saving}
                             onClick={async () => {
+                                setSaving(true);
+                                setError(null);
 
                                 try {
-                                await apiFetch("/api/progress/writing", {
-                                    method: "POST",
-                                    body: JSON.stringify({
-                                    lesson_step_id: "colors-checkpoint",
-                                    accuracy_percent: 100,
-                                    time_spent_seconds: 15,
-                                    is_completed: true,
-                                    client_event_id: crypto.randomUUID(),
-                                    completed_at: new Date().toISOString()
-                                    })
-                                });
-                                localStorage.setItem("lesson1Complete", "true");
-                                navigate("/colors/badge");
+                                    await apiFetch("/api/progress/writing", {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                            lesson_step_id: "colors-checkpoint",
+                                            accuracy_percent: 100,
+                                            time_spent_seconds: 15,
+                                            is_completed: true,
+                                            client_event_id: crypto.randomUUID(),
+                                            completed_at: new Date().toISOString()
+                                        })
+                                    });
+                                    localStorage.setItem("lesson1Complete", "true");
+                                    navigate("/colors/badge");
                                 } catch(err) {
-                                console.error("Checkpoint save failed", err);
+                                    console.error("Checkpoint save failed", err);
+                                    setError("Failed to save progress. Please try again.");
+                                } finally {
+                                    setSaving(false);
                                 }
                             }}
-                            >
-                            Claim Badge
+                        >
+                            {saving ? "Saving..." : "Claim Badge"}
                         </Button>
                     </div>
-                    
                 </div>
             </div>
         </div>

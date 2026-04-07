@@ -72,7 +72,10 @@ func (b *BadgeController) GetUserBadges(c fiber.Ctx) error {
 		)
 
 		if err != nil {
-			return err
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"status":  "error",
+				"message": "failed to parse badge data",
+			})
 		}
 
 		badges = append(badges, badge)

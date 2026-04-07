@@ -31,9 +31,11 @@ const ForgotPw = () => {
     setError(null)
 
     try {
+        // Use environment variable for redirect URL, fallback to localhost for development
+        const redirectUrl = `${import.meta.env.VITE_APP_URL || window.location.origin}/reset-password`
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "http://localhost:5173/reset-password"
+        redirectTo: redirectUrl
         })
 
         if (error) throw error

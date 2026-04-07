@@ -1,12 +1,23 @@
 import { supabase } from "./Client"
 
+// Use environment variable for API URL, fallback to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+
 export async function apiFetch(url, options={}){
 
- const session = await supabase.auth.getSession()
+ const { data, error } = await supabase.auth.getSession()
 
- const token = session.data.session?.access_token
+ if (error) {
+   throw new Error("Failed to get session: " + error.message)
+ }
 
- const response = await fetch(`http://localhost:3000${url}`,{
+ const token = data?.session?.access_token
+
+ if (!token) {
+   throw new Error("Not authenticated - please log in")
+ }
+
+ const response = await fetch(`${API_BASE_URL}${url}`,{
    ...options,
    headers:{
      "Content-Type":"application/json",
@@ -16,7 +27,17 @@ export async function apiFetch(url, options={}){
  })
 
  if (!response.ok) {
-   throw new Error(`API error: ${response.status}`)
+   // Try to parse error response for better error messages
+   let errorMessage = `API error: ${response.status}`
+   try {
+     const errorData = await response.json()
+     if (errorData.message) {
+       errorMessage = errorData.message
+     }
+   } catch {
+     // Ignore JSON parse errors, use default message
+   }
+   throw new Error(errorMessage)
  }
 
  return response.json()

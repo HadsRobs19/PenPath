@@ -20,7 +20,7 @@ type JWTVerifier struct {
 	keyfunc  jwt.Keyfunc
 }
 
-// NewJWTVerifier initializes the verifier once at startup to load JWKS so middleware can varify RS256 signatures later
+// NewJWTVerifier initializes the verifier once at startup to load JWKS so middleware can verify RS256 signatures later
 func NewJWTVerifier(issuer string, audience string, jwksURL string) {
 
 	// store expected issuer and audience
@@ -28,20 +28,29 @@ func NewJWTVerifier(issuer string, audience string, jwksURL string) {
 		issuer:   issuer,
 		audience: audience,
 	}
-	backend.PrintInfo("Successfully initialized JWT Verifier")
 
 	if jwksURL == "" {
-		_ = backend.PrintSevereErr("JWKS_URL environment variable must be populated.")
+		_ = backend.PrintSevereErr("SUPABASE_JWKS_URL environment variable must be set. Example: https://your-project.supabase.co/auth/v1/.well-known/jwks.json")
 		return
 	}
-	// keyfunc converts JWKS into jwt.Keyfunc for the right pubic key by kid can be picked and the signature can be varified
+
+	// Validate JWKS URL format
+	if !strings.HasPrefix(jwksURL, "https://") || !strings.Contains(jwksURL, "/.well-known/jwks.json") {
+		_ = backend.PrintSevereErr(fmt.Sprintf("Invalid JWKS URL format: %s. Expected format: https://your-project.supabase.co/auth/v1/.well-known/jwks.json", jwksURL))
+		return
+	}
+
+	backend.PrintInfo(fmt.Sprintf("Loading JWKS from: %s", jwksURL))
+
+	// keyfunc converts JWKS into jwt.Keyfunc for the right public key by kid can be picked and the signature can be verified
 	k, err := keyfunc.NewDefaultCtx(context.Background(), []string{jwksURL})
 	if err != nil {
-		_ = backend.PrintSevereErr(fmt.Sprintf("Failed to load JWKS: %v", err))
+		_ = backend.PrintSevereErr(fmt.Sprintf("Failed to load JWKS from %s: %v", jwksURL, err))
 		return
 	}
 
 	JWTVerifierInstance.keyfunc = k.Keyfunc
+	backend.PrintInfo("Successfully initialized JWT Verifier with JWKS")
 
 }
 

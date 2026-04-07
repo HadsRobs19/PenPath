@@ -5,12 +5,14 @@ import Button from "../components/Button";
 import animalAudio1 from "../assets/audio/meow.mp3";
 import animalAudio2 from "../assets/audio/woof.mp3";
 import { useAudio } from "../hooks/useAudio";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { supabase } from "../lib/Client";
 import { apiFetch } from "../lib/api";
 
 const AnimalsWriting = () => {
   const navigate = useNavigate();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   const playOne = useAudio(animalAudio1);
   const playTwo = useAudio(animalAudio2);
@@ -86,6 +88,9 @@ const AnimalsWriting = () => {
           <WritingBox ref={box2Ref} />
         </div>
 
+        {/* Error message */}
+        {error && <p style={{ color: "#DC2626", textAlign: "center", marginBottom: 12 }}>{error}</p>}
+
         {/* Buttons */}
         <div className="animals-button-row">
           <Button
@@ -97,32 +102,41 @@ const AnimalsWriting = () => {
 
           <Button
             className="animals-writing-next"
+            disabled={saving}
             onClick={async () => {
+              setSaving(true);
+              setError(null);
 
-              const blob1 = await box1Ref.current?.exportDrawing();
-              const blob2 = await box2Ref.current?.exportDrawing();
+              try {
+                const blob1 = await box1Ref.current?.exportDrawing();
+                const blob2 = await box2Ref.current?.exportDrawing();
 
-              const url1 = await uploadDrawing(blob1, "animals", "step1", Date.now());
-              const url2 = await uploadDrawing(blob2, "animals", "step2", Date.now());
+                const url1 = await uploadDrawing(blob1, "animals", "step1", Date.now());
+                const url2 = await uploadDrawing(blob2, "animals", "step2", Date.now());
 
-              console.log("Drawing URLs:", url1, url2);
+                await apiFetch("/api/progress/writing", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    lesson_step_id: "animals-writing",
+                    accuracy_percent: 100,
+                    time_spent_seconds: 20,
+                    is_completed: true,
+                    client_event_id: crypto.randomUUID(),
+                    completed_at: new Date().toISOString(),
+                    drawing_url: url1 || url2 || null
+                  })
+                });
 
-              await apiFetch("/api/progress/writing", {
-                method: "POST",
-                body: JSON.stringify({
-                  lesson_step_id: "animals-writing",
-                  accuracy_percent: 100,
-                  time_spent_seconds: 20,
-                  is_completed: true,
-                  client_event_id: crypto.randomUUID(),
-                  completed_at: new Date().toISOString()
-                })
-              });
-
-              navigate("/animals/checkpoint");
+                navigate("/animals/checkpoint");
+              } catch (err) {
+                console.error("Progress save failed:", err);
+                setError("Failed to save progress. Please try again.");
+              } finally {
+                setSaving(false);
+              }
             }}
           >
-            Next
+            {saving ? "Saving..." : "Next"}
           </Button>
         </div>
       </div>

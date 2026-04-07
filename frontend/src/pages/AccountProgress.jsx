@@ -2,26 +2,46 @@ import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser, FaCheck } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
+import { supabase } from "../lib/Client";
 
 const lessonColors = ["#FFB380", "#C9B1FF", "#A8E6CF", "#FFD93D", "#FF6B6B", "#A8D8EA"];
 
 export default function AccountProgress() {
   const navigate = useNavigate();
   const [progress, setProgress] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadProgress() {
+    async function loadData() {
+      // Load avatar from localStorage or Supabase session
+      const cached = localStorage.getItem("penpath_avatar_url");
+      if (cached) {
+        setAvatarUrl(`${cached}?t=${Date.now()}`);
+      } else {
+        const { data: authData } = await supabase.auth.getUser();
+        const url = authData?.user?.user_metadata?.avatar_url;
+        if (url) {
+          localStorage.setItem("penpath_avatar_url", url);
+          setAvatarUrl(`${url}?t=${Date.now()}`);
+        }
+      }
+
       try {
-        const response = await apiFetch("/api/progress");
-        setProgress(response.data);
+        const [progressResponse, profileResponse] = await Promise.all([
+          apiFetch("/api/progress"),
+          apiFetch("/api/me"),
+        ]);
+        setProgress(progressResponse.data);
+        setProfile(profileResponse.data);
       } catch (err) {
-        console.error("Failed to load progress", err);
+        console.error("Failed to load data", err);
       } finally {
         setLoading(false);
       }
     }
-    loadProgress();
+    loadData();
   }, []);
 
   const getLessonTiles = () => {
@@ -59,6 +79,31 @@ export default function AccountProgress() {
           </button>
           <h1 style={styles.title}>Progress</h1>
           <div style={{ width: 36 }} />
+        </div>
+
+        {/* Profile Info */}
+        <div style={styles.profileRow}>
+          <div style={styles.avatarCircle}>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                style={{ width: "100%", height: "100%", borderRadius: "999px", objectFit: "cover" }}
+              />
+            ) : (
+              <FaUser size={20} color="#9CA3AF" />
+            )}
+          </div>
+          <div style={styles.profileInfo}>
+            <div style={styles.profileName}>
+              {loading ? "Loading..." : (
+                profile ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || "Guest" : "Guest"
+              )}
+            </div>
+            <div style={styles.profileAge}>
+              {profile?.age ? `${profile.age} years old` : ""}
+            </div>
+          </div>
         </div>
 
         {/* Content */}
@@ -213,6 +258,35 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     padding: "12px 16px",
+  },
+  profileRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "0 24px 16px",
+  },
+  avatarCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: "50%",
+    backgroundColor: "#E5E7EB",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  profileInfo: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  profileName: {
+    fontSize: 16,
+    fontWeight: 700,
+    color: "#1A1A1A",
+  },
+  profileAge: {
+    fontSize: 13,
+    color: "#6B7280",
   },
   backButton: {
     border: "none",

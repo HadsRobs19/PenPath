@@ -25,34 +25,36 @@ const Home = () => {
   const [lesson2Complete, setLesson2Complete] = useState(false);
 
   useEffect(() => {
+    // Check localStorage for completion status first (offline-first approach)
+    const storedLesson1 = localStorage.getItem("lesson1Complete") === "true" ||
+                          localStorage.getItem("colorsLessonComplete") === "true";
+    const storedLesson2 = localStorage.getItem("lesson2Complete") === "true";
 
-  async function loadProgress() {
+    if (storedLesson1) setLesson1Complete(true);
+    if (storedLesson2) setLesson2Complete(true);
 
-    try {
+    async function loadProgress() {
+      try {
+        const response = await apiFetch("/api/progress");
 
-      const data = await apiFetch("/api/progress")
+        // Safely access nested data with fallback to empty array
+        const masteredLetters = response?.data?.letters_mastered || [];
 
-      const masteredLetters = data.data.letters_mastered
+        if (masteredLetters.includes("Colors")) {
+          setLesson1Complete(true);
+        }
 
-      if (masteredLetters.includes("Colors")) {
-        setLesson1Complete(true)
+        if (masteredLetters.includes("Animals")) {
+          setLesson2Complete(true);
+        }
+      } catch (err) {
+        // API failed - rely on localStorage values set above
+        console.error("Failed to load progress:", err);
       }
-
-      if (masteredLetters.includes("Animals")) {
-        setLesson2Complete(true)
-      }
-
-    } catch (err) {
-
-      console.error("Failed to load progress:", err)
-
     }
 
-  }
-
-  loadProgress()
-
-}, [])
+    loadProgress();
+  }, []);
 
   return (
     <div className="home-bg">
