@@ -2,7 +2,6 @@ import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser, FaTrophy } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { apiFetch } from "../lib/api";
 import { supabase } from "../lib/Client";
 import rainbowPen from "../assets/rainbow-pen.png";
 import animalPen from "../assets/animal-pen.png";
@@ -25,6 +24,43 @@ const badgeColors = [
   "#C9B1FF",
 ];
 
+// Calculate age from birthday string
+function calculateAge(birthday) {
+  if (!birthday) return null;
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+// Get earned badges from localStorage
+function getEarnedBadges() {
+  const badges = [];
+  if (localStorage.getItem("colorsLessonComplete") === "true" ||
+      localStorage.getItem("lesson1Complete") === "true") {
+    badges.push({
+      id: "colors-badge",
+      name: "Colors Master",
+      badge_type: "colors",
+      description: "Completed the Colors lesson",
+    });
+  }
+  if (localStorage.getItem("lesson2Complete") === "true" ||
+      localStorage.getItem("animalsLessonComplete") === "true") {
+    badges.push({
+      id: "animals-badge",
+      name: "Animals Expert",
+      badge_type: "animals",
+      description: "Completed the Animals lesson",
+    });
+  }
+  return badges;
+}
+
 export default function Account() {
   const navigate = useNavigate();
 
@@ -38,27 +74,54 @@ export default function Account() {
 
   useEffect(() => {
     async function loadProfile() {
-      // Load avatar — check localStorage first, fall back to Supabase session
-      const cached = localStorage.getItem("penpath_avatar_url");
-      if (cached) {
-        setAvatarUrl(`${cached}?t=${Date.now()}`);
-      } else {
-        supabase.auth.getUser().then(({ data: authData }) => {
-          const url = authData?.user?.user_metadata?.avatar_url;
-          if (url) {
-            localStorage.setItem("penpath_avatar_url", url);
-            setAvatarUrl(`${url}?t=${Date.now()}`);
-          }
-        });
-      }
-
       try {
-        const [user, badgeData] = await Promise.all([
-          apiFetch("/api/me"),
-          apiFetch("/api/badges"),
-        ]);
-        setProfile(user.data);
-        setBadges(badgeData.data || []);
+        // Get user data from Supabase Auth (where it's actually stored)
+        const { data: authData, error } = await supabase.auth.getUser();
+
+        if (error || !authData?.user) {
+          console.error("Failed to get user:", error);
+          setLoading(false);
+          return;
+        }
+
+        const user = authData.user;
+        const metadata = user.user_metadata || {};
+
+        // Set avatar URL
+        const avatarFromMeta = metadata.avatar_url;
+        const cachedAvatar = localStorage.getItem("penpath_avatar_url");
+        if (cachedAvatar) {
+          setAvatarUrl(`${cachedAvatar}?t=${Date.now()}`);
+        } else if (avatarFromMeta) {
+          localStorage.setItem("penpath_avatar_url", avatarFromMeta);
+          setAvatarUrl(`${avatarFromMeta}?t=${Date.now()}`);
+        }
+
+        // Parse name - could be "First Last" or just stored as "name"
+        let firstName = metadata.first_name || "";
+        let lastName = metadata.last_name || "";
+
+        // If name is stored as a single field, split it
+        if (!firstName && metadata.name) {
+          const nameParts = metadata.name.trim().split(" ");
+          firstName = nameParts[0] || "";
+          lastName = nameParts.slice(1).join(" ") || "";
+        }
+
+        // Calculate age from birthday
+        const age = calculateAge(metadata.birthday);
+
+        setProfile({
+          first_name: firstName,
+          last_name: lastName,
+          age: age,
+          email: user.email,
+        });
+
+        // Load badges from localStorage (earned through lesson completion)
+        const earnedBadges = getEarnedBadges();
+        setBadges(earnedBadges);
+
       } catch (err) {
         console.error("Failed to load account", err);
       } finally {

@@ -1,40 +1,147 @@
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser, FaCheck } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { apiFetch } from "../lib/api";
 import { supabase } from "../lib/Client";
 
 const lessonColors = ["#FFB380", "#C9B1FF", "#A8E6CF", "#FFD93D", "#FF6B6B", "#A8D8EA"];
 
+// Total available lessons
+const TOTAL_LESSONS = 3;
+
+// Calculate age from birthday string
+function calculateAge(birthday) {
+  if (!birthday) return null;
+  const birthDate = new Date(birthday);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+// Get completed lessons count from localStorage
+function getCompletedLessonsCount() {
+  let count = 0;
+  if (localStorage.getItem("colorsLessonComplete") === "true" ||
+      localStorage.getItem("lesson1Complete") === "true") {
+    count++;
+  }
+  if (localStorage.getItem("lesson2Complete") === "true" ||
+      localStorage.getItem("animalsLessonComplete") === "true") {
+    count++;
+  }
+  return count;
+}
+
+// Circular Progress Bar Component
+function CircularProgress({ percent, size = 120, strokeWidth = 10, color = "#4B7BE5" }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (percent / 100) * circumference;
+
+  return (
+    <div style={{ position: "relative", width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+        {/* Background circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#E5E7EB"
+          strokeWidth={strokeWidth}
+        />
+        {/* Progress circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 0.5s ease" }}
+        />
+      </svg>
+      {/* Center text */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <span style={{ fontSize: 28, fontWeight: 800, color: "#1A1A1A" }}>
+          {percent}%
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function AccountProgress() {
   const navigate = useNavigate();
-  const [progress, setProgress] = useState(null);
   const [profile, setProfile] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lessonsCompleted, setLessonsCompleted] = useState(0);
 
   useEffect(() => {
     async function loadData() {
-      // Load avatar from localStorage or Supabase session
-      const cached = localStorage.getItem("penpath_avatar_url");
-      if (cached) {
-        setAvatarUrl(`${cached}?t=${Date.now()}`);
-      } else {
-        const { data: authData } = await supabase.auth.getUser();
-        const url = authData?.user?.user_metadata?.avatar_url;
-        if (url) {
-          localStorage.setItem("penpath_avatar_url", url);
-          setAvatarUrl(`${url}?t=${Date.now()}`);
-        }
-      }
-
       try {
-        const [progressResponse, profileResponse] = await Promise.all([
-          apiFetch("/api/progress"),
-          apiFetch("/api/me"),
-        ]);
-        setProgress(progressResponse.data);
-        setProfile(profileResponse.data);
+        // Get user data from Supabase Auth
+        const { data: authData, error } = await supabase.auth.getUser();
+
+        if (error || !authData?.user) {
+          console.error("Failed to get user:", error);
+          setLoading(false);
+          return;
+        }
+
+        const user = authData.user;
+        const metadata = user.user_metadata || {};
+
+        // Set avatar URL
+        const avatarFromMeta = metadata.avatar_url;
+        const cachedAvatar = localStorage.getItem("penpath_avatar_url");
+        if (cachedAvatar) {
+          setAvatarUrl(`${cachedAvatar}?t=${Date.now()}`);
+        } else if (avatarFromMeta) {
+          localStorage.setItem("penpath_avatar_url", avatarFromMeta);
+          setAvatarUrl(`${avatarFromMeta}?t=${Date.now()}`);
+        }
+
+        // Parse name
+        let firstName = metadata.first_name || "";
+        let lastName = metadata.last_name || "";
+        if (!firstName && metadata.name) {
+          const nameParts = metadata.name.trim().split(" ");
+          firstName = nameParts[0] || "";
+          lastName = nameParts.slice(1).join(" ") || "";
+        }
+
+        // Calculate age from birthday
+        const age = calculateAge(metadata.birthday);
+
+        setProfile({
+          first_name: firstName,
+          last_name: lastName,
+          age: age,
+        });
+
+        // Get completed lessons from localStorage
+        setLessonsCompleted(getCompletedLessonsCount());
+
       } catch (err) {
         console.error("Failed to load data", err);
       } finally {
@@ -44,30 +151,20 @@ export default function AccountProgress() {
     loadData();
   }, []);
 
+  const progressPercent = Math.round((lessonsCompleted / TOTAL_LESSONS) * 100);
+
   const getLessonTiles = () => {
-    const completed = progress?.lessons_completed || 0;
-    const total = progress?.total_lessons || Math.max(completed, 3);
     const tiles = [];
-    for (let i = 1; i <= Math.max(total, 3); i++) {
+    for (let i = 1; i <= TOTAL_LESSONS; i++) {
       tiles.push({
         number: i,
+        name: i === 1 ? "Colors" : i === 2 ? "Animals" : "Foods",
         color: lessonColors[(i - 1) % lessonColors.length],
-        completed: i <= completed,
+        completed: i <= lessonsCompleted,
       });
     }
     return tiles;
   };
-
-  const masteredCount = progress?.letters_mastered?.length || 0;
-  const needsWorkCount = progress?.letters_needing_work?.length || 0;
-  const totalLettersTouched = masteredCount + needsWorkCount;
-  const masteryPercent =
-    totalLettersTouched > 0 ? Math.round((masteredCount / totalLettersTouched) * 100) : 0;
-
-  const lessonsCompleted = progress?.lessons_completed || 0;
-  const totalLessons = progress?.total_lessons || 0;
-  const lessonPercent =
-    totalLessons > 0 ? Math.round((lessonsCompleted / totalLessons) * 100) : 0;
 
   return (
     <div className="acct-container">
@@ -108,53 +205,24 @@ export default function AccountProgress() {
 
         {/* Content */}
         <div style={styles.content}>
-          {/* Overall Progress Bar */}
-          {totalLessons > 0 && (
-            <div style={styles.card}>
-              <div style={styles.cardRow}>
-                <span style={styles.cardLabel}>Overall Completion</span>
-                <span style={styles.cardValue}>{lessonPercent}%</span>
-              </div>
-              <div style={styles.progressTrack}>
-                <div
-                  style={{
-                    ...styles.progressFill,
-                    width: `${lessonPercent}%`,
-                    backgroundColor: "#4B7BE5",
-                  }}
-                />
-              </div>
-              <span style={styles.subLabel}>
-                {lessonsCompleted} of {totalLessons} lessons completed
+          {/* Circular Progress */}
+          <div style={styles.circularProgressSection}>
+            <CircularProgress
+              percent={progressPercent}
+              size={140}
+              strokeWidth={12}
+              color="#4B7BE5"
+            />
+            <div style={styles.progressLabel}>
+              <span style={styles.progressText}>Overall Progress</span>
+              <span style={styles.progressSubtext}>
+                {lessonsCompleted} of {TOTAL_LESSONS} lessons completed
               </span>
             </div>
-          )}
-
-          {/* Average Accuracy */}
-          {progress?.average_accuracy > 0 && (
-            <div style={styles.card}>
-              <div style={styles.cardRow}>
-                <span style={styles.cardLabel}>Average Accuracy</span>
-                <span style={{ ...styles.cardValue, color: "#22C55E" }}>
-                  {Math.round(progress.average_accuracy)}%
-                </span>
-              </div>
-              <div style={styles.progressTrack}>
-                <div
-                  style={{
-                    ...styles.progressFill,
-                    width: `${Math.round(progress.average_accuracy)}%`,
-                    backgroundColor: "#22C55E",
-                  }}
-                />
-              </div>
-            </div>
-          )}
+          </div>
 
           {/* Lessons Completed */}
-          <h2 style={styles.sectionTitle}>
-            Lessons Completed ({lessonsCompleted})
-          </h2>
+          <h2 style={styles.sectionTitle}>Lessons</h2>
           <div style={styles.tilesRow}>
             {loading ? (
               <p style={styles.mutedText}>Loading...</p>
@@ -169,64 +237,29 @@ export default function AccountProgress() {
                   }}
                 >
                   <span style={styles.lessonNumber}>{tile.number}</span>
+                  <span style={styles.lessonName}>{tile.name}</span>
                   {tile.completed && <FaCheck style={styles.checkIcon} />}
                 </div>
               ))
             )}
           </div>
 
-          {/* Letter Mastery */}
-          <h2 style={styles.sectionTitle}>Letter Mastery</h2>
-          {loading ? (
-            <p style={styles.mutedText}>Loading...</p>
-          ) : totalLettersTouched > 0 ? (
-            <div style={styles.card}>
-              <div style={styles.cardRow}>
-                <span style={styles.cardLabel}>Letters Perfected</span>
-                <span style={styles.cardValue}>{masteryPercent}%</span>
-              </div>
-              <div style={styles.progressTrack}>
-                <div
-                  style={{
-                    ...styles.progressFill,
-                    width: `${masteryPercent}%`,
-                    backgroundColor: "#A8E6CF",
-                  }}
-                />
-              </div>
-              <div style={styles.masteryStats}>
-                <span style={styles.masteredBadge}>
-                  ✓ {masteredCount} mastered
-                </span>
-                {needsWorkCount > 0 && (
-                  <span style={styles.needsWorkBadge}>
-                    ✗ {needsWorkCount} need practice
-                  </span>
-                )}
-              </div>
-              {/* Letter chips */}
-              {masteredCount > 0 && (
-                <div style={styles.chipsRow}>
-                  {progress.letters_mastered.map((letter) => (
-                    <div key={letter} style={styles.chipMastered}>
-                      {letter}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {needsWorkCount > 0 && (
-                <div style={{ ...styles.chipsRow, marginTop: 8 }}>
-                  {progress.letters_needing_work.map((letter) => (
-                    <div key={letter} style={styles.chipNeedsWork}>
-                      {letter}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <p style={styles.mutedText}>Complete lessons to track letter mastery.</p>
-          )}
+          {/* Encouragement Message */}
+          <div style={styles.encouragementCard}>
+            {lessonsCompleted === 0 ? (
+              <p style={styles.encouragementText}>
+                Start your first lesson to begin tracking your progress!
+              </p>
+            ) : lessonsCompleted < TOTAL_LESSONS ? (
+              <p style={styles.encouragementText}>
+                Great job! Keep going to complete all lessons!
+              </p>
+            ) : (
+              <p style={styles.encouragementText}>
+                Amazing! You've completed all available lessons!
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Footer Navigation */}
@@ -307,45 +340,30 @@ const styles = {
     flex: 1,
     padding: "0 24px 24px",
   },
-  card: {
+  circularProgressSection: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
     backgroundColor: "#FFFFFF",
-    borderRadius: 14,
-    padding: "14px 18px",
-    marginBottom: 14,
+    borderRadius: 16,
+    padding: "24px",
+    marginBottom: 20,
     boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
   },
-  cardRow: {
+  progressLabel: {
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
+    flexDirection: "column",
+    gap: 4,
   },
-  cardLabel: {
-    fontSize: 15,
-    fontWeight: 600,
-    color: "#4B5563",
-  },
-  cardValue: {
-    fontSize: 20,
-    fontWeight: 800,
+  progressText: {
+    fontSize: 18,
+    fontWeight: 700,
     color: "#1A1A1A",
   },
-  progressTrack: {
-    height: 10,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 99,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 99,
-    transition: "width 0.4s ease",
-  },
-  subLabel: {
-    fontSize: 12,
-    color: "#9CA3AF",
-    marginTop: 6,
-    display: "block",
+  progressSubtext: {
+    fontSize: 14,
+    color: "#6B7280",
   },
   sectionTitle: {
     margin: "20px 0 12px",
@@ -357,11 +375,11 @@ const styles = {
     display: "flex",
     gap: 12,
     flexWrap: "wrap",
-    marginBottom: 4,
+    marginBottom: 20,
   },
   lessonTile: {
-    width: 64,
-    height: 64,
+    width: 90,
+    height: 90,
     borderRadius: 12,
     display: "flex",
     flexDirection: "column",
@@ -369,63 +387,36 @@ const styles = {
     justifyContent: "center",
     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
     position: "relative",
+    gap: 4,
   },
   lessonNumber: {
     fontSize: 24,
     fontWeight: 800,
     color: "#1A1A1A",
   },
+  lessonName: {
+    fontSize: 11,
+    fontWeight: 600,
+    color: "#4B5563",
+  },
   checkIcon: {
     position: "absolute",
-    bottom: 4,
-    right: 4,
-    fontSize: 12,
+    top: 6,
+    right: 6,
+    fontSize: 14,
     color: "#22C55E",
   },
-  masteryStats: {
-    display: "flex",
-    gap: 12,
-    marginTop: 10,
+  encouragementCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    padding: "16px 20px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
   },
-  masteredBadge: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#16A34A",
-  },
-  needsWorkBadge: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#DC2626",
-  },
-  chipsRow: {
-    display: "flex",
-    gap: 8,
-    flexWrap: "wrap",
-    marginTop: 10,
-  },
-  chipMastered: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: "#D1FAE5",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 16,
-    fontWeight: 700,
-    color: "#065F46",
-  },
-  chipNeedsWork: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: "#FEE2E2",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 16,
-    fontWeight: 700,
-    color: "#991B1B",
+  encouragementText: {
+    fontSize: 15,
+    color: "#4B5563",
+    margin: 0,
+    textAlign: "center",
   },
   mutedText: {
     fontSize: 14,
