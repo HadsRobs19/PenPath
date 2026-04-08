@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import { apiFetch } from "../lib/api";
+import { useSettings } from "../context/SettingsContext";
 
 export default function ScanResults() {
   const navigate = useNavigate();
+  const { settings } = useSettings();
   const { state } = useLocation();
   const capturedImage = state?.image ?? null;
 
@@ -121,9 +123,11 @@ export default function ScanResults() {
         <button onClick={() => navigate("/home")}>
           <FaHome />
         </button>
-        <button onClick={() => navigate("/scan")}>
-          <FaCamera />
-        </button>
+        {settings.cameraEnabled && (
+          <button onClick={() => navigate("/scan")}>
+            <FaCamera />
+          </button>
+        )}
         <button onClick={() => navigate("/account")}>
           <FaUser />
         </button>

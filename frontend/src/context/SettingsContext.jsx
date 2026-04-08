@@ -2,12 +2,16 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const STORAGE_KEY = "penpath_settings";
 
+// Check if camera should be disabled via environment variable (for Raspberry Pi)
+const isCameraDisabledByEnv = import.meta.env.VITE_DISABLE_CAMERA === "true";
+
 const defaults = {
   theme: "blue",
   fontSize: 2,
   inkColor: "#1A1A1A",
   inkThickness: 30,
   notifications: true,
+  cameraEnabled: !isCameraDisabledByEnv,
 };
 
 const themeMap = {

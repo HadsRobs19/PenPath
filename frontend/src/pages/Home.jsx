@@ -7,6 +7,7 @@ import animalPen from "../assets/animal-pen.png";
 import { FaHome, FaCamera, FaUser, FaBook, FaScroll, FaMap } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
+import { useSettings } from "../context/SettingsContext";
 
 /*
 * <summary>
@@ -20,6 +21,7 @@ import { apiFetch } from "../lib/api";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   const [lesson1Complete, setLesson1Complete] = useState(false);
   const [lesson2Complete, setLesson2Complete] = useState(false);
@@ -228,9 +230,11 @@ const Home = () => {
           <FaHome />
         </button>
 
-        <button onClick={() => navigate("/scan")}>
-          <FaCamera />
-        </button>
+        {settings.cameraEnabled && (
+          <button onClick={() => navigate("/scan")}>
+            <FaCamera />
+          </button>
+        )}
 
         <button onClick={() => navigate("/account")}>
           <FaUser />

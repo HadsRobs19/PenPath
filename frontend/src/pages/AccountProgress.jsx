@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser, FaCheck } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/Client";
+import { useSettings } from "../context/SettingsContext";
 
 const lessonColors = ["#FFB380", "#C9B1FF", "#A8E6CF", "#FFD93D", "#FF6B6B", "#A8D8EA"];
 
@@ -91,6 +92,7 @@ function CircularProgress({ percent, size = 120, strokeWidth = 10, color = "#4B7
 
 export default function AccountProgress() {
   const navigate = useNavigate();
+  const { settings } = useSettings();
   const [profile, setProfile] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -267,9 +269,11 @@ export default function AccountProgress() {
           <button onClick={() => navigate("/home")}>
             <FaHome />
           </button>
-          <button onClick={() => navigate("/scan")}>
-            <FaCamera />
-          </button>
+          {settings.cameraEnabled && (
+            <button onClick={() => navigate("/scan")}>
+              <FaCamera />
+            </button>
+          )}
           <button onClick={() => navigate("/account")}>
             <FaUser />
           </button>
@@ -295,12 +299,12 @@ const styles = {
   profileRow: {
     display: "flex",
     alignItems: "center",
-    gap: 12,
-    padding: "0 24px 16px",
+    gap: 16,
+    padding: "8px 24px 24px",
   },
   avatarCircle: {
-    width: 48,
-    height: 48,
+    width: 70,
+    height: 70,
     borderRadius: "50%",
     backgroundColor: "#E5E7EB",
     display: "flex",
@@ -311,15 +315,18 @@ const styles = {
   profileInfo: {
     display: "flex",
     flexDirection: "column",
+    gap: 2,
   },
   profileName: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 700,
     color: "#1A1A1A",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   profileAge: {
-    fontSize: 13,
+    fontSize: 15,
     color: "#6B7280",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   backButton: {
     border: "none",
@@ -371,9 +378,10 @@ const styles = {
   },
   sectionTitle: {
     margin: "0 0 12px",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 700,
     color: "#1A1A1A",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   tilesRow: {
     display: "flex",
@@ -397,11 +405,13 @@ const styles = {
     fontSize: 24,
     fontWeight: 800,
     color: "#1A1A1A",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   lessonName: {
     fontSize: 11,
     fontWeight: 600,
     color: "#4B5563",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   checkIcon: {
     position: "absolute",

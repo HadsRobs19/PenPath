@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser, FaTrophy } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/Client";
+import { useSettings } from "../context/SettingsContext";
 import rainbowPen from "../assets/rainbow-pen.png";
 import animalPen from "../assets/animal-pen.png";
 
@@ -63,6 +64,7 @@ function getEarnedBadges() {
 
 export default function Account() {
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   const [profile, setProfile] = useState(null);
   const [badges, setBadges] = useState([]);
@@ -225,9 +227,11 @@ export default function Account() {
           <FaHome />
         </button>
 
-        <button onClick={() => navigate("/scan")}>
-          <FaCamera />
-        </button>
+        {settings.cameraEnabled && (
+          <button onClick={() => navigate("/scan")}>
+            <FaCamera />
+          </button>
+        )}
 
         <button onClick={() => navigate("/account")}>
           <FaUser />

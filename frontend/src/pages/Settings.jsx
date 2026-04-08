@@ -291,9 +291,11 @@ export default function Settings() {
           <button onClick={() => navigate("/home")}>
             <FaHome />
           </button>
-          <button onClick={() => navigate("/scan")}>
-            <FaCamera />
-          </button>
+          {settings.cameraEnabled && (
+            <button onClick={() => navigate("/scan")}>
+              <FaCamera />
+            </button>
+          )}
           <button onClick={() => navigate("/account")}>
             <FaUser />
           </button>

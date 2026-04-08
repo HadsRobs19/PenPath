@@ -1948,11 +1948,13 @@ p {
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 4px;
+  font-family: 'Comfortaa', sans-serif;
 }
 
 .acct-profileAge {
   font-size: 16px;
   color: #6b7280;
+  font-family: 'Comfortaa', sans-serif;
 }
 
 .acct-buttonsContainer {
@@ -1982,6 +1984,7 @@ p {
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 20px;
+  font-family: 'Comfortaa', sans-serif;
 }
 
 .acct-badgesGrid {
@@ -1992,8 +1995,8 @@ p {
 }
 
 .acct-badgeTile {
-  width: 100px;
-  height: 100px;
+  width: 115px;
+  height: 115px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -2013,7 +2016,7 @@ p {
 }
 
 .acct-badgeIcon {
-  font-size: 36px;
+  font-size: 42px;
   color: #FFD700;
 }
 

@@ -102,3 +102,13 @@ export default function ScanCamera() {
     </div>
   );
 }
+
+/*
+For the PI (since we decided on not getting a camera for the tablet)!:                                                                       
+  For your Raspberry Pi deployment, create a .env file (or change the
+  one already made) with:                                                                    
+  VITE_DISABLE_CAMERA=true                                                      
+                                                                                
+  Then rebuild the app. The camera icon will be hidden from the footer, and the 
+  "Open Camera" option on the scan page will be removed. 
+*/

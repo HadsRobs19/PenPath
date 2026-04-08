@@ -2,10 +2,12 @@ import { useRef } from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
+import { useSettings } from "../context/SettingsContext";
 
 
 const ScanUpload = () => {
   const navigate = useNavigate();
+  const { settings } = useSettings();
   const fileInputRef = useRef(null);
 
   const openPicker = () => {
@@ -39,11 +41,15 @@ return (
         Tap to upload file
       </button>
 
-      <p className="scan-orText">OR</p>
+      {settings.cameraEnabled && (
+        <>
+          <p className="scan-orText">OR</p>
 
-      <button className="scan-cameraButton" onClick={handleOpenCamera}>
-        Open Camera
-      </button>
+          <button className="scan-cameraButton" onClick={handleOpenCamera}>
+            Open Camera
+          </button>
+        </>
+      )}
     </div>
 
     <div className="scan-bottomSection">
@@ -66,9 +72,11 @@ return (
         <FaHome />
       </button>
 
-      <button onClick={() => navigate("/scan")}>
-        <FaCamera />
-      </button>
+      {settings.cameraEnabled && (
+        <button onClick={() => navigate("/scan")}>
+          <FaCamera />
+        </button>
+      )}
 
       <button onClick={() => navigate("/account")}>
         <FaUser />
