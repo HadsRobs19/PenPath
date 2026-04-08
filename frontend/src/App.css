@@ -1,10 +1,28 @@
+:root {
+  --theme-accent: #A8D8EA;
+  --theme-bg: #EBF7FC;
+  --base-font-size: 18px;
+  --ink-color: #1A1A1A;
+  --ink-thickness: 30;
+}
+
 html, body, #root {
   margin: 0;
   height: 100%;
+  background-color: var(--theme-bg);
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Theme applied to all main page containers */
+.acct-container,
+.Settings,
+.scan-container,
+.res-container,
+.cam-container {
+  background-color: var(--theme-bg) !important;
 }
 
 @font-face {
@@ -309,7 +327,7 @@ p {
 
 /*START home content*/
 .home-bg {
-  background: #B2F7FF;
+  background: var(--theme-bg);
   min-height: 100vh;
   width: 100vw;
 
@@ -552,7 +570,7 @@ p {
 
 .bottom-nav {
   position: fixed;
-  background: #B2F7FF;
+  background: var(--theme-bg);
   bottom: 0;
   left: 0;
   right: 0;
@@ -1479,7 +1497,7 @@ p {
 }
 
 .scan-container .bottom-nav {
-  background: #fdf6ec;
+  background: var(--theme-bg);
 }
 
 .scan-title {
@@ -1698,7 +1716,7 @@ p {
 }
 
 .res-container .bottom-nav {
-  background: #fdf6ec;
+  background: var(--theme-bg);
 }
 
 .res-header {
@@ -1885,8 +1903,8 @@ p {
   flex-direction: column;
 }
 
-.acct-container .bottom-nav{
-  background-color: #fdf6ec;
+.acct-container .bottom-nav {
+  background-color: var(--theme-bg);
 }
 
 .acct-title {
@@ -2148,5 +2166,5 @@ p {
 }
 
 .Settings .bottom-nav {
-  background-color: #F7EEDC;
+  background-color: var(--theme-bg);
 }
