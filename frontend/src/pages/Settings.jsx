@@ -350,6 +350,7 @@ const styles = {
     backgroundColor: "#F7EEDC",
     display: "flex",
     flexDirection: "column",
+    overflow: "hidden",
   },
   header: {
     display: "flex",
@@ -369,12 +370,12 @@ const styles = {
     fontSize: 32,
     fontWeight: 800,
     color: "#1A1A1A",
+    fontFamily: "'PlayKiddo', sans-serif",
   },
   headerSpacer: { width: 36 },
 
   scrollContent: {
     padding: "0 24px 24px",
-    flex: 1,
   },
 
   sectionTitle: {
@@ -521,6 +522,7 @@ const styles = {
     flexDirection: "column",
     gap: 12,
     marginTop: 28,
+    paddingBottom: 80,
   },
   actionButton: {
     backgroundColor: "#1A1A1A",

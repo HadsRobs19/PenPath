@@ -81,7 +81,7 @@ function CircularProgress({ percent, size = 120, strokeWidth = 10, color = "#4B7
           justifyContent: "center",
         }}
       >
-        <span style={{ fontSize: 28, fontWeight: 800, color: "#1A1A1A" }}>
+        <span style={{ fontSize: 28, fontWeight: 800, color: "#1A1A1A", fontFamily: "'Comfortaa', sans-serif" }}>
           {percent}%
         </span>
       </div>
@@ -205,24 +205,8 @@ export default function AccountProgress() {
 
         {/* Content */}
         <div style={styles.content}>
-          {/* Circular Progress */}
-          <div style={styles.circularProgressSection}>
-            <CircularProgress
-              percent={progressPercent}
-              size={140}
-              strokeWidth={12}
-              color="#4B7BE5"
-            />
-            <div style={styles.progressLabel}>
-              <span style={styles.progressText}>Overall Progress</span>
-              <span style={styles.progressSubtext}>
-                {lessonsCompleted} of {TOTAL_LESSONS} lessons completed
-              </span>
-            </div>
-          </div>
-
           {/* Lessons Completed */}
-          <h2 style={styles.sectionTitle}>Lessons</h2>
+          <h2 style={styles.sectionTitle}>Lessons Completed</h2>
           <div style={styles.tilesRow}>
             {loading ? (
               <p style={styles.mutedText}>Loading...</p>
@@ -242,6 +226,22 @@ export default function AccountProgress() {
                 </div>
               ))
             )}
+          </div>
+
+          {/* Circular Progress */}
+          <div style={styles.circularProgressSection}>
+            <CircularProgress
+              percent={progressPercent}
+              size={140}
+              strokeWidth={12}
+              color="#4B7BE5"
+            />
+            <div style={styles.progressLabel}>
+              <span style={styles.progressText}>Overall Progress</span>
+              <span style={styles.progressSubtext}>
+                {lessonsCompleted} of {TOTAL_LESSONS} lessons completed
+              </span>
+            </div>
           </div>
 
           {/* Encouragement Message */}
@@ -335,6 +335,7 @@ const styles = {
     fontSize: 32,
     fontWeight: 800,
     color: "#1A1A1A",
+    fontFamily: "'PlayKiddo', sans-serif",
   },
   content: {
     flex: 1,
@@ -348,6 +349,7 @@ const styles = {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: "24px",
+    marginTop: 20,
     marginBottom: 20,
     boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
   },
@@ -360,13 +362,15 @@ const styles = {
     fontSize: 18,
     fontWeight: 700,
     color: "#1A1A1A",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   progressSubtext: {
     fontSize: 14,
     color: "#6B7280",
+    fontFamily: "'Comfortaa', sans-serif",
   },
   sectionTitle: {
-    margin: "20px 0 12px",
+    margin: "0 0 12px",
     fontSize: 16,
     fontWeight: 700,
     color: "#1A1A1A",
