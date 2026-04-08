@@ -108,29 +108,6 @@ The frontend communicates with this API via HTTP.
 
 ---
 
-# Authentication & Security Model
-
-PenPath uses **Supabase Auth** for identity and JWT issuance.
-
-The backend:
-
-- Verifies tokens using Supabase's **JWKS endpoint**
-- Enforces **RS256 signature validation**
-- Validates:
-
-
-`iss` (issuer)
-`aud` (audience)
-`exp`, `iat`, `nbf`
-
-
-- Rejects unauthorized requests
-- Attaches user identity to request context
-
-Controllers use this context to scope database queries and enforce authorization.
-
----
-
 # RLS & Authorization Strategy
 
 Supabase provides **Row Level Security (RLS)** when queries are performed using Supabase client keys.
@@ -1172,39 +1149,6 @@ Example Response:
 }
 
 ```
-
----
-
-
-# How Authentication Works
-
-1. User logs in through Supabase Auth on the frontend.
-
-2. Supabase returns an access_token (JWT).
-
-3. The frontend includes that token in API requests.
-
-4. The backend middleware:
-
-  - Verifies the JWT signature using JWKS
-
-  - Validates claims (`iss`, `aud`, `exp`, `iat`, `nbf`)
-
-  - Extracts the authenticated user ID (`sub`)
-
-  - Attaches the user identity to the request context.
-
-5. Controllers use that identity to safely query the database.
-
-# Security Guidance
-
-The endpoint:
-
-  - Requires a valid JWT
-  - Only returns non-sensitive user fields
-  - Scopes database queries using the authenticated user id
-  - Rejects requests with invalid or missing tokens
-
 
 ---
 
