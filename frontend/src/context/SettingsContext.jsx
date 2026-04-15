@@ -15,9 +15,9 @@ const defaults = {
 };
 
 const themeMap = {
-  blue:  { accent: "#A8D8EA", bg: "#EBF7FC" },
-  pink:  { accent: "#F5C1D0", bg: "#FDF0F4" },
-  green: { accent: "#C8E6C9", bg: "#F0FAF0" },
+  blue:  { accent: "#4FC3F7", bg: "#B2F7FF" },
+  pink:  { accent: "#FF80AB", bg: "#f8c1d5ff" },
+  green: { accent: "#69F0AE", bg: "#c6facbff" },
 };
 
 export const FONT_SIZES = [14, 18, 22, 26, 30];

@@ -1,6 +1,6 @@
 :root {
-  --theme-accent: #A8D8EA;
-  --theme-bg: #EBF7FC;
+  --theme-accent: #4FC3F7;
+  --theme-bg: #E1F5FE;
   --base-font-size: 18px;
   --ink-color: #1A1A1A;
   --ink-thickness: 30;
@@ -10,6 +10,37 @@ html, body, #root {
   margin: 0;
   height: 100%;
   background-color: var(--theme-bg);
+  font-size: var(--base-font-size);
+}
+
+/* Apply ink color globally */
+body {
+  color: var(--ink-color);
+}
+
+/* Apply ink color and font size to titles and paragraphs */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink-color);
+  -webkit-text-stroke: calc(var(--ink-thickness) * 0.01px) currentColor;
+}
+
+p {
+  color: var(--ink-color);
+  -webkit-text-stroke: calc(var(--ink-thickness) * 0.005px) currentColor;
+}
+
+/* Exclude tracing and drawing boxes from font settings */
+.tracing-box,
+.writing-box,
+.letter-card {
+  font-size: 16px !important;
+}
+
+.tracing-box input,
+.writing-box input,
+.letter-card input {
+  font-size: 24px !important;
+  color: #1A1A1A;
 }
 
 @keyframes spin {
@@ -776,20 +807,17 @@ p {
 .writing1-content {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 40px;
-  width: min(100%, 600px); 
+  width: min(100%, 600px);
   margin: 0 auto;
 }
 
 .writing1-heading {
   font-family: 'PlayKiddo';
-  transform: translateY(-10vh);
-
-  padding-right: 100px;
-  text-align: center; 
- 
+  text-align: center;
   font-size: 40px;
-  margin: 0; 
+  margin: 0;
 }
 
 .letter-check-page {
@@ -1494,6 +1522,9 @@ p {
   background: #fdf6ec;
   padding: 16px 24px;
   box-sizing: border-box;
+  font-family: 'Comfortaa', sans-serif;
+  font-size: var(--base-font-size);
+  color: var(--ink-color);
 }
 
 .scan-container .bottom-nav {
@@ -1501,9 +1532,10 @@ p {
 }
 
 .scan-title {
+  font-family: 'PlayKiddo', sans-serif;
   font-size: 32px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
   margin: 16px 0 32px;
 }
 
@@ -1596,6 +1628,9 @@ p {
   background: #fdf6ec;
   display: flex;
   flex-direction: column;
+  font-family: 'Comfortaa', sans-serif;
+  font-size: var(--base-font-size);
+  color: var(--ink-color);
 }
 
 .cam-header {
@@ -1616,9 +1651,10 @@ p {
 }
 
 .cam-title {
+  font-family: 'PlayKiddo', sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
   margin: 0;
 }
 
@@ -1713,6 +1749,9 @@ p {
   background: #fdf6ec;
   display: flex;
   flex-direction: column;
+  font-family: 'Comfortaa', sans-serif;
+  font-size: var(--base-font-size);
+  color: var(--ink-color);
 }
 
 .res-container .bottom-nav {
@@ -1737,10 +1776,11 @@ p {
 }
 
 .res-title {
+  font-family: 'PlayKiddo', sans-serif;
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
 }
 
 .res-closeCircle {
@@ -1842,7 +1882,7 @@ p {
   margin: 0 0 12px;
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
 }
 
 .res-translationText {
@@ -1901,6 +1941,9 @@ p {
   background: #fdf6ec;
   display: flex;
   flex-direction: column;
+  font-family: 'Comfortaa', sans-serif;
+  font-size: var(--base-font-size);
+  color: var(--ink-color);
 }
 
 .acct-container .bottom-nav {
@@ -1911,7 +1954,7 @@ p {
   font-family: 'PlayKiddo', sans-serif;
   font-size: 36px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
   padding: 20px 24px 12px;
   margin: 0;
 }
@@ -1946,7 +1989,7 @@ p {
 .acct-profileName {
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
   margin-bottom: 4px;
   font-family: 'Comfortaa', sans-serif;
 }
@@ -1982,7 +2025,7 @@ p {
 .acct-sectionTitle {
   font-size: 22px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--ink-color);
   margin: 0 0 20px;
   font-family: 'Comfortaa', sans-serif;
 }

@@ -82,7 +82,7 @@ function CircularProgress({ percent, size = 120, strokeWidth = 10, color = "#4B7
           justifyContent: "center",
         }}
       >
-        <span style={{ fontSize: 28, fontWeight: 800, color: "#1A1A1A", fontFamily: "'Comfortaa', sans-serif" }}>
+        <span style={{ fontSize: 28, fontWeight: 800, color: "var(--ink-color)", fontFamily: "'Comfortaa', sans-serif" }}>
           {percent}%
         </span>
       </div>
@@ -289,6 +289,9 @@ const styles = {
     backgroundColor: "#FDF6EC",
     display: "flex",
     flexDirection: "column",
+    fontFamily: "'Comfortaa', sans-serif",
+    fontSize: "var(--base-font-size)",
+    color: "var(--ink-color)",
   },
   header: {
     display: "flex",
@@ -320,7 +323,7 @@ const styles = {
   profileName: {
     fontSize: 20,
     fontWeight: 700,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
   },
   profileAge: {
@@ -335,13 +338,13 @@ const styles = {
     cursor: "pointer",
     lineHeight: 1,
     padding: 4,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
   },
   title: {
     margin: 0,
     fontSize: 32,
     fontWeight: 800,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     fontFamily: "'PlayKiddo', sans-serif",
   },
   content: {
@@ -368,7 +371,7 @@ const styles = {
   progressText: {
     fontSize: 18,
     fontWeight: 700,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
   },
   progressSubtext: {
@@ -380,7 +383,7 @@ const styles = {
     margin: "0 0 12px",
     fontSize: 18,
     fontWeight: 700,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
   },
   tilesRow: {
@@ -404,7 +407,7 @@ const styles = {
   lessonNumber: {
     fontSize: 24,
     fontWeight: 800,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
   },
   lessonName: {

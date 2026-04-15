@@ -1,13 +1,13 @@
-import { useRef, useState, useEffect } from "react";
+﻿import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import { supabase } from "../lib/Client";
 import { useSettings, FONT_SIZES } from "../context/SettingsContext";
 
 const themeColors = [
-  { key: "blue",  color: "#A8D8EA", label: "Blue" },
-  { key: "pink",  color: "#F5C1D0", label: "Pink" },
-  { key: "green", color: "#C8E6C9", label: "Green" },
+  { key: "blue",  color: "#4FC3F7", label: "Blue" },
+  { key: "pink",  color: "#FF80AB", label: "Pink" },
+  { key: "green", color: "#69F0AE", label: "Green" },
 ];
 
 export default function Settings() {
@@ -36,7 +36,7 @@ export default function Settings() {
   }, []);
 
   const handleLogOut = () => {
-    navigate("/welcome");
+    navigate("/");
   };
 
   const handleCameraPress = () => {
@@ -260,8 +260,8 @@ export default function Settings() {
                 style={{
                   ...styles.toggleThumb,
                   transform: settings.notifications
-                    ? "translateX(22px)"
-                    : "translateX(2px)",
+                    ? "translateX(28px)"
+                    : "translateX(4px)",
                 }}
               />
             </button>
@@ -353,6 +353,9 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
+    fontFamily: "'Comfortaa', sans-serif",
+    fontSize: "var(--base-font-size)",
+    color: "var(--ink-color)",
   },
   header: {
     display: "flex",
@@ -371,7 +374,7 @@ const styles = {
     margin: 0,
     fontSize: 32,
     fontWeight: 800,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     fontFamily: "'PlayKiddo', sans-serif",
   },
   headerSpacer: { width: 36 },
@@ -383,7 +386,7 @@ const styles = {
   sectionTitle: {
     fontSize: 18,
     fontWeight: 600,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     marginTop: 20,
     marginBottom: 12,
   },
@@ -474,7 +477,7 @@ const styles = {
   thicknessValue: {
     fontSize: 12,
     fontWeight: 700,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
   },
   slider: { width: "100%" },
 
@@ -490,12 +493,12 @@ const styles = {
   notificationsLabel: {
     fontSize: 15,
     fontWeight: 600,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
   },
   toggle: {
     position: "relative",
-    width: 48,
-    height: 26,
+    width: 52,
+    height: 28,
     borderRadius: 99,
     border: "none",
     cursor: "pointer",
@@ -505,7 +508,8 @@ const styles = {
   },
   toggleThumb: {
     position: "absolute",
-    top: 3,
+    top: 4,
+    left: 0,
     width: 20,
     height: 20,
     borderRadius: "50%",
@@ -611,7 +615,7 @@ const styles = {
   },
   modalText: {
     fontSize: 16,
-    color: "#1A1A1A",
+    color: "var(--ink-color)",
     marginBottom: 20,
     lineHeight: "24px",
   },
