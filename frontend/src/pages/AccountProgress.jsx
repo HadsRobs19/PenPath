@@ -321,13 +321,13 @@ const styles = {
     gap: 2,
   },
   profileName: {
-    fontSize: 20,
+    fontSize: "inherit",
     fontWeight: 700,
     color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
   },
   profileAge: {
-    fontSize: 15,
+    fontSize: "inherit",
     color: "#6B7280",
     fontFamily: "'Comfortaa', sans-serif",
   },
@@ -369,19 +369,19 @@ const styles = {
     gap: 4,
   },
   progressText: {
-    fontSize: 18,
+    fontSize: "inherit",
     fontWeight: 700,
     color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
   },
   progressSubtext: {
-    fontSize: 14,
+    fontSize: "inherit",
     color: "#6B7280",
     fontFamily: "'Comfortaa', sans-serif",
   },
   sectionTitle: {
     margin: "0 0 12px",
-    fontSize: 18,
+    fontSize: "inherit",
     fontWeight: 700,
     color: "var(--ink-color)",
     fontFamily: "'Comfortaa', sans-serif",
@@ -430,7 +430,7 @@ const styles = {
     boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
   },
   encouragementText: {
-    fontSize: 15,
+    fontSize: "inherit",
     color: "#4B5563",
     margin: 0,
     textAlign: "center",

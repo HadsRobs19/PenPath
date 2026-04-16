@@ -384,7 +384,7 @@ const styles = {
   },
 
   sectionTitle: {
-    fontSize: 18,
+    fontSize: "inherit",
     fontWeight: 600,
     color: "var(--ink-color)",
     marginTop: 20,
@@ -434,7 +434,7 @@ const styles = {
   },
   inkColumn: { flex: 1 },
   inkLabel: {
-    fontSize: 14,
+    fontSize: "inherit",
     color: "#6B7280",
     marginBottom: 8,
     display: "flex",
@@ -491,7 +491,7 @@ const styles = {
     boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
   },
   notificationsLabel: {
-    fontSize: 15,
+    fontSize: "inherit",
     fontWeight: 600,
     color: "var(--ink-color)",
   },
@@ -518,7 +518,7 @@ const styles = {
     transition: "transform 0.2s ease",
   },
   notificationsHint: {
-    fontSize: 13,
+    fontSize: "inherit",
     color: "#9CA3AF",
     margin: "8px 0 0",
   },
@@ -536,6 +536,7 @@ const styles = {
     borderRadius: 24,
     padding: "14px",
     fontWeight: 700,
+    fontSize: "inherit",
     border: "none",
     cursor: "pointer",
   },
