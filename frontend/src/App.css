@@ -1685,23 +1685,37 @@ p {
 
 .cam-previewContainer {
   flex: 1;
-  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
 .cam-previewPlaceholder {
   flex: 1;
-  background: #c4c4c4;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  width: 100%;
   overflow: hidden;
   min-height: 60vh;
+  background: #000;
+}
+
+.cam-video,
+.cam-capturedImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cam-documentOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 70%;
-  height: 45%;
-  border: 3px solid #1a1a1a;
+  height: 65%;
+  border: 3px solid rgba(255, 255, 255, 0.7);
   border-radius: 8px;
   background: transparent;
 }
