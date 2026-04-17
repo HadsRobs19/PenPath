@@ -56,6 +56,11 @@ func NewJWTVerifier(issuer string, audience string, jwksURL string) {
 
 // runs requests on protected routes, varifying that a token exists, a signature is valid through JWKS, claims match issuers, and attaches user context
 func (jw *JWTVerifier) AuthMiddleware(c fiber.Ctx) error {
+	// preflight requests carry no auth token — let CORS middleware handle them
+	if c.Method() == fiber.MethodOptions {
+		return c.Next()
+	}
+
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
 		backend.PrintError("[Auth] No Authorization header present")
