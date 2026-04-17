@@ -2,27 +2,26 @@ import { useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import ImageCropper from "../components/ImageCropper";
 
 export default function ScanCamera() {
   const navigate = useNavigate();
   const webcamRef = useRef(null);
   const fileInputRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [cropImage, setCropImage] = useState(null);
   const [camError, setCamError] = useState(null);
 
-  const handleBack = () => {
-    navigate(-1);
-  };
+  const handleBack = () => navigate(-1);
+  const handleThumbnail = () => fileInputRef.current?.click();
 
-  const handleThumbnail = () => {
-    fileInputRef.current?.click();
-  };
-
+  // Convert gallery file to base64 then open crop
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setCapturedImage(url);
+    const reader = new FileReader();
+    reader.onload = (evt) => setCropImage(evt.target.result);
+    reader.readAsDataURL(file);
   };
 
   const handleShutter = useCallback(() => {
@@ -34,21 +33,26 @@ export default function ScanCamera() {
     if (screenshot) setCapturedImage(screenshot);
   }, [capturedImage]);
 
-  const handleConfirm = () => {
-    navigate("/scan/results", { state: { image: capturedImage } });
-  };
+  // Confirm captured photo → open crop
+  const handleConfirm = () => setCropImage(capturedImage);
+
+  if (cropImage) {
+    return (
+      <ImageCropper
+        image={cropImage}
+        onConfirm={(cropped) => navigate("/scan/results", { state: { image: cropped } })}
+        onCancel={() => setCropImage(null)}
+      />
+    );
+  }
 
   return (
     <div className="cam-container">
-      {/* Header */}
       <div className="cam-header">
-        <button className="cam-backButton" onClick={handleBack} aria-label="Back">
-          ‹
-        </button>
+        <button className="cam-backButton" onClick={handleBack} aria-label="Back">‹</button>
         <h1 className="cam-title">Camera</h1>
       </div>
 
-      {/* Camera Preview */}
       <div className="cam-previewContainer">
         <div className="cam-previewPlaceholder">
           {capturedImage ? (
@@ -68,7 +72,6 @@ export default function ScanCamera() {
         </div>
       </div>
 
-      {/* Bottom Action Bar */}
       <div className="cam-actionBar">
         <button className="cam-thumbnailButton" onClick={handleThumbnail} aria-label="Open gallery">
           <div className="cam-thumbnailPlaceholder" />
@@ -104,11 +107,11 @@ export default function ScanCamera() {
 }
 
 /*
-For the PI (since we decided on not getting a camera for the tablet)!:                                                                       
+For the PI (since we decided on not getting a camera for the tablet)!:
   For your Raspberry Pi deployment, create a .env file (or change the
-  one already made) with:                                                                    
-  VITE_DISABLE_CAMERA=true                                                      
-                                                                                
-  Then rebuild the app. The camera icon will be hidden from the footer, and the 
-  "Open Camera" option on the scan page will be removed. 
+  one already made) with:
+  VITE_DISABLE_CAMERA=true
+
+  Then rebuild the app. The camera icon will be hidden from the footer, and the
+  "Open Camera" option on the scan page will be removed.
 */
