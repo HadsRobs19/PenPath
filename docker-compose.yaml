@@ -18,6 +18,7 @@ services:
       - SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL}
       - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
       - SUPABASE_STORAGE_BUCKET=${SUPABASE_STORAGE_BUCKET}
+      - ANTHROPIC_API_KE${ANTHROPIC_API_KEY}
     working_dir: /app/backend
     depends_on:
       - db
