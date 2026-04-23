@@ -1,10 +1,12 @@
 import "../App.css";
 import { useRef, useState } from "react";
 import { forwardRef, useImperativeHandle } from "react";
+import { useSettings } from "../context/SettingsContext";
 
 const WritingBox = forwardRef(({ width = 360, height = 180 }, ref) => {
 
   const svgRef = useRef(null);
+  const { settings } = useSettings();
 
   const [userPath, setUserPath] = useState("");
   const [isWriting, setIsWriting] = useState(false);
@@ -152,8 +154,8 @@ const WritingBox = forwardRef(({ width = 360, height = 180 }, ref) => {
         <path
           d={userPath}
           fill="none"
-          stroke="#2563EB"
-          strokeWidth="6"
+          stroke={settings.inkColor}
+          strokeWidth={settings.inkThickness / 10}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
