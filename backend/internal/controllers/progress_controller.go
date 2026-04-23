@@ -60,7 +60,7 @@ func (p *ProgressController) SaveWritingProgress(c fiber.Ctx) error {
 func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) error {
 	var attemptNumber int
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	_ = progressType
@@ -186,7 +186,7 @@ func (p *ProgressController) saveProgress(c fiber.Ctx, progressType string) erro
 
 // retrieves lesson progress summary
 func (p *ProgressController) GetProgressSummary(c fiber.Ctx) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	rawUserID := c.Locals("user_id")

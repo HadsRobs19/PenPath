@@ -12,7 +12,10 @@ services:
       - .:/app
       - go-modules:/go/pkg/mod
     environment:
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      - DB_USER=penpath
+      - DB_NAME=penpath
+      - DB_PASSWORD=${DB_PASSWORD:-devpassword}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_JWT_ISSUER=${SUPABASE_JWT_ISSUER}
       - SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL}
@@ -21,7 +24,8 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     working_dir: /app/backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   # React Web Frontend (Vite)
@@ -55,6 +59,12 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U penpath -d penpath"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
   postgres-data:

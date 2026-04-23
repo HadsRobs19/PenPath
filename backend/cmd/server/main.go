@@ -126,12 +126,12 @@ func loadAppConfig(appConfig *config.AppConfig) {
 			ProxyTarget: "localhost:3000",
 		},
 		DBConfig: config.DBConfig{
-			Host:     "localhost",
+			Host:     getEnvOrDefault("DB_HOST", "localhost"),
 			Port:     5432,
-			User:     "postgres",
+			User:     getEnvOrDefault("DB_USER", "postgres"),
 			Password: os.Getenv("DB_PASSWORD"),
-			DBName:   "postgres",
-			SSLMode:  "disable",
+			DBName:   getEnvOrDefault("DB_NAME", "postgres"),
+			SSLMode:  getEnvOrDefault("DB_SSLMODE", "disable"),
 		},
 		SupabaseConfig: config.SupabaseConfig{
 			ProjectURL:     os.Getenv("SUPABASE_URL"),
@@ -224,4 +224,11 @@ func initPenPathBox() {
 
 	fmt.Println(borderStyle.Render(content))
 
+}
+
+func getEnvOrDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }
