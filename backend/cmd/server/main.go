@@ -86,7 +86,7 @@ func main() {
 	)
 
 	routes.RegisterHealthRoute(app, dbManager)
-	routes.RegisterUserRoute(app, dbManager)
+	routes.RegisterUserRoute(app, dbManager, AppConfig.SupabaseConfig)
 	routes.RegisterDeviceRoute(app, dbManager)
 	routes.RegisterLessonRoute(app, dbManager)
 	routes.RegisterProgressRoute(app, dbManager)

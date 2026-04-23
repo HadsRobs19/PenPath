@@ -4,6 +4,7 @@ import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import { supabase } from "../lib/Client";
 import { useSettings, FONT_SIZES } from "../context/SettingsContext";
 import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
+import { apiFetch } from "../lib/api";
 
 const themeColors = [
   { key: "blue",  color: "#4FC3F7", label: "Blue" },
@@ -18,6 +19,8 @@ export default function Settings() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   const fileInputRef = useRef(null);
   const colorInputRef = useRef(null);
 
@@ -307,30 +310,50 @@ export default function Settings() {
         {showDeleteModal && (
           <div
             style={styles.modalOverlay}
-            onClick={() => setShowDeleteModal(false)}
+            onClick={() => !deleting && setShowDeleteModal(false)}
           >
             <div
               style={styles.modalContent}
               onClick={(e) => e.stopPropagation()}
             >
               <div style={styles.modalText}>
-                Are you sure you want to delete your account?
+                Are you sure you want to delete your account? This action cannot be undone.
               </div>
+              {deleteError && (
+                <div style={{ color: "#DC2626", marginBottom: 12, fontSize: 14 }}>
+                  {deleteError}
+                </div>
+              )}
               <div style={styles.modalButtons}>
                 <button
-                  onClick={() => {
-                    // TODO: Implement actual account deletion via API
-                    setShowDeleteModal(false);
+                  onClick={async () => {
+                    setDeleting(true);
+                    setDeleteError(null);
+                    try {
+                      await apiFetch("/api/account", { method: "DELETE" });
+                      userStorage.clearUserData();
+                      await supabase.auth.signOut();
+                      navigate("/");
+                    } catch (err) {
+                      console.error("Delete account failed:", err);
+                      setDeleteError("Failed to delete account. Please try again.");
+                      setDeleting(false);
+                    }
                   }}
-                  style={styles.modalButton}
+                  style={{
+                    ...styles.modalButton,
+                    color: deleting ? "#9CA3AF" : "#DC2626",
+                  }}
+                  disabled={deleting}
                 >
-                  Yes
+                  {deleting ? "Deleting..." : "Yes, Delete"}
                 </button>
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   style={styles.modalButton}
+                  disabled={deleting}
                 >
-                  No
+                  No, Keep Account
                 </button>
               </div>
             </div>
