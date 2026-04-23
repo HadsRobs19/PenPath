@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
-const STORAGE_KEY = "penpath_settings";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { supabase } from "../lib/Client";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 // Check if camera should be disabled via environment variable (for Raspberry Pi)
 const isCameraDisabledByEnv = import.meta.env.VITE_DISABLE_CAMERA === "true";
@@ -25,18 +25,43 @@ export const FONT_SIZES = [14, 18, 22, 26, 30];
 const SettingsContext = createContext(null);
 
 export function SettingsProvider({ children }) {
-  const [settings, setSettings] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? { ...defaults, ...JSON.parse(stored) } : defaults;
-    } catch {
-      return defaults;
-    }
-  });
+  const [settings, setSettings] = useState(defaults);
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  // Load settings for current user
+  const loadUserSettings = useCallback(() => {
+    try {
+      const stored = userStorage.getItem(STORAGE_KEYS.SETTINGS);
+      if (stored) {
+        setSettings({ ...defaults, ...JSON.parse(stored) });
+      } else {
+        setSettings(defaults);
+      }
+    } catch {
+      setSettings(defaults);
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Listen for auth state changes to reload settings when user changes
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-  }, [settings]);
+    loadUserSettings();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+        loadUserSettings();
+      }
+    });
+
+    return () => subscription?.unsubscribe();
+  }, [loadUserSettings]);
+
+  // Save settings when they change (but only after initial load)
+  useEffect(() => {
+    if (isLoaded) {
+      userStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+    }
+  }, [settings, isLoaded]);
 
   useEffect(() => {
     const { accent, bg } = themeMap[settings.theme] ?? themeMap.blue;

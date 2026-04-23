@@ -8,6 +8,7 @@ import { FaHome, FaCamera, FaUser, FaBook, FaScroll, FaMap } from "react-icons/f
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
 import { useSettings } from "../context/SettingsContext";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 /*
 * <summary>
@@ -27,10 +28,10 @@ const Home = () => {
   const [lesson2Complete, setLesson2Complete] = useState(false);
 
   useEffect(() => {
-    // Check localStorage for completion status first (offline-first approach)
-    const storedLesson1 = localStorage.getItem("lesson1Complete") === "true" ||
-                          localStorage.getItem("colorsLessonComplete") === "true";
-    const storedLesson2 = localStorage.getItem("lesson2Complete") === "true";
+    // Check user-scoped storage for completion status first (offline-first approach)
+    const storedLesson1 = userStorage.getItem(STORAGE_KEYS.LESSON1_COMPLETE) === "true" ||
+                          userStorage.getItem(STORAGE_KEYS.COLORS_LESSON) === "true";
+    const storedLesson2 = userStorage.getItem(STORAGE_KEYS.LESSON2_COMPLETE) === "true";
 
     if (storedLesson1) setLesson1Complete(true);
     if (storedLesson2) setLesson2Complete(true);

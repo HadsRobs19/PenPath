@@ -4,6 +4,7 @@ import { useState } from 'react';
 import TracingBox from "../components/TracingBox";
 import { letterPaths } from "../components/letterPaths";
 import Button from '../components/Button';
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 /*
 * <summary>
@@ -52,7 +53,7 @@ const ReadingColors = () => {
                         className="exit-button" 
                         disabled={!isComplete}
                         onClick={() => {
-                            localStorage.setItem("colors_readingComplete", "true");
+                            userStorage.setItem(STORAGE_KEYS.COLORS_READING, "true");
                             navigate("/colors/writing");
                         }}
                     >

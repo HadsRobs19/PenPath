@@ -4,6 +4,7 @@ import { FaHome, FaCamera, FaUser, FaTrophy } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/Client";
 import { useSettings } from "../context/SettingsContext";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 import rainbowPen from "../assets/rainbow-pen.png";
 import animalPen from "../assets/animal-pen.png";
 
@@ -38,11 +39,11 @@ function calculateAge(birthday) {
   return age;
 }
 
-// Get earned badges from localStorage
+// Get earned badges from user-scoped storage
 function getEarnedBadges() {
   const badges = [];
-  if (localStorage.getItem("colorsLessonComplete") === "true" ||
-      localStorage.getItem("lesson1Complete") === "true") {
+  if (userStorage.getItem(STORAGE_KEYS.COLORS_LESSON) === "true" ||
+      userStorage.getItem(STORAGE_KEYS.LESSON1_COMPLETE) === "true") {
     badges.push({
       id: "colors-badge",
       name: "Colors Master",
@@ -50,8 +51,8 @@ function getEarnedBadges() {
       description: "Completed the Colors lesson",
     });
   }
-  if (localStorage.getItem("lesson2Complete") === "true" ||
-      localStorage.getItem("animalsLessonComplete") === "true") {
+  if (userStorage.getItem(STORAGE_KEYS.LESSON2_COMPLETE) === "true" ||
+      userStorage.getItem(STORAGE_KEYS.ANIMALS_LESSON) === "true") {
     badges.push({
       id: "animals-badge",
       name: "Animals Expert",
@@ -91,11 +92,11 @@ export default function Account() {
 
         // Set avatar URL
         const avatarFromMeta = metadata.avatar_url;
-        const cachedAvatar = localStorage.getItem("penpath_avatar_url");
+        const cachedAvatar = userStorage.getItem(STORAGE_KEYS.AVATAR_URL);
         if (cachedAvatar) {
           setAvatarUrl(`${cachedAvatar}?t=${Date.now()}`);
         } else if (avatarFromMeta) {
-          localStorage.setItem("penpath_avatar_url", avatarFromMeta);
+          userStorage.setItem(STORAGE_KEYS.AVATAR_URL, avatarFromMeta);
           setAvatarUrl(`${avatarFromMeta}?t=${Date.now()}`);
         }
 

@@ -2,6 +2,7 @@ import "../App.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import rainbowPen from "../assets/rainbow-pen.png";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 /*
  * <summary>
@@ -20,7 +21,7 @@ const ColorsBadge = () => {
 
   useEffect(() => {
     const lessonComplete =
-      localStorage.getItem("lesson1Complete") === "true";
+      userStorage.getItem(STORAGE_KEYS.LESSON1_COMPLETE) === "true";
     // probably better than a quick page change for children
     if (!lessonComplete) {
       setShowToast(true);
@@ -42,7 +43,7 @@ const ColorsBadge = () => {
   };
 
   const handleNextLesson = () => {
-    localStorage.setItem("colorsLessonComplete", "true");
+    userStorage.setItem(STORAGE_KEYS.COLORS_LESSON, "true");
     navigate("/animals/reading");
   };
 

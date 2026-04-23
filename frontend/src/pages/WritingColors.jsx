@@ -5,6 +5,7 @@ import { useState } from 'react';
 import F from "../assets/F.png";
 import N from "../assets/N.png";
 import { apiFetch } from "../lib/api";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 const WritingColors = () => {
     const navigate = useNavigate();
@@ -81,7 +82,7 @@ const WritingColors = () => {
                                         })
                                     });
 
-                                    localStorage.setItem("colors_writingComplete", "true");
+                                    userStorage.setItem(STORAGE_KEYS.COLORS_WRITING, "true");
                                     navigate("/colors/checkpoint");
                                 } catch (err) {
                                     console.error("Progress save failed:", err);

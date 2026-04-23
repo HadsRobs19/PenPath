@@ -1,8 +1,9 @@
-﻿import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHome, FaCamera, FaUser } from "react-icons/fa";
 import { supabase } from "../lib/Client";
 import { useSettings, FONT_SIZES } from "../context/SettingsContext";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 const themeColors = [
   { key: "blue",  color: "#4FC3F7", label: "Blue" },
@@ -21,21 +22,22 @@ export default function Settings() {
   const colorInputRef = useRef(null);
 
   useEffect(() => {
-    const cached = localStorage.getItem("penpath_avatar_url");
+    const cached = userStorage.getItem(STORAGE_KEYS.AVATAR_URL);
     if (cached) {
       setAvatarUrl(`${cached}?t=${Date.now()}`);
     } else {
       supabase.auth.getUser().then(({ data }) => {
         const url = data?.user?.user_metadata?.avatar_url;
         if (url) {
-          localStorage.setItem("penpath_avatar_url", url);
+          userStorage.setItem(STORAGE_KEYS.AVATAR_URL, url);
           setAvatarUrl(`${url}?t=${Date.now()}`);
         }
       });
     }
   }, []);
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
+    await supabase.auth.signOut();
     navigate("/");
   };
 
@@ -72,7 +74,7 @@ export default function Settings() {
 
     await supabase.auth.updateUser({ data: { avatar_url: publicUrl } });
     await supabase.auth.refreshSession();
-    localStorage.setItem("penpath_avatar_url", publicUrl);
+    userStorage.setItem(STORAGE_KEYS.AVATAR_URL, publicUrl);
     setAvatarUrl(`${publicUrl}?t=${Date.now()}`);
     setUploading(false);
   };
@@ -86,7 +88,7 @@ export default function Settings() {
       .remove([`avatars/${userId}/profile.${ext}`]);
     await supabase.auth.updateUser({ data: { avatar_url: null } });
     await supabase.auth.refreshSession();
-    localStorage.removeItem("penpath_avatar_url");
+    userStorage.removeItem(STORAGE_KEYS.AVATAR_URL);
     setAvatarUrl(null);
   };
 

@@ -2,6 +2,7 @@ import "../App.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import animalBadge from "../assets/animal-pen.png";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 /*
  * <summary>
@@ -26,7 +27,7 @@ const AnimalsBadge = () => {
 
   const handleNextLesson = () => {
     // Mark lesson 2 as complete
-    localStorage.setItem("lesson2Complete", "true");
+    userStorage.setItem(STORAGE_KEYS.LESSON2_COMPLETE, "true");
     // Navigate to next lesson or home
     navigate("/home");
   };

@@ -5,6 +5,7 @@ import colors from "../assets/colors.png";
 import WritingBox from "../components/WritingBox";
 import Button from '../components/Button';
 import { apiFetch } from "../lib/api";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 /*
 * <summary>
@@ -22,8 +23,8 @@ const ColorsCheckpoint = () => {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
 
-    const readingDone = localStorage.getItem("colors_readingComplete") === "true";
-    const writingDone = localStorage.getItem("colors_writingComplete") === "true";
+    const readingDone = userStorage.getItem(STORAGE_KEYS.COLORS_READING) === "true";
+    const writingDone = userStorage.getItem(STORAGE_KEYS.COLORS_WRITING) === "true";
 
     const canFinish = readingDone && writingDone;
 
@@ -72,7 +73,7 @@ const ColorsCheckpoint = () => {
                                             completed_at: new Date().toISOString()
                                         })
                                     });
-                                    localStorage.setItem("lesson1Complete", "true");
+                                    userStorage.setItem(STORAGE_KEYS.LESSON1_COMPLETE, "true");
                                     navigate("/colors/badge");
                                 } catch(err) {
                                     console.error("Checkpoint save failed", err);

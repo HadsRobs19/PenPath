@@ -3,6 +3,7 @@ import { FaHome, FaCamera, FaUser, FaCheck } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/Client";
 import { useSettings } from "../context/SettingsContext";
+import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
 
 const lessonColors = ["#FFB380", "#C9B1FF", "#A8E6CF", "#FFD93D", "#FF6B6B", "#A8D8EA"];
 
@@ -22,15 +23,15 @@ function calculateAge(birthday) {
   return age;
 }
 
-// Get completed lessons count from localStorage
+// Get completed lessons count from user-scoped storage
 function getCompletedLessonsCount() {
   let count = 0;
-  if (localStorage.getItem("colorsLessonComplete") === "true" ||
-      localStorage.getItem("lesson1Complete") === "true") {
+  if (userStorage.getItem(STORAGE_KEYS.COLORS_LESSON) === "true" ||
+      userStorage.getItem(STORAGE_KEYS.LESSON1_COMPLETE) === "true") {
     count++;
   }
-  if (localStorage.getItem("lesson2Complete") === "true" ||
-      localStorage.getItem("animalsLessonComplete") === "true") {
+  if (userStorage.getItem(STORAGE_KEYS.LESSON2_COMPLETE) === "true" ||
+      userStorage.getItem(STORAGE_KEYS.ANIMALS_LESSON) === "true") {
     count++;
   }
   return count;
@@ -115,11 +116,11 @@ export default function AccountProgress() {
 
         // Set avatar URL
         const avatarFromMeta = metadata.avatar_url;
-        const cachedAvatar = localStorage.getItem("penpath_avatar_url");
+        const cachedAvatar = userStorage.getItem(STORAGE_KEYS.AVATAR_URL);
         if (cachedAvatar) {
           setAvatarUrl(`${cachedAvatar}?t=${Date.now()}`);
         } else if (avatarFromMeta) {
-          localStorage.setItem("penpath_avatar_url", avatarFromMeta);
+          userStorage.setItem(STORAGE_KEYS.AVATAR_URL, avatarFromMeta);
           setAvatarUrl(`${avatarFromMeta}?t=${Date.now()}`);
         }
 
