@@ -374,7 +374,7 @@ function isLight(hex) {
 const styles = {
   container: {
     minHeight: "100vh",
-    backgroundColor: "#F7EEDC",
+    backgroundColor: "var(--theme-bg)",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
