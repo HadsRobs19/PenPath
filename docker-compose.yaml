@@ -12,14 +12,16 @@ services:
       - .:/app
       - go-modules:/go/pkg/mod
     environment:
+      # Use hardcoded local DB credentials to avoid .env conflicts with Supabase
       - DB_HOST=db
       - DB_USER=penpath
       - DB_NAME=penpath
-      - DB_PASSWORD=${DB_PASSWORD:-devpassword}
+      - DB_PASSWORD=devpassword
+      - DB_SSLMODE=disable
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_JWT_ISSUER=${SUPABASE_JWT_ISSUER}
       - SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL}
-      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}z
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
       - SUPABASE_STORAGE_BUCKET=${SUPABASE_STORAGE_BUCKET}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - CORS_ALLOW_ALL=true
@@ -57,7 +59,7 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_USER=penpath
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-devpassword}
+      - POSTGRES_PASSWORD=devpassword
       - POSTGRES_DB=penpath
     volumes:
       - postgres-data:/var/lib/postgresql/data
