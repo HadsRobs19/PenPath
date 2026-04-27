@@ -6,6 +6,7 @@ import F from "../assets/F.png";
 import N from "../assets/N.png";
 import { apiFetch } from "../lib/api";
 import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
+import { generateUUID } from "../lib/uuid";
 
 const WritingColors = () => {
     const navigate = useNavigate();
@@ -77,7 +78,7 @@ const WritingColors = () => {
                                             accuracy_percent: 100,
                                             time_spent_seconds: 10,
                                             is_completed: true,
-                                            client_event_id: crypto.randomUUID(),
+                                            client_event_id: generateUUID(),
                                             completed_at: new Date().toISOString()
                                         })
                                     });

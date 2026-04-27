@@ -45,10 +45,25 @@ export function SettingsProvider({ children }) {
 
   // Listen for auth state changes to reload settings when user changes
   useEffect(() => {
-    loadUserSettings();
+    // Don't load immediately - wait for Supabase to restore session first
+    // This prevents loading settings before user ID is available
+    const initSettings = async () => {
+      // Give Supabase a moment to restore session from localStorage
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        loadUserSettings();
+      } else {
+        // No session yet, load defaults
+        setSettings(defaults);
+        setIsLoaded(true);
+      }
+    };
+
+    initSettings();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+      // INITIAL_SESSION fires when Supabase first restores a session from storage
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED" || event === "INITIAL_SESSION") {
         loadUserSettings();
       }
     });

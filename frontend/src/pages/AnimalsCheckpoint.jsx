@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import checkpointAudio from "../assets/audio/moo.mp3";
 import { useAudio } from "../hooks/useAudio";
 import { apiFetch } from "../lib/api";
+import { generateUUID } from "../lib/uuid";
 
 const AnimalsCheckpoint = () => {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ const AnimalsCheckpoint = () => {
                     accuracy_percent: 100,
                     time_spent_seconds: 15,
                     is_completed: true,
-                    client_event_id: crypto.randomUUID(),
+                    client_event_id: generateUUID(),
                     completed_at: new Date().toISOString()
                 })
             });

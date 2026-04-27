@@ -6,6 +6,7 @@ import WritingBox from "../components/WritingBox";
 import Button from '../components/Button';
 import { apiFetch } from "../lib/api";
 import { userStorage, STORAGE_KEYS } from "../lib/userStorage";
+import { generateUUID } from "../lib/uuid";
 
 /*
 * <summary>
@@ -69,7 +70,7 @@ const ColorsCheckpoint = () => {
                                             accuracy_percent: 100,
                                             time_spent_seconds: 15,
                                             is_completed: true,
-                                            client_event_id: crypto.randomUUID(),
+                                            client_event_id: generateUUID(),
                                             completed_at: new Date().toISOString()
                                         })
                                     });

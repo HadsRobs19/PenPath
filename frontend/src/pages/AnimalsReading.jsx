@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { apiFetch } from "../lib/api";
+import { generateUUID } from "../lib/uuid";
 
 const TARGET_SENTENCE = "a bug hid in the big rug. the bug loved to be snug.";
 
@@ -53,7 +54,7 @@ const AnimalsReading = () => {
                     accuracy_percent: 100,
                     time_spent_seconds: 12,
                     is_completed: true,
-                    client_event_id: crypto.randomUUID(),
+                    client_event_id: generateUUID(),
                     completed_at: new Date().toISOString()
                   })
                 });

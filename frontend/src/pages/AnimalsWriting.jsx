@@ -8,6 +8,7 @@ import { useAudio } from "../hooks/useAudio";
 import { useRef, useState } from "react";
 import { supabase } from "../lib/Client";
 import { apiFetch } from "../lib/api";
+import { generateUUID } from "../lib/uuid";
 
 const AnimalsWriting = () => {
   const navigate = useNavigate();
@@ -121,7 +122,7 @@ const AnimalsWriting = () => {
                     accuracy_percent: 100,
                     time_spent_seconds: 20,
                     is_completed: true,
-                    client_event_id: crypto.randomUUID(),
+                    client_event_id: generateUUID(),
                     completed_at: new Date().toISOString(),
                     drawing_url: url1 || url2 || null
                   })

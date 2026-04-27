@@ -3,15 +3,23 @@ import { supabase } from "./Client";
 // Get current user ID synchronously from cached session
 function getCurrentUserId() {
   // Try to get from Supabase's cached session in localStorage
+  // Supabase stores auth data with key pattern: sb-<project-ref>-auth-token
   const storageKey = Object.keys(localStorage).find(key =>
     key.startsWith('sb-') && key.endsWith('-auth-token')
   );
 
   if (storageKey) {
     try {
-      const session = JSON.parse(localStorage.getItem(storageKey));
-      return session?.user?.id || null;
-    } catch {
+      const stored = JSON.parse(localStorage.getItem(storageKey));
+      // Supabase: the stored value may have different structures
+      // Try multiple paths to find the user ID
+      const userId = stored?.user?.id ||           // Direct user object
+                     stored?.session?.user?.id ||  // Session wrapper
+                     stored?.currentSession?.user?.id || // Alternative format
+                     null;
+      return userId;
+    } catch (e) {
+      console.warn("userStorage: Failed to parse Supabase session", e);
       return null;
     }
   }
@@ -27,19 +35,44 @@ function scopedKey(key, userId) {
 // User-scoped localStorage operations
 export const userStorage = {
   getItem(key) {
-    return localStorage.getItem(scopedKey(key));
+    const userId = getCurrentUserId();
+    // Try user-scoped key first
+    if (userId) {
+      const scopedValue = localStorage.getItem(`${key}_${userId}`);
+      if (scopedValue !== null) {
+        return scopedValue;
+      }
+      // Fallback: check global key and migrate if found
+      const globalValue = localStorage.getItem(key);
+      if (globalValue !== null) {
+        // Migrate to user-scoped storage
+        localStorage.setItem(`${key}_${userId}`, globalValue);
+        localStorage.removeItem(key);
+        return globalValue;
+      }
+      return null;
+    }
+    // No user ID - use global key
+    return localStorage.getItem(key);
   },
 
   setItem(key, value) {
     const userId = getCurrentUserId();
     if (!userId) {
       console.warn(`userStorage.setItem: No user ID, storing globally for key: ${key}`);
+      localStorage.setItem(key, value);
+    } else {
+      localStorage.setItem(`${key}_${userId}`, value);
     }
-    localStorage.setItem(scopedKey(key, userId), value);
   },
 
   removeItem(key) {
-    localStorage.removeItem(scopedKey(key));
+    const userId = getCurrentUserId();
+    if (userId) {
+      localStorage.removeItem(`${key}_${userId}`);
+    }
+    // Also remove global key if it exists
+    localStorage.removeItem(key);
   },
 
   // Clear all user-specific data for the current user
