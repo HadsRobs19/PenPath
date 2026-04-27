@@ -1,7 +1,22 @@
 import { supabase } from "./Client"
 
-// Use environment variable for API URL, fallback to localhost for development
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000"
+// Use environment variable for API URL, or dynamically use the same host with port 3000
+// This allows the app to work on Docker/Pi when accessed from other devices on the network
+function getApiBaseUrl() {
+  const envUrl = import.meta.env.VITE_API_URL
+  if (envUrl && envUrl !== "auto") {
+    return envUrl
+  }
+  // Auto-detect: use the same hostname as the current page but with port 3000
+  // This works when frontend is on :5173 and backend is on :3000 of the same host
+  if (typeof window !== "undefined") {
+    const { protocol, hostname } = window.location
+    return `${protocol}//${hostname}:3000`
+  }
+  return "http://localhost:3000"
+}
+
+const API_BASE_URL = getApiBaseUrl()
 
 export async function apiFetch(url, options={}){
 

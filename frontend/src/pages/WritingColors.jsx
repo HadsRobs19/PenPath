@@ -86,7 +86,13 @@ const WritingColors = () => {
                                     navigate("/colors/checkpoint");
                                 } catch (err) {
                                     console.error("Progress save failed:", err);
-                                    setError("Failed to save progress. Please try again.");
+                                    // Show the actual error message for debugging
+                                    const errorMsg = err.message || "Unknown error";
+                                    if (errorMsg.includes("Failed to fetch") || errorMsg.includes("NetworkError")) {
+                                        setError("Cannot connect to server. Check if the backend is running.");
+                                    } else {
+                                        setError(`Failed to save progress: ${errorMsg}`);
+                                    }
                                 } finally {
                                     setSaving(false);
                                 }

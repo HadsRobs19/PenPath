@@ -21,10 +21,24 @@ func RegisterCorsMiddleware(app *fiber.App) {
 		}
 	}
 
-	app.Use(cors.New(cors.Config{
-		AllowOrigins:     origins,
+	// Check if we should allow all origins (for Docker/Pi development)
+	allowAllOrigins := os.Getenv("CORS_ALLOW_ALL") == "true"
+
+	corsConfig := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowCredentials: true,
-	}))
+	}
+
+	if allowAllOrigins {
+		// Allow any origin - useful for Docker/Pi setups where the IP may vary
+		// Note: AllowCredentials with AllowOriginsFunc requires returning the specific origin
+		corsConfig.AllowOriginsFunc = func(origin string) bool {
+			return true
+		}
+	} else {
+		corsConfig.AllowOrigins = origins
+	}
+
+	app.Use(cors.New(corsConfig))
 }

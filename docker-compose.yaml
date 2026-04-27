@@ -22,6 +22,7 @@ services:
       - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
       - SUPABASE_STORAGE_BUCKET=${SUPABASE_STORAGE_BUCKET}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - CORS_ALLOW_ALL=true
     working_dir: /app/backend
     depends_on:
       db:
@@ -39,7 +40,9 @@ services:
       - ./frontend:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:3000
+      # "auto" enables dynamic API URL detection based on the browser's current hostname
+      # This allows the app to work when accessed via any IP (Docker host, Pi, etc.)
+      - VITE_API_URL=auto
       - VITE_SUPABASE_URL=${SUPABASE_URL}
       - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
     depends_on:

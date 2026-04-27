@@ -34,7 +34,12 @@ const AnimalsCheckpoint = () => {
             navigate("/animals/badge");
         } catch(err) {
             console.error("Checkpoint save failed:", err);
-            setError("Failed to save progress. Please try again.");
+            const errorMsg = err.message || "Unknown error";
+            if (errorMsg.includes("Failed to fetch") || errorMsg.includes("NetworkError")) {
+                setError("Cannot connect to server. Check if the backend is running.");
+            } else {
+                setError(`Failed to save progress: ${errorMsg}`);
+            }
         } finally {
             setSaving(false);
         }
